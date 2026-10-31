@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""swiftbin.py: build an Apple helper when it is missing or older than its source.
+"""swiftbin.py: find the vision helper for this machine: on a Mac the Apple helper, built when it is missing or older than its source; on
+Linux (Windows through WSL2) the stand-in of the same name in engine/vision/, which answers the same command line.
 
     swiftbin.py <helper-dir>...    build (or confirm) each helper; the binary is <helper-dir>/bin/<name of the dir>
     swiftbin.py --all [root]       every folder under root (default: the folder this file is in) that holds a main.swift
@@ -19,6 +20,30 @@ sys.path.insert(0, os.path.dirname(HERE))
 import support  # noqa: E402
 import common  # noqa: E402
 
+VISION = os.path.join(os.path.dirname(HERE), "vision")   # the Linux stand-ins, one executable per helper name
+IS_MAC = sys.platform == "darwin"
+
+
+def stand_in(helper_dir):
+    """the Linux stand-in for a helper folder (engine/vision/<name>), made executable; one STOP line when there is none"""
+    name = os.path.basename(os.path.abspath(helper_dir))
+    shim = os.path.join(VISION, name)
+    if not os.path.isfile(shim):
+        common.stop(f"no stand-in for the {name} helper on this platform (engine/vision/{name} is missing)")
+    if not os.access(shim, os.X_OK):
+        os.chmod(shim, 0o755)
+    return shim
+
+
+def check_stand_in(helper_dir):
+    """run the stand-in's --check: its `ok` line, or one STOP line"""
+    shim = stand_in(helper_dir)
+    r = subprocess.run([shim, "--check"], capture_output=True, text=True)
+    if r.returncode != 0:
+        line = next((x for x in (r.stderr + r.stdout).splitlines() if x.startswith("STOP:")), None)
+        common.stop(line[5:].strip() if line else f"{os.path.basename(shim)} --check failed: {' '.join((r.stderr + r.stdout).split())[-200:]}")
+    return shim
+
 
 def binary_path(helper_dir):
     helper_dir = os.path.abspath(helper_dir)
@@ -26,8 +51,10 @@ def binary_path(helper_dir):
 
 
 def ensure(helper_dir):
-    """The path of the helper's binary, built first when it is missing or older than main.swift."""
+    """The path of the helper's binary, built first when it is missing or older than main.swift; on Linux, the stand-in."""
     helper_dir = os.path.abspath(helper_dir)
+    if not IS_MAC:
+        return stand_in(helper_dir)
     src, bin_ = os.path.join(helper_dir, "main.swift"), binary_path(helper_dir)
     if not os.path.isfile(src):
         common.stop(f"no main.swift in {helper_dir}")
@@ -65,7 +92,7 @@ def _main():
     if not dirs:
         raise IndexError("no helpers")
     for d in dirs:
-        print(f"ok {ensure(d)}")
+        print(f"ok {ensure(d) if IS_MAC else check_stand_in(d)}")
 
 
 if __name__ == "__main__":

@@ -1,8 +1,8 @@
 # Cutroom
 
-Footage in, finished videos out, in your own look. A video-editing system for short-form video that runs inside Claude Code on a Mac: it organizes your footage, lets you keep or cut every clip, cuts your talking heads without clipping a word, captions them in styles you designed, lays in b-roll, a hook card, music and an end card, checks the result against a hard set of quality gates, and cleans up after itself.
+Footage in, finished videos out, in your own look. A video-editing system for short-form video that runs inside Claude Code on a Mac, or on a Windows PC through WSL2: it organizes your footage, lets you keep or cut every clip, cuts your talking heads without clipping a word, captions them in styles you designed, lays in b-roll, a hook card, music and an end card, checks the result against a hard set of quality gates, and cleans up after itself.
 
-Nothing posts anywhere. You approve the cut and the captions before anything renders. The core runs on the Mac with no paid service.
+Nothing posts anywhere. You approve the cut and the captions before anything renders. The core runs on your own machine with no paid service.
 
 ## Install (three steps)
 
@@ -12,7 +12,9 @@ Nothing posts anywhere. You approve the cut and the captions before anything ren
    > Clone https://github.com/LYFEWORK/cutroom to ~/cutroom (or `git pull` it if it is already there), then read ~/cutroom/INSTALL.md and follow it exactly.
 
    Claude installs the tools (about 6 GB, 10 to 20 minutes), links the skills and runs the doctor. It is finished when the doctor's last line says `0 failed`.
-3. Start a new Claude Code session and type `/cutroom-setup`. The wizard builds your look, your caption styles, your formats and your folders with you, from questions and from reference videos you paste in.
+3. Start a new Claude Code session and type `/cutroom-setup`.
+
+   On Windows, do the WSL2 steps at the top of `INSTALL.md` first (one PowerShell command and a reboot), then run Claude Code inside Ubuntu and paste the same paragraph. The wizard builds your look, your caption styles, your formats and your folders with you, from questions and from reference videos you paste in.
 
 The full guide, with what to gather before you start and how a video gets made: `docs/GUIDE.pdf`.
 
@@ -32,7 +34,7 @@ Your own material never lives here. It lives in your workspace (default `~/Movie
 
 ## Requirements
 
-- macOS 14 or newer, Apple Silicon recommended (face tracking and the person matte run on Apple Vision; encodes on VideoToolbox).
+- macOS 14 or newer, Apple Silicon recommended (face tracking and the person matte run on Apple Vision; encodes on VideoToolbox), or Windows 10/11 with WSL2 running Ubuntu 24.04 (faces from OpenCV, mattes from Robust Video Matting, on-screen text from Tesseract, software encodes; an NVIDIA card speeds up word timing). On Windows, Claude Code runs inside the Ubuntu terminal; `INSTALL.md` has the three PowerShell steps that come first.
 - Claude Code 2.x with the main session on Opus 5.5.
 - About 12 GB of disk for the toolchain, network for the install.
 - Optional, off by default: a Deepgram key (verbatim transcripts), ElevenLabs or Epidemic Sound (sounds and music), fal (AI b-roll of objects and places). Keys live in `~/.cutroom/keys.env`, never in this repo.

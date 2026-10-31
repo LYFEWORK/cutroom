@@ -201,6 +201,10 @@ def trash(path):
         r = subprocess.run(["/usr/bin/trash", str(path)], capture_output=True, text=True)
         if r.returncode == 0:
             return "trash"
+    if sys.platform != "darwin" and shutil.which("gio"):   # Linux desktops: the XDG trash, which a file manager can put back
+        r = subprocess.run(["gio", "trash", str(path)], capture_output=True, text=True)
+        if r.returncode == 0:
+            return "trash"
     hold = ws("Review") / "trash" / time.strftime("%Y-%m-%d")
     hold.mkdir(parents=True, exist_ok=True)
     dest = hold / path.name

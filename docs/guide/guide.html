@@ -65,7 +65,7 @@ th { font-weight:700; background:var(--panel); border-bottom:1px solid #b9bec9; 
   <h2>What is in this guide</h2>
   <ol class="toc">
     <li>What you will be able to do <span>one page</span></li>
-    <li>Before you start <span>the Mac, Claude Code, GitHub access, what to gather</span></li>
+    <li>Before you start <span>the Mac or the Windows PC, Claude Code, what to gather</span></li>
     <li>Install <span>the one paragraph you paste, what happens, how you know it worked</span></li>
     <li>The setup wizard <span>twelve steps, what each asks and writes</span></li>
     <li>How it works <span>the folder map, the life of a video, who decides what</span></li>
@@ -75,13 +75,13 @@ th { font-weight:700; background:var(--panel); border-bottom:1px solid #b9bec9; 
     <li>Updating and troubleshooting</li>
     <li>Reference <span>commands, files, the DNA</span></li>
   </ol>
-  <div class="panel note"><p class="t">How to read this</p><p>Chapters 2 to 4 are the one-time path: get the Mac ready, install, set up. Chapter 5 is what you do every week. Chapter 6 is why the system refuses some things. Chapters 7 to 10 are for later. Commands you type into Claude Code are shown as quotes; commands Claude runs for you are shown in dark boxes, so you know what is happening under the hood.</p></div>
+  <div class="panel note"><p class="t">How to read this</p><p>Chapters 2 to 4 are the one-time path: get the machine ready, install, set up. Chapter 5 is what you do every week. Chapter 6 is why the system refuses some things. Chapters 7 to 10 are for later. Commands you type into Claude Code are shown as quotes; commands Claude runs for you are shown in dark boxes, so you know what is happening under the hood.</p></div>
 </section>
 
 <section class="chapter">
   <div class="kicker">Chapter 1</div>
   <h2>What you will be able to do</h2>
-  <p class="lead">Cutroom turns Claude Code into your editing room. You shoot, you drop the card, you say what you want, and you approve. Everything mechanical runs on your Mac.</p>
+  <p class="lead">Cutroom turns Claude Code into your editing room. You shoot, you drop the card, you say what you want, and you approve. Everything mechanical runs on your own machine: a Mac, or a Windows PC through WSL2.</p>
   <div class="flow">
     <div><b>Drop</b>Put a card dump in one folder.</div>
     <div><b>Organize</b>Originals moved and named by what is said or shown; takes cut out; an index page.</div>
@@ -105,9 +105,10 @@ th { font-weight:700; background:var(--panel); border-bottom:1px solid #b9bec9; 
 <section class="chapter">
   <div class="kicker">Chapter 2</div>
   <h2>Before you start</h2>
-  <h3>The Mac</h3>
+  <h3>The machine</h3>
   <table class="kv">
     <tr><td>Mac</td><td>macOS 14 or newer. Apple Silicon (M1 or later) is recommended; Intel works, slower.</td></tr>
+    <tr><td>Windows PC</td><td>Windows 10 or 11 with WSL2 running Ubuntu 24.04 (one PowerShell command and a restart, chapter 3). Cutroom runs in the Ubuntu terminal; your footage folder lives on the Ubuntu side and shows in Explorer as a network folder. Encodes are software, so renders take longer than on a Mac; an NVIDIA card speeds up word timing. Faces, mattes and on-screen text come from OpenCV, Robust Video Matting and Tesseract instead of Apple Vision, with the same gates.</td></tr>
     <tr><td>Disk</td><td>About 12 GB for the tools. Your footage is separate: an external SSD for the footage library is the right call if you shoot a lot (chapter 8).</td></tr>
     <tr><td>Network</td><td>For the install (about 6 GB of downloads) and for reference links. Editing itself runs offline.</td></tr>
     <tr><td>Claude Code</td><td>Version 2 or newer, in the app or the terminal, with the main session on <b>Opus 5.5</b>. In the app, pick the model in the model picker. In the terminal, <code>claude --model claude-opus-5-5</code>, or put <code>"model": "claude-opus-5-5"</code> in <code>~/.claude/settings.json</code>. The system was built and tested at this level; a smaller model makes worse edits.</td></tr>
@@ -123,24 +124,25 @@ th { font-weight:700; background:var(--panel); border-bottom:1px solid #b9bec9; 
     <li><b>Reference videos.</b> Three to ten links to videos whose captions, pace, hook or graphics you want to learn from, each with a few words on what you like. TikTok, Reels, Shorts and YouTube links work; Instagram often needs a login, so a downloaded file is the fallback.</li>
     <li><b>One sample clip.</b> A talking-head clip of yourself, 10 to 60 seconds, 9:16. The wizard previews every caption style on it and runs one video through the whole chain at the end.</li>
     <li><b>Music.</b> A folder of tracks you are licensed to use, if you want a bed under your videos. Optional.</li>
-    <li><b>An SSD.</b> If you have one for footage, know its path (it shows under <code>/Volumes/</code>).</li>
+    <li><b>An SSD.</b> If you have one for footage, know its path (on a Mac it shows under <code>/Volumes/</code>; in WSL2 a drive letter shows under <code>/mnt/</code>, for example <code>/mnt/d</code>).</li>
   </ul>
-  <div class="panel warn"><p class="t">What the system never does</p><p>It never posts or schedules anything. It never deletes a camera original or a finished video. It never sends your footage anywhere: transcription, face tracking and rendering run on your Mac. Optional paid services (a verbatim transcription API, a sound library, an AI b-roll service) are off until you add a key.</p></div>
+  <div class="panel warn"><p class="t">What the system never does</p><p>It never posts or schedules anything. It never deletes a camera original or a finished video. It never sends your footage anywhere: transcription, face tracking and rendering run on your own machine. Optional paid services (a verbatim transcription API, a sound library, an AI b-roll service) are off until you add a key.</p></div>
 </section>
 
 <section class="chapter">
   <div class="kicker">Chapter 3</div>
   <h2>Install</h2>
   <p class="lead">One paragraph, pasted into Claude Code, installs everything. Claude follows the install document in the repo step by step and reports back.</p>
+  <div class="panel note"><p class="t">Windows first</p><p>Three things you do yourself, once, before Claude Code exists on the PC. In PowerShell as administrator: <code>wsl --install -d Ubuntu-24.04</code>, then restart when Windows asks. Open "Ubuntu 24.04" from the Start menu: it asks for a username and a password (the password is what the installer's <code>sudo</code> asks for later). In that window, install Claude Code with <code>curl -fsSL https://claude.ai/install.sh | bash</code>, start it with <code>claude</code>, and paste the paragraph below. From here on, everything happens in Ubuntu. Your footage folder will be at <code>\\wsl.localhost\Ubuntu-24.04\home\&lt;you&gt;\</code> in Explorer, and the review page opens in your normal browser at <code>http://127.0.0.1:8765/</code>.</p></div>
   <h3>Step 1: paste this into Claude Code</h3>
   <div class="panel"><p>Clone https://github.com/LYFEWORK/cutroom to ~/cutroom (or <code>git pull</code> it if it is already there), then read ~/cutroom/INSTALL.md and follow it exactly.</p></div>
-  <p>That paste is your go-ahead for about 6 GB of downloads, Homebrew installs, a Python environment for word timing, the renderer's install, and linking eight skills into <code>~/.claude/skills/</code>. Nothing touches your footage.</p>
+  <p>That paste is your go-ahead for about 6 GB of downloads, Homebrew installs (on Windows: apt packages, a static ffmpeg, whisper.cpp built from source), a Python environment for word timing, the renderer's install, and linking eight skills into <code>~/.claude/skills/</code>. Nothing touches your footage.</p>
   <h3>Step 2: what happens, and what Claude will ask you for</h3>
   <ol class="steps">
-    <li><b>The Mac is checked.</b> macOS version, free disk, Xcode command-line tools, Homebrew, GitHub access. Two things need you: Apple's command-line-tools window (click Install) and Homebrew's installer (it asks for your Mac password). Claude shows you the exact command or window and waits.</li>
+    <li><b>The machine is checked.</b> On a Mac: macOS version, free disk, Xcode command-line tools, Homebrew. Two things need you: Apple's command-line-tools window (click Install) and Homebrew's installer (it asks for your Mac password). On Windows: the Ubuntu version and free disk; <code>sudo</code> asks for your Ubuntu password once. Claude shows you the exact command or window and waits.</li>
     <li><b>The repo is cloned</b> to <code>~/cutroom</code>.</li>
-    <li><b>The installer runs</b> (<code>bash ~/cutroom/install.sh</code>), 10 to 20 minutes the first time. It prints one line per item: a check mark for done, an exclamation mark for optional or skipped, a cross for something to fix. It is safe to run again; it resumes.</li>
-    <li><b>The doctor runs</b> and proves the stack: ffmpeg, the transcriber and its model, the word-timing environment with a live test, the Apple Vision helpers, the renderer's TypeScript, the skills, your config.</li>
+    <li><b>The installer runs</b> (<code>bash ~/cutroom/install.sh</code>), 10 to 20 minutes the first time on a Mac, longer on Windows while whisper.cpp compiles. It prints one line per item: a check mark for done, an exclamation mark for optional or skipped, a cross for something to fix. It is safe to run again; it resumes.</li>
+    <li><b>The doctor runs</b> and proves the stack: ffmpeg, the transcriber and its model, the word-timing environment with a live test, the vision helpers (Apple Vision on a Mac; OpenCV, Robust Video Matting and Tesseract on Windows), the renderer's TypeScript, the skills, your config.</li>
   </ol>
   <pre>bash ~/cutroom/install.sh      # what Claude runs
 bash ~/cutroom/bin/doctor.sh   # safe any time</pre>
@@ -149,7 +151,7 @@ bash ~/cutroom/bin/doctor.sh   # safe any time</pre>
   <h3>Step 4: start a new session</h3>
   <p>Skills load when a session starts. Open a new Claude Code session (still on Opus 5.5), in any folder, and type:</p>
   <div class="panel"><p><code>/cutroom-setup</code></p></div>
-  <div class="panel note"><p class="t">What got installed, in plain words</p><p><b>ffmpeg</b> does every cut, conversion and mix. <b>whisper.cpp</b> with the large-v3-turbo model transcribes; <b>WhisperX</b> times every word, in its own Python 3.12 environment at <code>~/.cutroom/venv</code>. <b>Apple Vision helpers</b> (built here with swiftc) find the face, the person's outline and on-screen text. <b>Remotion</b> renders captions, cards and your graphics. <b>yt-dlp</b> downloads reference links. Your config is <code>~/.cutroom/config.json</code>; optional keys go in <code>~/.cutroom/keys.env</code>.</p></div>
+  <div class="panel note"><p class="t">What got installed, in plain words</p><p><b>ffmpeg</b> does every cut, conversion and mix. <b>whisper.cpp</b> with the large-v3-turbo model transcribes; <b>WhisperX</b> times every word, in its own Python 3.12 environment at <code>~/.cutroom/venv</code>. <b>Vision helpers</b> (Apple Vision, built here with swiftc, on a Mac; OpenCV, Robust Video Matting and Tesseract in WSL2) find the face, the person's outline and on-screen text. <b>Remotion</b> renders captions, cards and your graphics. <b>yt-dlp</b> downloads reference links. Your config is <code>~/.cutroom/config.json</code>; optional keys go in <code>~/.cutroom/keys.env</code>.</p></div>
 </section>
 
 <section class="chapter">

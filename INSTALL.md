@@ -1,6 +1,6 @@
 # Install Cutroom
 
-**For Claude Code, on the user's Mac.** Read this whole file first, then do the steps in order. Every step is safe to run again. When you are done, report back with the last section.
+**For Claude Code, on the user's Mac or inside WSL2 on their Windows PC.** Read this whole file first, then do the steps in order. Every step is safe to run again. When you are done, report back with the last section.
 
 **What the user pastes to start:**
 
@@ -18,7 +18,17 @@ That paste is the go-ahead for Steps 0 to 4: about 6 GB of downloads, Homebrew i
 | Tools | ffmpeg, whisper.cpp with the large-v3-turbo model (1.6 GB), Node, Python with Pillow and numpy, a Python 3.12 environment with WhisperX for word timing (about 1.3 GB), yt-dlp for reference links, the Apple Vision helpers (built here with swiftc). |
 | Config | `~/.cutroom/config.json` (paths) and `~/.cutroom/keys.env` (optional services, empty by default). |
 
-Nothing needs a paid API. The core runs on the Mac.
+Nothing needs a paid API. The core runs on the user's own machine.
+
+## Windows first: WSL2 (the user does this before Claude Code exists on the machine)
+
+Cutroom runs on Linux inside Windows. These three steps are the user's, in Windows itself, before anything else; Claude Code is then installed inside Ubuntu and the rest of this file applies there.
+
+1. In PowerShell as administrator: `wsl --install -d Ubuntu-24.04`, then restart Windows when it asks. (An existing WSL: `wsl --update`, then `wsl --install -d Ubuntu-24.04` if Ubuntu 24.04 is not there yet; `wsl -l -v` lists what is.)
+2. Open "Ubuntu 24.04" from the Start menu once: it asks for a username and a password (the password is what `sudo` asks for later).
+3. In that Ubuntu window install Claude Code: `curl -fsSL https://claude.ai/install.sh | bash`, then start it with `claude` (on Opus 5.5) and paste the paragraph above. Everything after this point happens in Ubuntu.
+
+What is different on Windows, in one breath: the workspace lives on the Ubuntu side of the disk (Explorer shows it at `\\wsl.localhost\Ubuntu-24.04\home\<user>\` as a network folder, which is where footage is dropped); the review page opens in any Windows browser at `http://127.0.0.1:8765/`; encodes are software (slower than a Mac, same files); faces, mattes and on-screen text come from OpenCV, Robust Video Matting and Tesseract instead of Apple Vision; an NVIDIA card speeds up word timing. A footage folder on the Windows side (`/mnt/c/...`) works but reads slowly; keep the library on the Ubuntu side or on an external drive mounted in WSL.
 
 ## Ground rules
 
@@ -27,14 +37,14 @@ Nothing needs a paid API. The core runs on the Mac.
 3. **Move, never delete.** The installer keeps anything it replaces (`~/.cutroom/skills-backup/`).
 4. **Opus 5.5.** This system is built to run with the main session on Opus 5.5. If `claude --version` works, check the model the session is on; if it is not Opus 5.5, tell the user how to switch (the model picker in the app, `claude --model claude-opus-5-5`, or `"model": "claude-opus-5-5"` in `~/.claude/settings.json`) before running the setup wizard.
 
-## Step 0: Check the Mac (look, don't assume)
+## Step 0: Check the machine (look, don't assume)
 
 | Need | Check | If it fails |
 |---|---|---|
-| macOS on Apple Silicon (Intel runs, slower) | `sw_vers -productVersion; uname -m` | Intel: continue, warn the user that encodes and word timing are slower. Not a Mac: stop. The face tracking and the person matte need Apple Vision. |
+| macOS on Apple Silicon (Intel runs, slower), or Ubuntu 24.04 in WSL2 | `uname -s -m`; on a Mac `sw_vers -productVersion`, on Linux `cat /etc/os-release` and `grep -i microsoft /proc/version` | Intel Mac: continue, warn the user that encodes and word timing are slower. Linux: Debian or Ubuntu only (the installer uses apt-get), Python 3.12 or newer (Ubuntu 24.04 has it); another distro stops with a plain line. Native Windows (PowerShell, no WSL): stop and send the user to "Windows first" above. |
 | About 12 GB free | `df -h ~` | Ask the user what to clear. |
-| Xcode command-line tools | `xcode-select -p` | `xcode-select --install` opens Apple's installer. The user clicks Install. Wait for it. |
-| Homebrew | `command -v brew \|\| ls /opt/homebrew/bin/brew /usr/local/bin/brew` | The user runs `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` (it asks for the password). |
+| Xcode command-line tools (Mac only) | `xcode-select -p` | `xcode-select --install` opens Apple's installer. The user clicks Install. Wait for it. On Linux this row does not apply: the installer brings build tools through apt. |
+| Homebrew (Mac only) | `command -v brew \|\| ls /opt/homebrew/bin/brew /usr/local/bin/brew` | The user runs `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` (it asks for the password). On Linux the installer uses `sudo apt-get`, which asks for the Ubuntu password once. |
 | Reaching GitHub | the clone worked | The repo is public, so no account or sign-in is needed. A clone that fails is the network, or git itself (`xcode-select --install` brings it); fix that and clone again. |
 | Google Chrome (optional) | `ls -d "/Applications/Google Chrome.app"` | Not required. The review page opens in the default browser. |
 
@@ -56,11 +66,11 @@ It prints one line per item: **✓** done, **!** optional or skipped, **✗** mu
 
 | # | Step | Notes |
 |---|---|---|
-| 1 | This Mac | Stops if the command-line tools or Homebrew are missing (Step 0), then run again. |
-| 2 | Tools | installs any missing: ffmpeg, whisper-cpp, node, python, yt-dlp |
-| 3 | Python | Pillow, numpy, pytest, then the word-timing venv at `~/.cutroom/venv` and its alignment weights |
-| 4 | Whisper model | `~/.cutroom/models/ggml-large-v3-turbo.bin`, resumable, size-checked |
-| 5 | Apple Vision helpers | compiled with swiftc |
+| 1 | This machine | Mac: stops if the command-line tools or Homebrew are missing (Step 0), then run again. Linux: checks the distro and the CPU. |
+| 2 | Tools | installs any missing: ffmpeg, whisper-cpp, node, python, yt-dlp. On Linux: apt packages (sudo asks for the password), a static ffmpeg 7 with the tone mapper, whisper.cpp built from source (several minutes), Node from NodeSource, Tesseract |
+| 3 | Python | Pillow, numpy, pytest, then the word-timing venv at `~/.cutroom/venv` and its alignment weights. On Linux the venv also holds OpenCV, onnxruntime and pytesseract for the vision stand-ins, and torch is the CPU build unless an NVIDIA card is present |
+| 4 | Whisper model | `~/.cutroom/models/ggml-large-v3-turbo.bin`, resumable, size-checked. On Linux also the two vision models (YuNet faces, Robust Video Matting), 15 MB together |
+| 5 | Vision helpers | Mac: compiled with swiftc. Linux: the stand-ins in `engine/vision/` are checked (OpenCV, onnxruntime, Tesseract, ffmpeg's tone mapper) |
 | 6 | Remotion | `npm ci` in `remotion/`, plus its headless browser |
 | 7 | Config and skills | `~/.cutroom/config.json`, an empty `keys.env`, and every skill linked into `~/.claude/skills/` |
 | 8 | Doctor | proves it all works |
@@ -92,7 +102,8 @@ The wizard asks where the footage should live, who they are, their colors and fo
 | Whisper model missing or partial | `bash ~/cutroom/install.sh` (resumes the download) |
 | venv python missing, or cannot import | `bash ~/cutroom/install.sh` (rebuilds `~/.cutroom/venv`) |
 | alignment weights not cached | run `install.sh` once with network |
-| a helper does not build | `xcode-select --install`, then run the doctor again |
+| a helper does not build (Mac) | `xcode-select --install`, then run the doctor again |
+| a stand-in stops (Linux) | the line names what is missing: `sudo apt-get install -y tesseract-ocr`, or `bash ~/cutroom/install.sh` again for a package or a model |
 | remotion not installed | `cd ~/cutroom/remotion && npm ci` |
 | skill not linked | `bash ~/cutroom/install.sh` |
 | brew install failed | run the printed `brew install <formula>` by hand and read its error |

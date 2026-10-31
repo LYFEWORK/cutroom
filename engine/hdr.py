@@ -97,7 +97,7 @@ def _apple(src, out, inf):
     finally:
         if os.path.exists(video):
             os.remove(video)
-    return {"method": "apple", "first_pts": first}
+    return {"method": "apple" if sys.platform == "darwin" else "stand-in", "first_pts": first}
 
 
 def _ffmpeg(src, out, inf):
@@ -120,8 +120,8 @@ def to_sdr(src, out, log=print):
     if not k:
         stop(f"{os.path.basename(str(src))} is SDR: there is nothing to convert")
     os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
-    apple = bool(shutil.which("swiftc")) or os.path.isfile(swiftbin.binary_path(os.path.join(HERE, "swift", "hdr2sdr")))
-    rep = _apple(src, out, inf) if apple else _ffmpeg(src, out, inf)
+    helper = sys.platform != "darwin" or bool(shutil.which("swiftc")) or os.path.isfile(swiftbin.binary_path(os.path.join(HERE, "swift", "hdr2sdr")))
+    rep = _apple(src, out, inf) if helper else _ffmpeg(src, out, inf)
     log(f"hdr: {os.path.basename(str(src))} is {k.upper()}: converted to BT.709 SDR ({rep['method']})")
     return dict(rep, kind=k, out=out)
 

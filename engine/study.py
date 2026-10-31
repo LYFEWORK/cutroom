@@ -380,8 +380,11 @@ def transcript_md(name, segs, reason):
 def textboxes_bin():
     """the Vision text reader: built by the shared swift helper script when there is one, else compiled here beside its source"""
     helper = SWIFT / "textboxes"
-    if sys.platform != "darwin":
-        stop("reading on-screen text needs Apple Vision, which only a Mac has: run with --no-ocr")
+    if sys.platform != "darwin":   # Linux: the stand-in (Tesseract) through the shared locator; it stops plainly when tesseract is missing
+        spec = importlib.util.spec_from_file_location("cutroom_swiftbin", SWIFT / "swiftbin.py")
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        return str(mod.ensure(str(helper)))
     if not (helper / "main.swift").is_file():
         stop(f"the text reader source is missing ({helper / 'main.swift'}); run with --no-ocr")
     if (SWIFT / "swiftbin.py").is_file():

@@ -1,0 +1,58 @@
+#!/usr/bin/env python3
+"""textboxes (Linux stand-in): every line of text Tesseract can read in each image, with its box.
+usage: textboxes a.png b.png ...  ->  <path>\t<x>\t<y>\t<w>\t<h>\t<text>   (pixels, top-left origin; nothing for no text)
+       textboxes --check
+Same lines as engine/swift/textboxes on a Mac. Needs the tesseract program (apt install tesseract-ocr) and pytesseract in the word-timing
+environment; without them it stops with one plain line (the callers then stop too, never a silent "no text")."""
+import os
+import shutil
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import _shim  # noqa: E402
+
+NAME = "textboxes"
+MIN_CONF = 30.0   # a word Tesseract is less sure of than this is noise
+
+
+def main():
+    args = sys.argv[1:]
+    missing = _shim.reexec_if_missing(["pytesseract", "PIL"])
+    if missing:
+        _shim.fail(NAME, f"python cannot import {', '.join(missing)}: run install.sh (it puts pytesseract in the word-timing environment)")
+    if not shutil.which("tesseract"):
+        _shim.fail(NAME, "the tesseract program is not installed: sudo apt-get install -y tesseract-ocr (or run a study with --no-ocr)")
+    import pytesseract
+    from PIL import Image
+    if args == ["--check"]:
+        _shim.ok(NAME, f"tesseract {pytesseract.get_tesseract_version()}")
+    for path in args:
+        try:
+            img = Image.open(path).convert("RGB")
+        except Exception:   # noqa: BLE001 - not an image: nothing to read, as the Apple helper
+            continue
+        try:
+            d = pytesseract.image_to_data(img, config="--psm 11", output_type=pytesseract.Output.DICT)
+        except pytesseract.TesseractError as e:
+            _shim.fail(NAME, f"tesseract failed on {os.path.basename(path)}: {' '.join(str(e).split())[:200]}")
+        lines = {}
+        for i, text in enumerate(d["text"]):
+            text = str(text).replace("\t", " ").strip()
+            try:
+                conf = float(d["conf"][i])
+            except (TypeError, ValueError):
+                conf = -1.0
+            if not text or conf < MIN_CONF:
+                continue
+            key = (d["block_num"][i], d["par_num"][i], d["line_num"][i])
+            x, y, w, h = int(d["left"][i]), int(d["top"][i]), int(d["width"][i]), int(d["height"][i])
+            box, words = lines.setdefault(key, [[x, y, x + w, y + h], []])
+            box[0], box[1], box[2], box[3] = min(box[0], x), min(box[1], y), max(box[2], x + w), max(box[3], y + h)
+            words.append(text)
+        for key in sorted(lines):
+            (x0, y0, x1, y1), words = lines[key]
+            print(f"{path}\t{x0}\t{y0}\t{x1 - x0}\t{y1 - y0}\t{' '.join(words)}")
+
+
+if __name__ == "__main__":
+    main()

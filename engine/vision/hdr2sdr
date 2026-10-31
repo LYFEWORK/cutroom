@@ -1,0 +1,115 @@
+#!/usr/bin/env python3
+"""hdr2sdr (Linux stand-in): HDR (HLG or PQ) -> SDR BT.709 with ffmpeg's tone mapper (zscale + tonemap).
+usage: hdr2sdr <in> <out.mov|mp4> [--codec hevc|h264|prores] [--max-short N] [--mbps N] [--info]
+       hdr2sdr --check
+Video only, every frame at its own presentation time (no retiming), BT.709 tagged, 10-bit for hevc and prores, 8-bit for h264. Prints the
+same last line as the Apple helper: `hdr2sdr: frames=N first_pts=S size=WxH codec=C -> out`, where first_pts is the source's first video
+frame time in seconds (engine/hdr.py puts the audio back with that offset). Needs an ffmpeg built with libzimg (the static build install.sh
+fetches has it); without the zscale filter it stops with one plain line."""
+import os
+import subprocess
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import _shim  # noqa: E402
+
+NAME = "hdr2sdr"
+TONEMAP = "zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv"
+TAGS = ["-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709", "-color_range", "tv"]
+
+
+def sh(cmd):
+    return subprocess.run(cmd, capture_output=True, text=True)
+
+
+def has_filter(name):
+    r = sh(["ffmpeg", "-hide_banner", "-filters"])
+    return any(line.split()[1:2] == [name] for line in r.stdout.splitlines() if line.strip())
+
+
+def probe(path):
+    r = sh(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height,r_frame_rate,color_transfer", "-of", "csv=p=0:s=,", path])
+    parts = (r.stdout.strip().splitlines() or [""])[0].split(",")
+    if len(parts) < 3:
+        _shim.fail(NAME, f"ffprobe could not read {os.path.basename(path)}: {' '.join(r.stderr.split())[:200]}")
+    w, h = int(parts[0]), int(parts[1])
+    num, _, den = parts[2].partition("/")
+    fps = float(num) / float(den or 1) if float(den or 1) else 30.0
+    return w, h, fps, (parts[3] if len(parts) > 3 else "")
+
+
+def first_pts(path):
+    r = sh(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "frame=pts_time", "-read_intervals", "%+#1", "-of", "csv=p=0", path])
+    try:
+        return max(0.0, float(r.stdout.strip().splitlines()[0]))
+    except (IndexError, ValueError):
+        return 0.0
+
+
+def count_frames(path):
+    r = sh(["ffprobe", "-v", "error", "-select_streams", "v:0", "-count_packets", "-show_entries", "stream=nb_read_packets", "-of", "csv=p=0", path])
+    try:
+        return int(r.stdout.strip().splitlines()[0])
+    except (IndexError, ValueError):
+        return 0
+
+
+def main():
+    args = sys.argv[1:]
+    for tool in ("ffmpeg", "ffprobe"):
+        if not __import__("shutil").which(tool):
+            _shim.fail(NAME, f"{tool} is not on PATH: run install.sh")
+    if args == ["--check"]:
+        if not has_filter("zscale"):
+            _shim.fail(NAME, "this ffmpeg has no zscale filter (it was built without libzimg): run install.sh, which fetches a static ffmpeg that has it")
+        if not has_filter("tonemap"):
+            _shim.fail(NAME, "this ffmpeg has no tonemap filter: run install.sh, which fetches a static ffmpeg that has it")
+        _shim.ok(NAME, "ffmpeg zscale + tonemap")
+    if len(args) < 2:
+        _shim.fail(NAME, "usage: hdr2sdr <in> <out.mov|mp4> [--codec hevc|h264|prores] [--max-short N] [--mbps N]")
+    src, out = args[0], args[1]
+    codec, max_short, mbps = "hevc", 0, 0.0
+    rest = args[2:]
+    i = 0
+    while i < len(rest):
+        a = rest[i]
+        if a == "--codec":
+            i += 1; codec = rest[i]
+        elif a == "--max-short":
+            i += 1; max_short = int(rest[i])
+        elif a == "--mbps":
+            i += 1; mbps = float(rest[i])
+        elif a == "--info":
+            pass
+        else:
+            _shim.fail(NAME, f"unknown option {a}")
+        i += 1
+    if codec not in ("hevc", "h264", "prores"):
+        _shim.fail(NAME, f"codec must be hevc, h264 or prores, got {codec!r}")
+    if not os.path.isfile(src):
+        _shim.fail(NAME, f"no such file: {src}")
+    if not has_filter("zscale") or not has_filter("tonemap"):
+        _shim.fail(NAME, "this ffmpeg cannot tone map (no zscale or tonemap filter): run install.sh, which fetches a static ffmpeg that has them")
+    W, H, fps, transfer = probe(src)
+    w, h = W, H
+    if max_short > 0 and min(w, h) > max_short:
+        k = max_short / min(w, h)
+        w, h = int(round(w * k / 2)) * 2, int(round(h * k / 2)) * 2
+    vf = TONEMAP + (f",scale={w}:{h}:flags=lanczos" if (w, h) != (W, H) else "")
+    if codec == "h264":
+        venc = ["-c:v", "libx264", "-preset", "medium", "-pix_fmt", "yuv420p"] + (["-b:v", f"{mbps:g}M"] if mbps > 0 else ["-crf", "14"])
+    elif codec == "hevc":
+        venc = ["-c:v", "libx265", "-preset", "medium", "-pix_fmt", "yuv420p10le", "-tag:v", "hvc1"] + (["-b:v", f"{mbps:g}M"] if mbps > 0 else ["-crf", "16"])
+    else:
+        venc = ["-c:v", "prores_ks", "-profile:v", "3", "-pix_fmt", "yuv422p10le"]
+    if os.path.exists(out):
+        os.remove(out)
+    cmd = ["ffmpeg", "-v", "error", "-y", "-i", src, "-map", "0:v:0", "-an", "-fps_mode", "passthrough", "-vf", vf, *venc, *TAGS, out]
+    r = sh(cmd)
+    if r.returncode != 0 or not os.path.isfile(out):
+        _shim.fail(NAME, f"ffmpeg could not convert {os.path.basename(src)}: {' '.join(r.stderr.split())[-240:]}")
+    print(f"hdr2sdr: frames={count_frames(out)} first_pts={first_pts(src):.6f} size={w}x{h} codec={codec} -> {out}")
+
+
+if __name__ == "__main__":
+    main()

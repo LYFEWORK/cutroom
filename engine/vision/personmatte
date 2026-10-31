@@ -1,0 +1,81 @@
+#!/usr/bin/env python3
+"""personmatte (Linux stand-in): a person matte for every frame of a video, with Robust Video Matting through onnxruntime.
+usage: personmatte <video.mp4> <outdir> [quality: fast|balanced|accurate]  -> outdir/m%05d.png (8-bit gray, frame size)
+       personmatte --check
+Same files and the same last line (`done: N frames, WxH`) as engine/swift/personmatte on a Mac, with a `frames: N` line every 60 frames.
+Frames come from ffmpeg as raw RGB at the video's own size (rotation applied), one at a time."""
+import os
+import subprocess
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import _shim  # noqa: E402
+
+NAME = "personmatte"
+
+
+def probe(path):
+    r = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height:stream_side_data=rotation", "-of", "json", path],
+                       capture_output=True, text=True)
+    import json
+    try:
+        s = json.loads(r.stdout)["streams"][0]
+    except (ValueError, KeyError, IndexError):
+        _shim.fail(NAME, f"ffprobe could not read {os.path.basename(path)}: {' '.join(r.stderr.split())[:200] or 'no video stream'}")
+    w, h = int(s["width"]), int(s["height"])
+    rot = 0
+    for sd in s.get("side_data_list") or []:
+        if "rotation" in sd:
+            rot = int(float(sd["rotation"]))
+    if abs(rot) in (90, 270):
+        w, h = h, w
+    return w, h
+
+
+def main():
+    args = sys.argv[1:]
+    missing = _shim.reexec_if_missing(["onnxruntime", "numpy", "PIL"])
+    if missing:
+        _shim.fail(NAME, f"python cannot import {', '.join(missing)}: run install.sh (it puts onnxruntime in the word-timing environment)")
+    import numpy as np
+    import onnxruntime as ort
+    from PIL import Image
+    import _rvm
+    model = _shim.model(*_shim.RVM, NAME)
+    if args == ["--check"]:
+        _rvm.Matter(ort, model, "fast").alpha(np.zeros((96, 160, 3), np.uint8))
+        _shim.ok(NAME, f"onnxruntime {ort.__version__}, Robust Video Matting {os.path.basename(model)}")
+    if len(args) < 2:
+        print("usage: personmatte <video> <outdir> [fast|balanced|accurate]")
+        sys.exit(1)
+    video, outdir = args[0], args[1]
+    quality = args[2] if len(args) > 2 else "accurate"
+    if quality not in _rvm.WIDTHS:
+        _shim.fail(NAME, f"quality must be fast, balanced or accurate, got {quality!r}")
+    if not os.path.isfile(video):
+        _shim.fail(NAME, f"no such file: {video}")
+    os.makedirs(outdir, exist_ok=True)
+    W, H = probe(video)
+    matter = _rvm.Matter(ort, model, quality)
+    cmd = ["ffmpeg", "-v", "error", "-i", video, "-map", "0:v:0", "-f", "rawvideo", "-pix_fmt", "rgb24", "-"]
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    frame_bytes = W * H * 3
+    n = 0
+    while True:
+        buf = proc.stdout.read(frame_bytes)
+        if len(buf) < frame_bytes:
+            break
+        rgb = np.frombuffer(buf, np.uint8).reshape(H, W, 3)
+        Image.fromarray(matter.alpha(rgb), "L").save(os.path.join(outdir, f"m{n:05d}.png"))
+        n += 1
+        if n % 60 == 0:
+            print(f"frames: {n}", flush=True)
+    err = proc.stderr.read().decode("utf-8", "replace")
+    proc.wait()
+    if proc.returncode != 0 and n == 0:
+        _shim.fail(NAME, f"ffmpeg could not decode {os.path.basename(video)}: {' '.join(err.split())[-200:]}")
+    print(f"done: {n} frames, {W}x{H}")
+
+
+if __name__ == "__main__":
+    main()

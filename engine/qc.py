@@ -899,6 +899,8 @@ def text_boxes(paths):
     out = {p: [] for p in paths}
     for i in range(0, len(paths), 40):
         r = subprocess.run([binary] + paths[i:i + 40], capture_output=True, text=True)
+        if r.returncode != 0:
+            stop(f"the text reader failed, so the overlay zones cannot be checked: {' '.join((r.stderr or r.stdout).split())[-200:]}")
         for line in r.stdout.splitlines():
             p = line.split("\t")
             if len(p) >= 6 and p[0] in out:

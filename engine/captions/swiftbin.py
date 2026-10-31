@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""swiftbin.py: build an Apple Vision helper when it is missing or older than its source.
+"""swiftbin.py: find the vision helper for this machine: on a Mac the Apple helper, built when it is missing or older than its source; on
+Linux (Windows through WSL2) the stand-in of the same name in engine/vision/, which answers the same command line.
 
     swiftbin.py <helper-dir>...   build (or confirm) each helper; the binary is <helper-dir>/bin/<name of the dir>
     swiftbin.py --all [root]      every folder under root (default engine/swift) that holds a main.swift
@@ -21,6 +22,19 @@ if HERE not in sys.path:
 from keys import cli, EngineStop  # noqa: E402
 
 SWIFT = os.path.join(os.path.dirname(os.path.dirname(HERE)), "engine", "swift")
+VISION = os.path.join(os.path.dirname(SWIFT), "vision")
+IS_MAC = sys.platform == "darwin"
+
+
+def stand_in(helper_dir):
+    """the Linux stand-in for a helper folder (engine/vision/<name>), made executable; EngineStop when there is none"""
+    name = os.path.basename(os.path.abspath(helper_dir))
+    shim = os.path.join(VISION, name)
+    if not os.path.isfile(shim):
+        raise EngineStop(f"no stand-in for the {name} helper on this platform (engine/vision/{name} is missing)")
+    if not os.access(shim, os.X_OK):
+        os.chmod(shim, 0o755)
+    return shim
 
 
 def binary_path(helper_dir):
@@ -30,6 +44,8 @@ def binary_path(helper_dir):
 
 def ensure(helper_dir):
     helper_dir = os.path.abspath(helper_dir)
+    if not IS_MAC:
+        return stand_in(helper_dir)
     src, bin_ = os.path.join(helper_dir, "main.swift"), binary_path(helper_dir)
     if not os.path.isfile(src):
         raise EngineStop(f"no main.swift in {helper_dir}")
