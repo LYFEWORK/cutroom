@@ -35,7 +35,7 @@ Nothing needs a paid API. The core runs on the Mac.
 | About 12 GB free | `df -h ~` | Ask the user what to clear. |
 | Xcode command-line tools | `xcode-select -p` | `xcode-select --install` opens Apple's installer. The user clicks Install. Wait for it. |
 | Homebrew | `command -v brew \|\| ls /opt/homebrew/bin/brew /usr/local/bin/brew` | The user runs `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` (it asks for the password). |
-| GitHub access to the repo | the clone worked | The repo is private. The user needs an invitation on their GitHub account and a sign-in on this Mac: `brew install gh && gh auth login` (browser flow, the user does it), then clone again. |
+| Reaching GitHub | the clone worked | The repo is public, so no account or sign-in is needed. A clone that fails is the network, or git itself (`xcode-select --install` brings it); fix that and clone again. |
 | Google Chrome (optional) | `ls -d "/Applications/Google Chrome.app"` | Not required. The review page opens in the default browser. |
 
 ## Step 1: Download

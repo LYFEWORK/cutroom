@@ -6,7 +6,7 @@ Nothing posts anywhere. You approve the cut and the captions before anything ren
 
 ## Install (three steps)
 
-1. Get the repo. It is private: you need an invitation to it on your GitHub account and `gh auth login` once on this Mac (`brew install gh`).
+1. Get the repo. It is public: no account or sign-in is needed. Git comes with Apple's command-line tools, which the install checks for.
 2. Open Claude Code (on Opus 5.5) and paste:
 
    > Clone https://github.com/LYFEWORK/cutroom to ~/cutroom (or `git pull` it if it is already there), then read ~/cutroom/INSTALL.md and follow it exactly.
