@@ -1,5 +1,5 @@
 #!/bin/bash
-# run_captions.sh <video> <take-dir> [--style <id>] [--dest <folder>]
+# run_captions.sh <video> <take-dir> [--style <id>] [--title <name>] [--dest <folder>]
 #
 # The one command an operator runs, twice, per already-cut 9:16 clip. It chains every stage of the captions-only pipeline:
 #
@@ -14,6 +14,9 @@
 #             (the human at the gate has the last word). With neither, the take gets the style your DNA names in captions.default_style, and with no
 #             default your look exactly as the DNA makes it. The pick is checked first thing, before any time is spent, and look.json is made with
 #             it, so spec, plan, render and the delivery records (NOTES.md, delivery.json) all carry it.
+# --title     the delivered name ("<Title>"): the video is <dest>/<Title>.mp4 and the default dest is <workspace>/Finished/<Title>/. Without it the
+#             take dir's basename is the title, which suits a take dir named after the video; an edit whose take dir is <project>/captions passes
+#             its project's title here.
 # --dest      where the finished video goes. Default: <workspace>/Finished/<Title>/ . The video is <dest>/<Title>.mp4, beside "<Title> - Transcript.md"
 #             and "<Title> - Caption.txt", and its notes and evidence are <dest>/Build/<Title>/. A take is its folder, not its name: two takes that
 #             share a Title (in different workroots) get " Take 2", " Take 3" ... and never overwrite each other, and delivering the same take again
@@ -46,7 +49,7 @@ PY="$SK/takectl.py"
 tk() { python3 "$PY" "$@"; }
 
 usage() {
-  echo "usage: run_captions.sh <video> <take-dir> [--style <id>] [--dest <folder>]" >&2
+  echo "usage: run_captions.sh <video> <take-dir> [--style <id>] [--title <name>] [--dest <folder>]" >&2
   exit 2
 }
 [ $# -ge 2 ] || usage
@@ -56,10 +59,12 @@ T_RAW="$2"
 shift 2
 STYLE_FLAG=""
 DEST_ARG=""
+TITLE_FLAG=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --style) [ $# -ge 2 ] || usage; STYLE_FLAG="$2"; shift 2 ;;
     --dest) [ $# -ge 2 ] || usage; DEST_ARG="$2"; shift 2 ;;
+    --title) [ $# -ge 2 ] || usage; TITLE_FLAG="$2"; shift 2 ;;
     *) usage ;;
   esac
 done
@@ -79,11 +84,14 @@ fi
 mkdir -p "$T_RAW" "$T_RAW/logs"
 T="$(cd "$T_RAW" && pwd)"
 NAME="$(basename "$T")"
+TITLE="${TITLE_FLAG:-$NAME}"
+case "$TITLE" in */*) echo "STOP: the title '$TITLE' contains a slash" >&2; exit 2 ;; esac
+[ -n "$TITLE" ] || { echo "STOP: --title needs a name" >&2; exit 2; }
 CURRENT_STAGE="start"
 
 if [ -n "$DEST_ARG" ]; then
   DEST="$DEST_ARG"
-elif ! DEST="$(tk finished-dir "$NAME" 2>&1)"; then
+elif ! DEST="$(tk finished-dir "$TITLE" 2>&1)"; then
   echo "${DEST%%$'\n'*}" >&2
   exit 2
 fi
@@ -409,7 +417,10 @@ check_render() {
 run_stage render check_render -- bash "$SK/render.sh" "$T" "$NAME"
 
 # --- the delivered name: "<Title>", the one this take already has in <dest>, else the first free one ----------------
-STEM="$(tk delivery-name "$DEST" "$T" "$NAME")"
+STEM="$(tk delivery-name "$DEST" "$T" "$TITLE")"
+if [ -n "$TITLE_FLAG" ] && [ "$STEM" != "$TITLE" ] && [ "${STEM#"$TITLE" Take }" = "$STEM" ]; then
+  echo "note: this take already delivered as '$STEM' in $DEST, so that name stays; remove that delivery (its mp4, sidecars and Build/$STEM) to deliver as '$TITLE'"
+fi
 
 # --- stage: qc (reel_qc.py, the never-see gates; always re-run, it is the safety gate) ----------------------------
 # the pace gate (G10) follows your look's pace_gate: off skips it, report measures it and never fails, enforce fails the take

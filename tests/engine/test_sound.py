@@ -681,8 +681,6 @@ def test_a_file_that_is_not_audio_stops_with_one_line(tmp_path, capsys):
     assert err.startswith("STOP: ffmpeg cannot read the audio of ") and "music.wav" in err.splitlines()[0], err
 
 
-@pytest.mark.xfail(strict=False, reason="engine/sound.py _decode (also load_clip, _write_stereo, downmix): the ffmpeg error tail is put into the STOP message "
-                   "with its own newlines, so one failure prints two or three lines; common.stop should collapse whitespace")
 def test_a_file_that_is_not_audio_is_one_stop_line(tmp_path, capsys):
     v = write_pcm16(tmp_path / "v.wav", burst_voice(BURSTS, 40))
     junk = tmp_path / "music.wav"
@@ -746,8 +744,6 @@ def test_the_bed_command_line_stops_on_levels_that_cannot_be_met(tmp_path):
     assert r.returncode == 2 and one_stop_line(r.stderr) and "louder" in r.stderr, r.stderr
 
 
-@pytest.mark.xfail(strict=False, raises=ValueError, reason="engine/sound.py bed(): `fade[-k:] = ...` with k = int(ease_s * 48000) = 0 (an ease of 0 or less) assigns an "
-                   "empty array to the whole fade and raises ValueError; the command line then prints a misleading usage STOP for `--ease 0`")
 @pytest.mark.parametrize("ease", [0.0, -1.0])
 def test_an_ease_of_nothing_is_a_plain_result_or_a_plain_stop_never_a_traceback(tmp_path, ease):
     v, m = pcm_pair(tmp_path, "noise")

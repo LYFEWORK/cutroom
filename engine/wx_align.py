@@ -7,8 +7,14 @@ activity or speaker path, and nothing is downloaded but the alignment weights, o
 This script runs under the word-timing python (config.json "venv_python": the one with whisperx and torch), never under the system python.
 words.py is the one that calls it. Any failure is one "STOP: ..." line and exit 2.
 """
-import json
 import sys
+
+if sys.version_info < (3, 12):   # plain code only above this line: it has to compile on the oldest Python that might run it
+    print("STOP: Cutroom needs Python 3.12 or newer; this is Python %d.%d. Install a newer one (brew install python@3.12) and run again."
+          % (sys.version_info[0], sys.version_info[1]), file=sys.stderr)
+    sys.exit(2)
+
+import json
 
 
 def stop(msg):

@@ -2,7 +2,7 @@
 
   the version check      Python 3.12 or newer, or one STOP line and exit 2 (runs at import, before the rest of the script is read)
   cli(fn, usage)         runs a script's main body under the engine's stop contract: every failure is ONE "STOP: ..." line and exit 2,
-                         never a traceback. A missing or malformed argument is "STOP: usage: <usage>", an unreadable or corrupt file is
+                         never a traceback. A missing or malformed argument is "STOP: usage: <usage>", an unreadable or corrupt file, or a JSON file missing a key, is
                          "STOP: bad input: ..."; stop() calls inside fn pass through untouched
   whisper_model()        path of the ggml model: the WHISPER_MODEL environment variable, else config.json "whisper_model"
   venv_python()          path of the python that has whisperx and scipy: CUTROOM_VENV_PYTHON, else config.json "venv_python"
@@ -32,6 +32,8 @@ def cli(fn, usage):
         fn()
     except (OSError, json.JSONDecodeError) as e:
         common.stop(f"bad input: {type(e).__name__}: {e}")
+    except KeyError as e:
+        common.stop(f"bad input: a file is missing the key {e} (the wrong kind of JSON file, or one written by an older run)")
     except (IndexError, ValueError):
         common.stop(f"usage: {usage}")
 

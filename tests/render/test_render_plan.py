@@ -267,6 +267,26 @@ def test_the_word_engines_file_is_a_plan_too(tmp_path, small_cut, clip):
     assert props_of(work)["words"] == [{"text": "hello", "start_s": 0.2, "end_s": 0.5}, {"text": "there", "start_s": 0.5, "end_s": 0.9}]
 
 
+def test_the_engines_files_can_be_named_by_path(tmp_path, small_cut, clip):
+    """words, track and face may be the PATH of the engine's file (relative to the plan, or absolute): they sit in the take folder, and a
+    plan that names them is how cutroom-edit writes one"""
+    engine_words = {"words": [{"text": "hello", "start": 0.2, "end": 0.5}, {"text": "there", "start": 0.5, "end": 0.9, "filler": False}]}
+    (tmp_path / "cut.words.json").write_text(json.dumps(engine_words))
+    track = {"W": 1080, "H": 1920, "samples": {"0": {"cx": 540, "cy": 900, "w": 300, "h": 380}}, "median": {"cx": 550, "cy": 905, "w": 300, "h": 380}}
+    (tmp_path / "cut.facetrack.json").write_text(json.dumps(track))
+    proc, work = prep(tmp_path, broken(small_cut, clip, words="cut.words.json", face=None, track=str(tmp_path / "cut.facetrack.json")))
+    assert proc.returncode == 0, proc.stderr
+    p = props_of(work)
+    assert p["words"] == [{"text": "hello", "start_s": 0.2, "end_s": 0.5}, {"text": "there", "start_s": 0.5, "end_s": 0.9}]
+    assert p["face"]["cx"] == pytest.approx(550 / 1080 * 540) and p["track"]["0"]["cy"] == pytest.approx(900 / 1920 * 960)
+    # a path that is not there, and a file that is not JSON, each stop with one plain line
+    proc, _ = prep(tmp_path, broken(small_cut, clip, words="/nowhere/cut.words.json"))
+    assert proc.returncode == 2 and "words not found" in proc.stderr and proc.stderr.count("\n") == 1
+    (tmp_path / "bad.json").write_text("{not json")
+    proc, _ = prep(tmp_path, broken(small_cut, clip, track="bad.json"))
+    assert proc.returncode == 2 and "is not valid JSON" in proc.stderr and proc.stderr.count("\n") == 1
+
+
 # ---------------------------------------------------------------- where the face is
 def test_a_face_box_follows_the_cut_into_the_output_frame():
     import render

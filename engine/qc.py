@@ -455,7 +455,7 @@ def g6_visual(strip):
 
 def g7_loudness(i, tp, target=LUFS_TARGET, tol=LUFS_TOL, tp_max=TP_MAX):
     if i is None or tp is None:
-        return gate(True, "loudness not measured", skipped=True)
+        return gate(True, "loudness not measured (silent or unreadable audio)", skipped=True)
     bad = []
     if abs(i - target) > tol: bad.append({"why": "integrated", "lufs": i, "target": target, "tol": tol})
     if tp > tp_max: bad.append({"why": "true_peak", "dbtp": tp, "max": tp_max})
@@ -675,7 +675,7 @@ def parse_loudnorm(text):
     if i < 0: return None, None
     try:
         d = json.loads(text[i:text.rfind("}") + 1])
-        return round(float(d["input_i"]), 1), round(float(d["input_tp"]), 1)
+        return round(float(d["input_i"]), 1), round(float(d["input_tp"]), 1)   # a silent file reads -inf: G7 fails on it, and the card writes it as null
     except (ValueError, KeyError):
         return None, None
 
@@ -951,6 +951,17 @@ def zones_check(final, cut_, profile="organic", every=0.5, ours=None):
 
 # --- running the gates on a take ---------------------------------------------------------------------------------------------------
 
+def _json_safe(x):
+    """x with every non-finite float (a silent file measures -inf LUFS) as None, so qc.json is strict JSON a browser or jq can read"""
+    if isinstance(x, float):
+        return x if math.isfinite(x) else None
+    if isinstance(x, dict):
+        return {k: _json_safe(v) for k, v in x.items()}
+    if isinstance(x, (list, tuple)):
+        return [_json_safe(v) for v in x]
+    return x
+
+
 def run(T, N, faceless=False, video=None, render_from=None, reference=None):
     """Check take `N` in folder `T` (see the module doc for the files it reads). Writes T/qc.json and T/evidence/; returns the card."""
     T = os.path.abspath(T)
@@ -1026,7 +1037,7 @@ def run(T, N, faceless=False, video=None, render_from=None, reference=None):
              "WORDS": g_words(heard, cut_card.get("transcript"), meta["duration"], probe(cut_p)["duration"] if cut_p else None)}
     card = {"verdict": verdict_of(gates), "video": reel, "render_source": src, "mezzanine": mez, "pieces": len(pieces), "faceless": faceless, "gates": gates,
             "strip": strip if os.path.exists(strip) else None, "sheet": sheet}
-    common.atomic_write_json(os.path.join(T, "qc.json"), card)
+    common.atomic_write_json(os.path.join(T, "qc.json"), _json_safe(card))   # -inf (a silent file) is not JSON: it goes on the card as null
     return card
 
 

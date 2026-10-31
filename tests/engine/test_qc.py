@@ -698,8 +698,6 @@ def test_probe_of_a_file_that_is_not_a_video_stops_instead_of_raising(tmp_path, 
 
 
 @needs_ffmpeg
-@pytest.mark.xfail(strict=True, reason="engine bug: qc.probe puts ffprobe's raw stderr in the STOP line, and ffprobe writes two lines for a broken file, so "
-                                       "the stop is two lines instead of one (qc.py probe(): decode().strip()[:160] with no whitespace folding)")
 def test_probe_of_a_file_that_is_not_a_video_stops_with_exactly_one_line(tmp_path, capsys):
     bad = tmp_path / "bad.mp4"
     bad.write_bytes(b"not a video")
@@ -975,8 +973,6 @@ def _no_non_finite_numbers(text):
 
 
 @needs_ffmpeg
-@pytest.mark.xfail(strict=True, reason="engine bug: a silent finished file measures -inf LUFS, and qc.json is written with a bare -Infinity, which is not valid JSON "
-                                       "(a strict reader such as JSON.parse or jq refuses the whole card); qc.py run()/g7_loudness should write null or a string")
 def test_the_card_of_a_silent_file_is_still_valid_json(tmp_path):
     t = make_take(tmp_path, silent_master=True)
     qc.run(t.T, t.name)
@@ -1127,7 +1123,7 @@ def test_cli_stops_with_one_line_on_an_unreadable_json_file(take):
 def test_cli_stops_with_one_line_when_the_video_is_not_a_video(take):
     with open(take.master, "wb") as f:
         f.write(b"not a video")
-    one_stop(cli(take), "ffprobe could not read", one_line=False)      # see the xfail above: ffprobe's own two lines end up in the stop
+    one_stop(cli(take), "ffprobe could not read")
 
 
 def test_cli_with_no_arguments_stops_with_the_usage_line():

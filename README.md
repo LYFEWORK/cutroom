@@ -25,7 +25,7 @@ The full guide, with what to gather before you start and how a video gets made: 
 | `remotion/` | the renderer: the `Edit` composition (cut, inserts, hook card, graphics, end card), `Montage`, and `Captions` |
 | `rules/` | the craft rulebook every skill reads: cutting, hook, captions, b-roll, graphics, sound, color, delivery, review, footage, storage, formats, QC gates |
 | `templates/` | the neutral DNA, starter caption styles, the schema |
-| `docs/` | the guide (PDF and source), architecture, flows, troubleshooting |
+| `docs/` | the guide (PDF and source: install, setup, day to day, quality, storage, troubleshooting, reference) and the architecture page |
 | `tests/` | pytest on synthetic media, plus the renderer typecheck |
 
 Your own material never lives here. It lives in your workspace (default `~/Movies/Cutroom`): `Drop/ Footage/ Projects/ Finished/ Brand/ Review/ Archive/`. An update (`git -C ~/cutroom pull && bash ~/cutroom/install.sh`) never touches it.

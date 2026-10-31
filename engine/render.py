@@ -9,10 +9,10 @@ The edit plan (JSON; relative paths are read from the plan's own folder):
   theme       the design theme dict (engine/dna.py theme), or a path to a JSON file holding it (remotion/README.md has the contract)
   output      {size: [1080, 1920], fps: 30, crf: 17, max_mbps: null}   size defaults to the cut's size, fps to 30
   face        {cx, cy, h}   the speaker's face box in the cut's pixels (or 0..1 fractions of it); keeps a top card above the head.
-              engine/face.py anchor's file works as it is
-  track       {"0": {cx, cy, h}, "1": ...}   the face box each second (optional, better than one face). engine/face.py track's file works as it is
+              engine/face.py anchor's file works as it is, by content or by path
+  track       {"0": {cx, cy, h}, "1": ...}   the face box each second (optional, better than one face). engine/face.py track's file works as it is, by content or by path
   words       [{text, start_s, end_s, accent?, neg?}]   the spoken words; they drive the caption pages and where the music ducks.
-              engine/words.py's words.json ({"words": [{text, start, end}]}) works as it is
+              engine/words.py's words.json ({"words": [{text, start, end}]}) works as it is, by content or by path
   captions_mode  "feed" (default when there are words) | "none" | "external": the last two draw no caption pages
   feed        {place?, size?, words?, motion?, hero?}   look knobs for the caption pages (a DNA caption style's feed block)
   zooms       [{start_s, end_s, z, cx?, cy?, ease_s?}]   eased emphasis zooms
@@ -849,7 +849,8 @@ def mix_sound(job, work):
             if got is not None and abs(got - under) > 3.0:
                 stop(f"the music bed sits {got:.1f} dB under the talk, not {under:g} (within 3)")
             n_talk = len(rep["spans"])
-            say(f"music: {Path(music_file).name}, {got} dB under the talk and {got_alone} dB under the voice alone (asked {under:g} and {alone:g}), {n_talk} stretch{'' if n_talk == 1 else 'es'} of talk")
+            alone_txt = f"{got_alone} dB under the voice alone" if got_alone is not None else "no stretch without the voice to measure alone"
+            say(f"music: {Path(music_file).name}, {got} dB under the talk and {alone_txt} (asked {under:g} and {alone:g}), {n_talk} stretch{'' if n_talk == 1 else 'es'} of talk")
             base = work / "bed.wav"
     events = []
     if mode == "events":
@@ -948,6 +949,13 @@ def main(argv=None):
     BRAND_OVERRIDE = args.brand
 
     plan, base = load_plan(args.plan)
+    for k in ("words", "track", "face"):  # the word and face engines' files may be named by path: they sit in the take folder
+        if isinstance(plan.get(k), str):
+            f = find_file(plan[k], base, k)
+            try:
+                plan[k] = json.loads(Path(f).read_text())
+            except json.JSONDecodeError as e:
+                stop(f"{k} file {f} is not valid JSON ({e})")
     theme = load_theme(plan, base)
     out = Path(args.out).expanduser().resolve()
     work = Path(args.work).expanduser().resolve() if args.work else out.parent / f".{out.stem}.render"

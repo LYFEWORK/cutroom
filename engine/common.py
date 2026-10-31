@@ -52,7 +52,8 @@ DEFAULTS = {
 
 
 def stop(msg):
-    print("STOP: " + str(msg).strip(), file=sys.stderr)
+    """print one STOP line and exit 2. The message is folded onto one line: a tool's own multi-line stderr never becomes a second line."""
+    print("STOP: " + " ".join(str(msg).split()), file=sys.stderr)
     sys.exit(2)
 
 

@@ -20,12 +20,11 @@ CLIS = ["cut.py", "script.py", "words.py", "wx_align.py", "face.py", "facelock.p
         "sidecars.py", "swift/swiftbin.py"]
 # every module that carries the version guard: the CLIs, support itself, and sfx_synth (which writes files, so it is not run with no arguments)
 GUARDED = ["support.py", "sfx_synth.py"] + CLIS
-# wx_align.py is the one script with no guard: it runs only under the word-timing python (config.json "venv_python") and imports nothing of the engine
-NO_GUARD = pytest.mark.xfail(strict=True, reason="engine/wx_align.py has no Python version guard (it does not import support); see the report")
+# every script carries the guard, wx_align.py included (it runs under the word-timing python, where the guard still costs nothing)
 
 
-def marked(names, special=("wx_align.py",)):
-    return [pytest.param(n, marks=NO_GUARD) if n in special else n for n in names]
+def marked(names, special=()):
+    return list(names)
 
 
 def old_python():
@@ -297,20 +296,18 @@ def test_a_config_that_is_not_json_is_one_stop_line(conf, tmp_path, capsys):
     assert "is not valid JSON" in line and str(conf_path) in line
 
 
-# --- what the contract still lacks: each of these is a real gap in the engine (see the report), pinned so a fix is noticed -----------------
-
-GAP_SHAPE = pytest.mark.xfail(strict=True, reason="support.cli does not catch KeyError, so a JSON file of the wrong shape ends in a traceback; see the report")
-GAP_LINES = pytest.mark.xfail(strict=True, reason="a STOP message embeds the first 200 characters of a tool's own multi-line stderr; see the report")
+# --- two gaps the contract once had, closed: a JSON file of the wrong shape is one bad-input line (support.cli catches KeyError), and common.stop
+# folds a tool's multi-line stderr onto one line -----------------------------------------------------------------------------------------------
 
 
 @pytest.mark.parametrize("args", [
-    pytest.param(("cut.py", "cut", "{f}"), marks=GAP_SHAPE, id="cut"),
-    pytest.param(("cut.py", "sentences", "{f}", "{o}"), marks=GAP_SHAPE, id="sentences"),
-    pytest.param(("cut.py", "plan", "{f}", "{f}", "n", "r", "{d}"), marks=GAP_SHAPE, id="plan"),
-    pytest.param(("cut.py", "wx", "{f}", "{o}"), marks=GAP_SHAPE, id="wx"),
-    pytest.param(("cut.py", "check-plan", "{f}"), marks=GAP_SHAPE, id="check-plan"),
-    pytest.param(("script.py", "build", "{f}", "{f}", "{o}"), marks=GAP_SHAPE, id="script-build"),
-    pytest.param(("face.py", "room", "{f}", "{o}"), marks=GAP_SHAPE, id="room"),
+    pytest.param(("cut.py", "cut", "{f}"), id="cut"),
+    pytest.param(("cut.py", "sentences", "{f}", "{o}"), id="sentences"),
+    pytest.param(("cut.py", "plan", "{f}", "{f}", "n", "r", "{d}"), id="plan"),
+    pytest.param(("cut.py", "wx", "{f}", "{o}"), id="wx"),
+    pytest.param(("cut.py", "check-plan", "{f}"), id="check-plan"),
+    pytest.param(("script.py", "build", "{f}", "{f}", "{o}"), id="script-build"),
+    pytest.param(("face.py", "room", "{f}", "{o}"), id="room"),
 ])
 def test_a_json_file_of_the_wrong_shape_is_one_stop_line_not_a_traceback(tmp_path, args):
     f = tmp_path / "empty.json"
@@ -321,10 +318,10 @@ def test_a_json_file_of_the_wrong_shape_is_one_stop_line_not_a_traceback(tmp_pat
 
 
 @pytest.mark.parametrize("args", [
-    pytest.param(("face.py", "track", "{c}", "{o}"), marks=GAP_LINES, id="face-track"),
-    pytest.param(("reframe.py", "{c}", "{o}"), marks=GAP_LINES, id="reframe"),
-    pytest.param(("facelock.py", "{c}", "{o}", "--strength", "0.5"), marks=GAP_LINES, id="facelock"),
-    pytest.param(("sound.py", "bed", "{c}", "{c}", "{o}"), marks=GAP_LINES, id="sound-bed"),
+    pytest.param(("face.py", "track", "{c}", "{o}"), id="face-track"),
+    pytest.param(("reframe.py", "{c}", "{o}"), id="reframe"),
+    pytest.param(("facelock.py", "{c}", "{o}", "--strength", "0.5"), id="facelock"),
+    pytest.param(("sound.py", "bed", "{c}", "{c}", "{o}"), id="sound-bed"),
 ])
 def test_a_stop_message_is_one_whole_line_even_when_a_tool_complains_at_length(tmp_path, args):
     bad = tmp_path / "corrupt.mp4"

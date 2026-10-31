@@ -348,8 +348,9 @@ def bed(voice_wav, music_file, out_wav, under_speech_db=22.0, alone_db=14.0, eas
     gain_db = (v_db - alone_db) - m_db            # the bed at its alone level sits alone_db under the voice
     env = envelope(n, SR, spans, duck_db, ease_s)
     fade = np.ones(n)
-    k = min(n, int(ease_s * SR))
-    fade[-k:] = 0.5 + 0.5 * np.cos(np.pi * np.arange(k) / max(k, 1))      # out over the last ease_s
+    k = min(n, int(max(0.0, ease_s) * SR))
+    if k > 0:
+        fade[-k:] = 0.5 + 0.5 * np.cos(np.pi * np.arange(k) / max(k, 1))  # out over the last ease_s (an ease of nothing: no fade)
     k0 = min(n, int(0.05 * SR))
     fade[:k0] *= np.sin(0.5 * np.pi * np.arange(k0) / max(k0, 1))         # in over 50 ms: no click on the first sample
     placed = track * (env * fade * 10 ** (gain_db / 20))[:, None]

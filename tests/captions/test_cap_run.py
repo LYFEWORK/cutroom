@@ -164,7 +164,7 @@ class Env:
         env.update(extra)
         return env
 
-    def run(self, video=None, take=None, dest="default", style=None, force=False, seed=True, env_extra=None, shell_args=()):
+    def run(self, video=None, take=None, dest="default", style=None, title=None, force=False, seed=True, env_extra=None, shell_args=()):
         take = take or self.take
         if seed and not os.path.exists(os.path.join(take, "words.json")):
             seed_take(take)
@@ -174,6 +174,8 @@ class Env:
         args = ["bash", *shell_args, RUN, video or self.clip, take]
         if style:
             args += ["--style", style]
+        if title:
+            args += ["--title", title]
         if dest == "default":
             args += ["--dest", self.finals]
         elif dest:
@@ -271,3 +273,24 @@ def env2(delivered):
 def own2(own_look):
     env, store = own_look
     return env.restore(store)
+
+
+# --- --title: the delivered name is the title, not the take dir's basename -------------------------------------------------------------------------------
+
+def test_a_title_names_the_delivery_and_a_take_that_already_delivered_keeps_its_name(tmp_path):
+    """an edit's take dir is <project>/captions, so the edit passes its title: the video, the sidecars and Build/ carry it. A take that already delivered
+    under one name keeps that name on a later run with another title, and the run says so in one plain line"""
+    env = Env(tmp_path / "sandbox")
+    second = finish(env, title="Harbor Sting")
+    assert os.path.isfile(os.path.join(env.finals, "Harbor Sting.mp4")), second.stdout
+    assert os.path.isfile(os.path.join(env.finals, "Harbor Sting - Transcript.md")) and os.path.isfile(os.path.join(env.finals, "Harbor Sting - Caption.txt"))
+    assert os.path.isdir(env.build_dir("Harbor Sting")) and not os.path.exists(os.path.join(env.finals, "My Take.mp4"))
+    assert "DONE -- " in second.stdout and second.stdout.rstrip().endswith("Harbor Sting.mp4")
+    env.settle()
+    again = env.run(title="Other Name")
+    assert again.returncode == 0, again.stdout + again.stderr
+    assert "already delivered as 'Harbor Sting'" in again.stdout and "Other Name" in again.stdout
+    assert os.path.isfile(os.path.join(env.finals, "Harbor Sting.mp4")) and not os.path.exists(os.path.join(env.finals, "Other Name.mp4"))
+    # a title with a slash is refused before any work
+    bad = env.run(title="a/b", take=str(tmp_path / "sandbox" / "work" / "other-take"))
+    assert bad.returncode == 2 and "contains a slash" in bad.stderr
