@@ -236,7 +236,7 @@ def test_a_sentence_end_closes_the_paragraph_once_twelve_seconds_have_run():
     assert paras[0][1] == "W0 w1 w2 w3 w4 w5. W6 w7 w8 w9 w10 w11 w12." and paras[1][1] == "W13"
 
 
-def test_paragraphs_capitalise_the_start_of_every_sentence_and_squeeze_spaces():
+def test_paragraphs_capitalize_the_start_of_every_sentence_and_squeeze_spaces():
     out = sidecars.paragraphs([("so  it", 0.0, 0.5), ("works.", 0.6, 1.0), ("then", 1.1, 1.4), ("again?", 1.5, 2.0), ("yes.", 2.1, 2.4)])
     assert out == [(0.0, "So it works. Then again? Yes.")]
 

@@ -18,7 +18,7 @@ over the whole frame for a beat and are never auto-applied.
         drops any front/behind cluster the layout event covers (a "clamp":
         a cta REPLACES the cluster it covers exactly the same way page/frame/igpost drop one, the
         distinction is about narrative role, not mechanics), computes the frame
-        card's `y` (lowered when the default 640 would clip the face) and the igpost crop centre
+        card's `y` (lowered when the default 640 would clip the face) and the igpost crop center
         from facetrack, and writes the result — with plan["devicesApplied"] = True, run_captions.sh's
         own resume marker for this stage — to <out.plan.json>. <plan.json> and <out.plan.json> may
         be the same path (read-then-write-same-file, the pattern normalize_words.py already uses). With <spec.json>, the

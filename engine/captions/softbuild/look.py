@@ -10,7 +10,7 @@ LINE_GAP = 2                                             # air between two lines
 PAY_FLOOR = 60                                           # the smallest a payoff is drawn
 LEAD_FLOOR = {"feed": 52, "engine": 44}                  # the smallest a lead-in or tail is drawn, per pipeline
 SAFE_W = {"feed": 900, "engine": 850}                    # S, the widest a line may be, per pipeline
-CENTRE_X = {"feed": 520, "engine": 502}                  # the x a lockup is centred on, per pipeline
+CENTER_X = {"feed": 520, "engine": 502}                  # the x a lockup is centerd on, per pipeline
 TRACK = {"lead": -0.025, "pay": -0.04, "caps": -0.015}   # letter spacing in em: lead-in and tail, payoff, payoff drawn in caps
 ARRIVE_EARLY = 0.05                                      # s: a thought starts to arrive this long before its first word is spoken
 ARRIVE_S = 0.34                                          # s: a word's arrival takes this long
@@ -57,12 +57,12 @@ def tints(accent: str) -> tuple[str, str]:
     return _mix(accent, 0, _DEEP), _mix(accent, 255, _LIGHT)
 
 
-def _mix(colour: str, grey: int, t: float) -> str:
-    """The #RRGGBB colour t of the way toward a grey (0 black, 255 white): each channel c + (grey - c) * t, rounded."""
-    if not _HEX.fullmatch(colour):
-        raise ValueError(f"look: a colour is #RRGGBB, not {colour!r}")
-    channels = (int(colour[i:i + 2], 16) for i in (1, 3, 5))
-    return "#" + "".join(f"{round(c + (grey - c) * t):02X}" for c in channels)
+def _mix(color: str, gray: int, t: float) -> str:
+    """The #RRGGBB color t of the way toward a gray (0 black, 255 white): each channel c + (gray - c) * t, rounded."""
+    if not _HEX.fullmatch(color):
+        raise ValueError(f"look: a color is #RRGGBB, not {color!r}")
+    channels = (int(color[i:i + 2], 16) for i in (1, 3, 5))
+    return "#" + "".join(f"{round(c + (gray - c) * t):02X}" for c in channels)
 
 
 def widths(pipeline: str) -> dict[str, int]:

@@ -128,7 +128,7 @@ def _run(cmd):
 
 
 def _card(path, size, lines):
-    """a title card: a flat colour with the clip's name on it, so a contact sheet shows something to read"""
+    """a title card: a flat color with the clip's name on it, so a contact sheet shows something to read"""
     from PIL import Image, ImageDraw, ImageFont
     w, h = size
     im = Image.new("RGB", size, (28 + 40 * (len(lines[0]) % 4), 60, 96))

@@ -518,7 +518,7 @@ def test_auto_off_still_makes_the_pace_numbers_and_the_quiet_report(tmp_path):
     assert json.load(open(tmp_path / "plan.json"))["pace"] == off["pace"]       # and plan.json carries them for the gate
 
 
-def test_an_explicit_punch_add_is_honoured_with_auto_off(tmp_path):
+def test_an_explicit_punch_add_is_honored_with_auto_off(tmp_path):
     out = _cadence_run(tmp_path, {"punch_add": [10.0]}, auto=False)
     assert [p["at"] for p in out["punches"]] == [300]                            # exactly the one asked for, no automatic filling around it
     assert out["punches"][0]["scale"] == cadence.PUNCH_SCALE
@@ -528,7 +528,7 @@ def test_an_explicit_punch_add_is_honoured_with_auto_off(tmp_path):
     assert any(p["at"] == 300 for p in with_auto["punches"]) and len(with_auto["punches"]) > 1
 
 
-def test_an_explicit_punch_add_is_honoured_even_next_to_a_cut_with_auto_off(tmp_path):
+def test_an_explicit_punch_add_is_honored_even_next_to_a_cut_with_auto_off(tmp_path):
     """An explicit ask is exempt from the 8-frame guard, with auto on or off: it is never silently dropped."""
     mez, plan_path, track_path, cuts_path = _cadence_files(tmp_path, {"punch_add": [5.05]}, cuts=(0.0, 5.0, 20.0))
     out = cadence.run(mez, plan_path, track_path, plan_path, cuts_path=cuts_path, auto=False)
@@ -553,7 +553,7 @@ def test_a_gate_punch_false_still_lets_an_explicit_punch_add_through_with_auto_o
 
 
 def _real_clip(path):
-    """A 20 s clip with two real hard cuts (white 7 s, black 7 s, gray 6 s: colours of very different brightness, since the detector reads grey
+    """A 20 s clip with two real hard cuts (white 7 s, black 7 s, gray 6 s: colors of very different brightness, since the detector reads gray
     frame differences) at 96x170, so cadence.py's own cut detector has something to find."""
     parts = [("white", 7), ("black", 7), ("gray", 6)]
     inputs = [a for c, d in parts for a in ("-f", "lavfi", "-i", f"color=c={c}:s=96x170:r=30:d={d}")]

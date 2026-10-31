@@ -1,7 +1,7 @@
 """The golden: a look with no caption style laid over it plans, for both fixture looks, the spec and the plan byte for byte as the engine wrote them when the golden was made
 (tests/captions/golden/<brand>.spec.json and .plan.json, made by golden_pipeline.py `write`). A take that picks no style and whose DNA names no default style gets exactly that.
-Choosing a style lays layout and motion over the look and nothing else (no colour, no font, no word list, no word dropped from the screen); a style with a `look` block
-moves exactly the colours and the font slot it names."""
+Choosing a style lays layout and motion over the look and nothing else (no color, no font, no word list, no word dropped from the screen); a style with a `look` block
+moves exactly the colors and the font slot it names."""
 import json
 import os
 import re
@@ -24,7 +24,7 @@ STYLES = {d["id"]: d for d in styles.load_all(STYLES_DIR)}
 LAYOUT_ONLY = tuple(sorted(i for i, d in STYLES.items() if not d.get("look")))
 OWN_LOOK = tuple(sorted(i for i, d in STYLES.items() if d.get("look")))
 HAS_RUNNING = {b: bool(cap_helpers.dna_of(b)["fonts"].get("running")) for b in BRAND_IDS}
-# the plan's own colour and font fields: a layout style may not move any of them
+# the plan's own color and font fields: a layout style may not move any of them
 PLAN_IDENTITY = ("font", "accent", "base", "heroBase", "heroShadow", "wordFont", "chipNeg", "heroTint", "ctaWash", "pageBg", "pageInk", "pillBg", "pillInk",
                  "displayFont", "displayWeight", "heroStroke", "glyph")
 
@@ -107,15 +107,15 @@ def test_a_style_that_sets_what_the_look_already_has_changes_nothing_either(bran
 
 @pytest.mark.parametrize("brand", BRAND_IDS)
 @pytest.mark.parametrize("sid", LAYOUT_ONLY)
-def test_a_chosen_style_changes_layout_and_never_a_colour_or_a_font(brand, sid):
+def test_a_chosen_style_changes_layout_and_never_a_color_or_a_font(brand, sid):
     gold = json.loads(golden(brand, "plan"))
     gold_spec = json.loads(golden(brand, "spec"))
     spec, plan = styled(brand, STYLES[sid])
     for k in PLAN_IDENTITY:
         assert plan.get(k) == gold.get(k), f"the plan's {k} moved under {sid}"
-    # a soft build row has no colour of its own (its colours are the plan's "soft" block)
+    # a soft build row has no color of its own (its colors are the plan's "soft" block)
     row_colors = lambda p: {r["color"] for e in p["events"] if e["mode"] in ("front", "behind") for r in e["words"] if "color" in r}   # noqa: E731
-    assert row_colors(plan) <= row_colors(gold) | {gold["accent"], gold["base"]}, "a caption row is drawn in a colour the look does not own"
+    assert row_colors(plan) <= row_colors(gold) | {gold["accent"], gold["base"]}, "a caption row is drawn in a color the look does not own"
     for k in ("accent", "places", "neg_words", "icon_words", "pill_icons", "font"):
         assert spec[k] == gold_spec[k], k
     keep = ("base", "hero_base", "hero_tint", "chip_neg", "cta_wash", "page_bg", "page_ink", "pill_bg", "pill_ink", "hero_shadow", "hero_stroke", "display_weight",
@@ -126,7 +126,7 @@ def test_a_chosen_style_changes_layout_and_never_a_colour_or_a_font(brand, sid):
 
 @pytest.mark.parametrize("brand", [b for b in BRAND_IDS if HAS_RUNNING[b]])
 @pytest.mark.parametrize("sid", OWN_LOOK)
-def test_a_style_with_a_look_block_moves_the_colours_and_the_font_slot_it_names_and_no_word_list(brand, sid):
+def test_a_style_with_a_look_block_moves_the_colors_and_the_font_slot_it_names_and_no_word_list(brand, sid):
     doc = STYLES[sid]
     base = load_profile(brand)
     gold, gold_spec = json.loads(golden(brand, "plan")), json.loads(golden(brand, "spec"))
@@ -139,7 +139,7 @@ def test_a_style_with_a_look_block_moves_the_colours_and_the_font_slot_it_names_
     # look.font running: the words are drawn in the running face, and the display face stays what the page events draw in
     assert look["font"] == "running" and plan["font"]["family"] == base["word_font"]["family"] != gold["font"]["family"]
     assert plan["displayFont"]["family"] == base["font_family"] and plan["wordFont"] == gold["wordFont"]
-    # what the look block does not name does not move: the hero colours and stroke, the chip, the zone, and every word list
+    # what the look block does not name does not move: the hero colors and stroke, the chip, the zone, and every word list
     for k in ("heroBase", "heroStroke", "chip"):
         assert plan[k] == gold[k], k
     for k in ("places", "neg_words", "icon_words", "pill_icons", "zone"):

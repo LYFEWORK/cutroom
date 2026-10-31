@@ -108,7 +108,7 @@ export type HookSpec = {
   /** a top / size override for this hook: fractions of the frame (0..1) or px in a 1080 x 1920 frame */
   top?: number;
   size?: number;
-  /** the mono look: the second the key words turn to the negative colour and the picture drops to black and white */
+  /** the mono look: the second the key words turn to the negative color and the picture drops to black and white */
   turn_s?: number;
 };
 

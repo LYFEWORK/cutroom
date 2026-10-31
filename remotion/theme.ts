@@ -2,7 +2,7 @@
  * theme.ts: the design tokens and the motion curves.
  *
  * applyTheme() takes the theme dict (see types.ts / README.md), swaps it in before anything reads it, and refuses a theme with
- * no id or no colors.accent. Every colour, face and switch the compositions draw comes from here, nothing is hard coded
+ * no id or no colors.accent. Every color, face and switch the compositions draw comes from here, nothing is hard coded
  * elsewhere. Motion: ease-out curves that settle with no overshoot, a little blur and rise on the way in, exits under 0.3 s.
  */
 import React from "react";
@@ -14,7 +14,7 @@ export const HOOK_LOOKS: HookLook[] = ["card", "accent", "ink", "bigtype", "bar"
 /** a file in the public folder, or a URL / absolute path used as given */
 export const res = (p: string) => (/^(https?:|file:|data:|\/)/.test(p ?? "") ? p : staticFile(p));
 
-/* ---------------- colours ---------------- */
+/* ---------------- colors ---------------- */
 const channels = (col: string): [number, number, number] => {
   const m6 = col.match(/^#([0-9a-f]{6})$/i);
   if (m6) {
@@ -49,7 +49,7 @@ const rgba = (col: string, a: number) => {
   const [r, g, b] = channels(col);
   return `rgba(${r},${g},${b},${a})`;
 };
-/** a colour mixed toward another by k (0..1), as #rrggbb */
+/** a color mixed toward another by k (0..1), as #rrggbb */
 const mix = (a: string, b: string, k: number) => {
   const x = channels(a),
     y = channels(b);
@@ -65,7 +65,7 @@ const mix = (a: string, b: string, k: number) => {
   );
 };
 
-/** the active colours (applyTheme overwrites every one). These are placeholders. */
+/** the active colors (applyTheme overwrites every one). These are placeholders. */
 export const C = {
   accent: "#2f6bff",
   ink: "#0a0a0a",
@@ -76,7 +76,7 @@ export const C = {
   card: "#161616",
 };
 const DEFAULT_COLORS = { ...C };
-/** the accent / negative colour at an alpha, for glows and tints */
+/** the accent / negative color at an alpha, for glows and tints */
 export const tint = (a: number) => rgba(C.accent, a);
 export const negTint = (a: number) => rgba(C.negative, a);
 
@@ -188,7 +188,7 @@ export function useFontsReady(): boolean {
 
 let APPLIED = "";
 /**
- * Switch the renderer to a theme: colours, card surface, faces, caps, marks, motion profile. Idempotent for the same theme. Starts
+ * Switch the renderer to a theme: colors, card surface, faces, caps, marks, motion profile. Idempotent for the same theme. Starts
  * from the placeholder defaults every time, so nothing a previous theme set survives into this one. Throws on a theme with no id or
  * no colors.accent, and on a hook_look the renderer does not draw. Returns the promise of the theme's faces loading.
  */

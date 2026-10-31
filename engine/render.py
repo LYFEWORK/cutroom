@@ -33,7 +33,7 @@ The edit plan (JSON; relative paths are read from the plan's own folder):
 
 What it does: conforms every insert (or montage clip) to the output size and rate into public/broll/, puts the theme's files in
 public/brand-<id>/, writes the props, renders the Edit (or Montage) composition video-only through Remotion, then mixes the voice, the
-music bed and the effects, normalises the mix to -16 LUFS / -2 dBTP (a straight gain, with the peaks limited on a 4x oversampled signal
+music bed and the effects, normalizes the mix to -16 LUFS / -2 dBTP (a straight gain, with the peaks limited on a 4x oversampled signal
 where they would pass the true-peak target), muxes it with the picture (BT.709 tags) and checks the result: size, duration within 0.1 s
 of the cut, loudness within 1 LU of the target, true peak at -1.5 dBTP or lower.
 
@@ -461,7 +461,7 @@ def loudness_of(src):
     return (vals[-1] if vals else None), (peaks[-1] if peaks else None)
 
 
-def normalise_filter(i_in, tp_in, bias=0.0):
+def normalize_filter(i_in, tp_in, bias=0.0):
     """a straight gain that lands the sound on the loudness target; when that would push its peaks over the true-peak target they are
     limited, on a 4x oversampled signal so an inter-sample peak is caught before the AAC encode"""
     gain = LUFS_TARGET - i_in + bias
@@ -520,7 +520,7 @@ def sfx_candidates(job):
 
 
 def auto_sfx(job, sound):
-    """the budgeted effects for this edit: [{clip, at_s, db, centred}] (none when the kit is missing or nothing lands)"""
+    """the budgeted effects for this edit: [{clip, at_s, db, centerd}] (none when the kit is missing or nothing lands)"""
     cfg = job["sfx"]
     dur = job["dur"]
     cand = []
@@ -541,10 +541,10 @@ def auto_sfx(job, sound):
     ev = sound.pick(cand, budget)
     used, out = {}, []
     for t, _tier, snd in ev:
-        fam, _d, centred = snd[0]
+        fam, _d, centerd = snd[0]
         i = used.get(fam, 0)
         used[fam] = i + 1
-        out.append({"clip": K[fam][i % len(K[fam])], "at_s": t, "db": -float(cfg["under_db"]), "centred": centred, "family": fam})
+        out.append({"clip": K[fam][i % len(K[fam])], "at_s": t, "db": -float(cfg["under_db"]), "centerd": centerd, "family": fam})
     return out
 
 
@@ -559,12 +559,12 @@ def explicit_sfx(job, sound):
                 stop(f"sfx family {fam!r} is not in the sound kit: run engine/sfx_synth.py, or give a file")
             clip = sound.kit([fam])[fam][0]
         name = ev.get("family") or Path(ev["file"]).stem
-        out.append({"clip": clip, "at_s": ev["at_s"], "db": float(ev.get("db", -SFX_UNDER_DB)), "centred": bool(ev.get("centred")), "family": name})
+        out.append({"clip": clip, "at_s": ev["at_s"], "db": float(ev.get("db", -SFX_UNDER_DB)), "centerd": bool(ev.get("centerd")), "family": name})
     return out
 
 
 def place_sfx(Y, events, vref_db):
-    """lay each effect at its time, its loud part (90th percentile of 20 ms RMS) `db` from the speaker's level, off-centre and
+    """lay each effect at its time, its loud part (90th percentile of 20 ms RMS) `db` from the speaker's level, off-center and
     alternating sides so the voice keeps the middle; returns how many were placed"""
     np = _np()
     side, placed = 1, 0
@@ -580,7 +580,7 @@ def place_sfx(Y, events, vref_db):
         g = 10 ** ((vref_db + ev["db"] - 20 * np.log10(np.percentile(lv, 90))) / 20)
         part = clip[: len(Y) - a] * g
         side = -side
-        gl, gr = (1.0, 1.0) if ev.get("centred") else ((0.42, 1.0) if side > 0 else (1.0, 0.42))
+        gl, gr = (1.0, 1.0) if ev.get("centerd") else ((0.42, 1.0) if side > 0 else (1.0, 0.42))
         Y[a : a + len(part), 0] += part * gl
         Y[a : a + len(part), 1] += part * gr
         placed += 1
@@ -815,7 +815,7 @@ def voice_track(job, work):
 
 
 def music_only(job, work, sound):
-    """a montage with no voice: the track's sounding body looped to the length, faded in and out (the level is set by the final normalise)"""
+    """a montage with no voice: the track's sounding body looped to the length, faded in and out (the level is set by the final normalize)"""
     np = _np()
     N = int(round(job["dur"] * SR))
     M = read_audio(job["music_file"])
@@ -828,14 +828,14 @@ def music_only(job, work, sound):
 
 
 def mix_sound(job, work):
-    """the sound that gets normalised, as ffmpeg input args: the cut's own audio, or a mix of the voice, the music bed (engine/sound.py)
+    """the sound that gets normalized, as ffmpeg input args: the cut's own audio, or a mix of the voice, the music bed (engine/sound.py)
     and the effects. None when the video has no sound at all."""
     music_file, mode = job["music_file"], job["sfx"]["mode"]
     voice = voice_track(job, work)
     if voice is None and not music_file:
         return None
     sound = _sound() if (music_file or mode != "off") else None
-    base = voice  # what gets normalised, or mixed into
+    base = voice  # what gets normalized, or mixed into
     if music_file:
         if voice is None:
             base = music_only(job, work, sound)
@@ -871,7 +871,7 @@ def mix_sound(job, work):
 
 
 def mux(video, audio_args, dur, out_part):
-    """picture (copied, tagged BT.709) + the sound normalised to the loudness and true-peak targets, into out_part. Where limiting took a
+    """picture (copied, tagged BT.709) + the sound normalized to the loudness and true-peak targets, into out_part. Where limiting took a
     little loudness off, the gain is corrected once and the sound encoded again."""
     base = ["ffmpeg", "-v", "error", "-y", "-i", str(video)]
     tail = ["-c:v", "copy", "-bsf:v", BT709_TAGS, "-tag:v", "avc1", "-t", f"{dur:.3f}", "-movflags", "+faststart", "-f", "mp4", str(out_part)]
@@ -883,10 +883,10 @@ def mux(video, audio_args, dur, out_part):
         return
     i_in, tp_in = loudness_of(audio_args)
     if i_in is None or i_in < -60:
-        stop("the sound is silent: there is nothing to normalise to -16 LUFS")
+        stop("the sound is silent: there is nothing to normalize to -16 LUFS")
     bias = 0.0
     for attempt in range(2):
-        r = sh([*base, *audio_args, "-map", "0:v:0", "-map", "1:a:0", "-af", normalise_filter(i_in, tp_in if tp_in is not None else 0.0, bias),
+        r = sh([*base, *audio_args, "-map", "0:v:0", "-map", "1:a:0", "-af", normalize_filter(i_in, tp_in if tp_in is not None else 0.0, bias),
                 "-c:a", "aac", "-b:a", "256k", "-ar", str(SR), *tail])  # fmt: skip
         if r.returncode != 0 or not out_part.exists():
             stop(f"the final mux failed: {last_error_line(r.stderr)}")

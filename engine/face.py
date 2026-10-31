@@ -11,7 +11,7 @@ The boxes are in a NOTIONAL canvas 1080 wide (a frame is read 540 px wide and it
 picture, 608 for a 16:9 one. They are not real pixels; a caller that needs real pixels multiplies by the file's own width / 1080. A second whose
 frame has no face has no sample; the median is a fixed fallback (marked "fallback": true) when no second has one.
 
-anchor writes {"cx", "cy", "w", "h", "hits", "frames", "fallback", "W", "H"} in the picture's own pixels: the median face centre and size over the
+anchor writes {"cx", "cy", "w", "h", "hits", "frames", "fallback", "W", "H"} in the picture's own pixels: the median face center and size over the
 frames that had a face, and (0.5 W, 0.40 H) marked fallback when fewer than 3 did, so nothing downstream ever blocks on a take with no face.
 
 room decides the tier from the room above the CROWN and below the chin inside the safe box (x 65-940, y 270-1420 of a 1080 x 1920 picture):

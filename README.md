@@ -23,7 +23,7 @@ The full guide, with what to gather before you start and how a video gets made: 
 | `skills/` | eight Claude Code skills: `cutroom` (the front door), `cutroom-setup`, `cutroom-intake`, `cutroom-review`, `cutroom-edit`, `cutroom-captions`, `cutroom-study`, `cutroom-storage` |
 | `engine/` | the mechanics in Python: word timing, the cutter, face tracking, the caption planner and gate, QC gates, sound, the footage organizer, the review page, reference study, cleanup, storage |
 | `remotion/` | the renderer: the `Edit` composition (cut, inserts, hook card, graphics, end card), `Montage`, and `Captions` |
-| `rules/` | the craft rulebook every skill reads: cutting, hook, captions, b-roll, graphics, sound, colour, delivery, review, footage, storage, formats, QC gates |
+| `rules/` | the craft rulebook every skill reads: cutting, hook, captions, b-roll, graphics, sound, color, delivery, review, footage, storage, formats, QC gates |
 | `templates/` | the neutral DNA, starter caption styles, the schema |
 | `docs/` | the guide (PDF and source), architecture, flows, troubleshooting |
 | `tests/` | pytest on synthetic media, plus the renderer typecheck |
@@ -36,7 +36,7 @@ Your own material never lives here. It lives in your workspace (default `~/Movie
 - Claude Code 2.x with the main session on Opus 5.5.
 - About 12 GB of disk for the toolchain, network for the install.
 - Optional, off by default: a Deepgram key (verbatim transcripts), ElevenLabs or Epidemic Sound (sounds and music), fal (AI b-roll of objects and places). Keys live in `~/.cutroom/keys.env`, never in this repo.
-- Remotion (the renderer) is free for individuals and companies of up to three people; a larger company needs Remotion's company licence.
+- Remotion (the renderer) is free for individuals and companies of up to three people; a larger company needs Remotion's company license.
 
 ## Health and tests
 

@@ -1,6 +1,6 @@
 export const meta = {
-  name: 'footage-catalogue',
-  description: 'Catalogue raw shoot clips: classify each (interview vs b-roll), match to the question list, name it; two adversarial verifiers per clip; a judge settles disputes',
+  name: 'footage-catalog',
+  description: 'Catalog raw shoot clips: classify each (interview vs b-roll), match to the question list, name it; two adversarial verifiers per clip; a judge settles disputes',
   phases: [
     { title: 'Classify', detail: 'one agent per clip: transcript + contact sheet -> record' },
     { title: 'Verify', detail: 'visual lens + content lens try to refute each record' },
@@ -70,7 +70,7 @@ const finals = await pipeline(
   clips,
   clip => agent(`${CONTEXT}
 
-TASK: Catalogue ONE raw clip so an editor can find it by name. Clip ${clip}.
+TASK: Catalog ONE raw clip so an editor can find it by name. Clip ${clip}.
 1. Read the evidence file ${SCR}/ev/${clip}.json: duration, audio stats, digitally_silent, transcript (empty when silent or no_speech), rotation, orientation, sheet path, frames_dir.
 2. Read the cheat sheet ${CHEAT}: the question list for this shoot (and the shot list if any).
 3. Read the contact sheet image at the "sheet" path from the evidence (each tile is timestamped). If tiles are ambiguous, Read a few individual frames from frames_dir.
@@ -81,7 +81,7 @@ ${RULES}`, { label: `classify:${clip}`, phase: 'Classify', schema: REC }),
   (rec, clip) => parallel([
     () => agent(`${CONTEXT}
 
-ADVERSARIAL VISUAL CHECK for clip ${clip}. A first-pass catalogue record is inline below (also at ${OUT}/${clip}.classify.json). Do NOT trust it. Your job is to REFUTE it on VISUAL grounds only.
+ADVERSARIAL VISUAL CHECK for clip ${clip}. A first-pass catalog record is inline below (also at ${OUT}/${clip}.classify.json). Do NOT trust it. Your job is to REFUTE it on VISUAL grounds only.
 1. Read the evidence ${SCR}/ev/${clip}.json for the sheet path and frames_dir. 2. Read the contact sheet image; Read individual frames from frames_dir when a tile is unclear.
 Check: Is on_screen accurate and specific (who, action, tool, object, colors, visible text)? Are people, shot, camera, subject_folder right? For b-roll, does the name describe what is ACTUALLY visible, specifically enough that an editor would pick this clip over a similar one? Is category plausible from the visuals (person speaking to camera vs hands-only)? Missed visual flags: shaky, out_of_focus, staff_in_frame, phone_in_frame, off_topic_content, black frames? Is usable right?
 Return agree=true ONLY if you found no material error. issues = each concrete problem. corrections = ONLY the fields you would change, with the corrected values (a partial record). Write your verdict JSON to ${OUT}/${clip}.visual.json with the Write tool and return it.
@@ -91,7 +91,7 @@ ${JSON.stringify(rec)}`, { label: `verify-visual:${clip}`, phase: 'Verify', sche
 
     () => agent(`${CONTEXT}
 
-ADVERSARIAL CONTENT CHECK for clip ${clip}. A first-pass catalogue record is inline below (also at ${OUT}/${clip}.classify.json). Do NOT trust it. Your job is to REFUTE it on CONTENT grounds.
+ADVERSARIAL CONTENT CHECK for clip ${clip}. A first-pass catalog record is inline below (also at ${OUT}/${clip}.classify.json). Do NOT trust it. Your job is to REFUTE it on CONTENT grounds.
 1. Read the evidence ${SCR}/ev/${clip}.json (audio stats, digitally_silent, full transcript). 2. Read the cheat sheet ${CHEAT}.
 Check: Is category right given the audio (digitally_silent means broll_silent; whisper text on silent clips is hallucination and must not drive anything)? Is the reel mapping the best TOPICAL match: would a different question fit better, or is a BONUS really one of the listed questions? Is question_asked faithful to the transcript (or correctly marked inferred)? Is answer_summary accurate? Is key_quote VERBATIM from the transcript and 20 words or fewer? Flags: profanity present but unflagged (or flagged but absent)? confidential? cut_off_early (last sentence ends mid-thought)? interviewer_audible? scripted vs freestyle? Is the name the phrase an editor would search for, and does it distinguish this take from other takes of the same topic?
 Return agree=true ONLY if you found no material error. issues = each concrete problem. corrections = ONLY fields you would change, with corrected values (a partial record). Write your verdict JSON to ${OUT}/${clip}.content.json with the Write tool and return it.
@@ -127,7 +127,7 @@ ${RULES}`, { label: `resolve:${clip}`, phase: 'Resolve', schema: REC })
 )
 
 const ok = finals.filter(Boolean)
-log(`${ok.length}/${clips.length} clips catalogued; ${ok.filter(f => f.resolver).length} went to the judge`)
+log(`${ok.length}/${clips.length} clips cataloged; ${ok.filter(f => f.resolver).length} went to the judge`)
 const byCat = {}
 for (const f of ok) byCat[f.category] = (byCat[f.category] || 0) + 1
 return { count: ok.length, missing: clips.filter((c, i) => !finals[i]), categories: byCat }

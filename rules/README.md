@@ -2,7 +2,7 @@
 
 The craft rulebook for Cutroom. Each rule is something an editing team learned the hard way, restated as a plain rule that Claude follows while it edits and a gate can enforce on the result.
 
-The rules apply to your own brand. Where a rule says your accent colour, your caption style or your hook spot, it means the ones in your Brand folder, never a fixed colour or font.
+The rules apply to your own brand. Where a rule says your accent color, your caption style or your hook spot, it means the ones in your Brand folder, never a fixed color or font.
 
 ## How a skill reads the rules
 
@@ -30,11 +30,11 @@ The rules apply to your own brand. Where a rule says your accent colour, your ca
 
 - cutting.md: where a cut lands, pace, what stays, multi-angle shoots, face lock (CUT)
 - hook.md: the hook card, what it says, versions, optional writing rules (HOOK)
-- captions.md: the soft build, timing, size and place, colour, platform zones, post captions (CAP)
+- captions.md: the soft build, timing, size and place, color, platform zones, post captions (CAP)
 - broll.md: matching b-roll to words, judging it, where it comes from, how it is treated (BR)
 - graphics.md: screen plan, pace, camera moves, cards, numbers, lists, motion (GFX)
-- sound.md: loudness, the voice chain, the music bed, sound effects, licences (SND)
-- color.md: grade, exposure, skin, sky, tags and export colour (COL)
+- sound.md: loudness, the voice chain, the music bed, sound effects, licenses (SND)
+- color.md: grade, exposure, skin, sky, tags and export color (COL)
 - delivery.md: file specs, the hand-off folder, posting, photo posts (DEL)
 - review.md: approval, review pages, previews, the optional learning loop (REV)
 - footage.md: moving, naming, sorting and cutting takes, indexes, keep and cut review (FOO)

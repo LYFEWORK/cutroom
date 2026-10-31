@@ -220,13 +220,13 @@ def test_palette_finds_ink_and_a_small_accent(tmp_path):
     assert len(orange) == 1 and orange[0]["share"] < 0.05                                       # kept, once, whichever pass found it
 
 
-def test_palette_accent_pass_adds_a_colour_the_means_missed(tmp_path, monkeypatch):
+def test_palette_accent_pass_adds_a_color_the_means_missed(tmp_path, monkeypatch):
     import numpy as np
     real, calls = study.kmeans, []
 
     def fake(px, k=5, **kw):
         calls.append(k)
-        if len(calls) == 1:   # the dominant pass finds only the two greys
+        if len(calls) == 1:   # the dominant pass finds only the two grays
             return np.array([[10.0, 10, 10], [200, 200, 200]]), np.array([0.5, 0.5])
         return real(px, k, **kw)
 

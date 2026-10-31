@@ -28,9 +28,9 @@ Read before choosing, placing, judging or generating any footage that plays over
 - **BR-13** B-roll is silent, with no shot sound and no beds, unless a reason is recorded. The voice, the music bed and any clicks carry it. (judgment)
 - **BR-14** Footage shown for context is a faded overlay feathered into the frame, not a framed tile or a phone. A device appears only where the scene explains someone using it. (judgment)
 - **BR-15** A still that carries a scene never just sits under a slow push with labels popping on. What is in it moves when it is named. Cut it into layers (object masks, a person matte, an empty plate behind) so the named object comes toward camera, the rest steps back, and type can travel behind the subject. If the only motion is the camera plus pop-on labels, it fails. (judgment)
-- **BR-16** Horizontal clips are centre-cropped to 9:16, so pick clips whose subject survives the crop, or reframe with a zoom origin. Montage shots run 1.5 to 4 s, one idea per shot, and something new still lands at least every 2.5 s (GFX-04).
+- **BR-16** Horizontal clips are center-cropped to 9:16, so pick clips whose subject survives the crop, or reframe with a zoom origin. Montage shots run 1.5 to 4 s, one idea per shot, and something new still lands at least every 2.5 s (GFX-04).
 
 ## Fit and safety
 
-- **BR-17** Brand and people checks apply to b-roll. Flag readable customer names or art that is not cleared, someone who could be taken for the owner or another named person, and anything unflattering (a rude gesture in a mural, a masked face). Licence plates are flagged and covered at render, with a person confirming. Never name people from how they look. (judgment)
+- **BR-17** Brand and people checks apply to b-roll. Flag readable customer names or art that is not cleared, someone who could be taken for the owner or another named person, and anything unflattering (a rude gesture in a mural, a masked face). License plates are flagged and covered at render, with a person confirming. Never name people from how they look. (judgment)
 - **BR-18** AI imagery is objects and environments only, with no faces. Look at it before use and record a reason for each AI clip. Whether to generate fill b-roll at all is the human's call per video, and it is off by default on a first batch. (judgment)

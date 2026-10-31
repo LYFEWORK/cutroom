@@ -34,7 +34,7 @@ Gates (a check with no input to measure is reported SKIP, never a silent pass):
          block delivery; but when they are off the target (outside -16 +/-1 LUFS, or true peak above -1.5
          dBTP) the gate carries one plain `check` sentence for the editor, which deliver.sh puts in NOTES.md
          and run_captions.sh prints as a CHECK line. Pass --strict-loudness when your look sets
-         master_audio: loudnorm (render.sh then normalises to -16 LUFS, true peak -2 dBTP) and it becomes a
+         master_audio: loudnorm (render.sh then normalizes to -16 LUFS, true peak -2 dBTP) and it becomes a
          hard gate at -16 +/-1 LUFS, true peak <= -1.5 dBTP.
  G8      AUDIO-ORIGIN -- the reel's own audio stream must start at (within 5ms of) t=0, and must be
          within one frame (1/30s, ~33ms) of audio.wav by cross-correlation. Named and reported
@@ -45,9 +45,9 @@ Gates (a check with no input to measure is reported SKIP, never a silent pass):
          bt709 (scripts/colortag_check.py). Guards the trap that shipped once: a chain of ffmpeg passes
          produced yuvj420p + bt470bg and Meta's uploader silently rejected the file. The render itself
          is asked for bt709 (render.sh), so a pass means the pixels are bt709 too, not just the labels.
- G-ACCENT your accent colour comes through the conform unchanged: where the source shows the accent as flat colour, the mezzanine shows the same colour at the same
+ G-ACCENT your accent color comes through the conform unchanged: where the source shows the accent as flat color, the mezzanine shows the same color at the same
          pixels, within 2 levels per channel (each file decoded the way a correct player does, by its own matrix and range). A drift is a FAIL; an accent that is
-         not on screen is a visible SKIP, and so is a take whose source was HDR (the conversion moves colours on purpose). It reads pictures, not a report.
+         not on screen is a visible SKIP, and so is a take whose source was HDR (the conversion moves colors on purpose). It reads pictures, not a report.
  G10     PACE (the README, "Pacing"), set by look.json's pace_gate (or --pace-gate): off skips it, report measures it and never fails, enforce fails
          the take. Median/p90/max gap between visual
          changes on the RENDERED reel, over the spoken span, measured with cadence.py's own spike
@@ -60,7 +60,7 @@ Punches (the README, "Pacing"): G2's frame-match compares the reel against the
 mezzanine transformed by the plan's own punch scale/origin at that frame (a punched frame zooms the
 picture, so comparing against the RAW mezzanine would read every punch as drift) -- see
 _punch_at()/_one_gray_punched() below. G4 additionally asserts a punch's (cx, cy) origin sits
-inside the face rect at that time -- the planner is supposed to always centre a punch on the face,
+inside the face rect at that time -- the planner is supposed to always center a punch on the face,
 so the rect is unaffected by the zoom; a punch that drifted off the face is a WARNING in G4's own
 detail, never a fail (the ink sweep itself is what fails G4) -- see punch_origin_warnings() below.
 
@@ -95,7 +95,7 @@ FRAME_MATCH_MIN = 0.9          # a stale/desynced picture reads ~0.4
 LAG_MAX_S = 0.060
 LAG_GROWTH_S = 0.020           # drift that accumulates is a different failure from a fixed offset
 LAG_WINDOW_S = 10.0            # G2 measures the audio lag over this much audio at the start of the reel (and again at the end of a longer one)
-LAG_MATCH_MIN = 0.3            # normalised correlation peak below this: the two audios are not the same sound
+LAG_MATCH_MIN = 0.3            # normalized correlation peak below this: the two audios are not the same sound
 FREEZE_MIN_S = 0.5
 MIN_EVENT_FRAMES = 3           # under this is a flash, not a caption
 LUFS_TARGET, LUFS_TOL, TP_MAX = -16.0, 1.0, -1.5
@@ -177,8 +177,8 @@ def plain(gate_name, d):
         if why == "start_time": return "the reel's audio doesn't start at the very beginning of the file -- it needs a fresh remux."
         if why == "lag": return f"the reel's audio is out of sync with the source by about {abs(d.get('s', 0)) * 1000:.0f}ms -- it needs a fresh remux."
     if gate_name == "G-ACCENT":
-        return (f"your accent colour {d.get('colour')} came back different from the source: pixels that were {tuple(d.get('source'))} are now {tuple(d.get('mezzanine'))}, "
-                f"{d.get('shift')} levels off (limit {ACCENT_DRIFT_MAX:g}). The conform moved the colour; look at the contact sheet and re-export the source as plain Rec.709.")
+        return (f"your accent color {d.get('color')} came back different from the source: pixels that were {tuple(d.get('source'))} are now {tuple(d.get('mezzanine'))}, "
+                f"{d.get('shift')} levels off (limit {ACCENT_DRIFT_MAX:g}). The conform moved the color; look at the contact sheet and re-export the source as plain Rec.709.")
     if gate_name == "G9":
         return d.get("plain") or "the color tags are wrong -- re-export the source."
     if gate_name == "G10":
@@ -352,7 +352,7 @@ def above_crown_allowed(events, t, fps=FPS):
 
 def punch_origin_warnings(punches, track, fps=FPS):
     """G4 sub-check (the README, "Pacing"): the planner is supposed to always
-    set a punch's (cx, cy) origin to the face centre at that time, so a zoom about that point
+    set a punch's (cx, cy) origin to the face center at that time, so a zoom about that point
     leaves the face rect's own position unaffected. This asserts that invariant on the finished
     plan instead of assuming it held -- a punch whose origin drifted off the face rect is a
     WARNING here (report-only), never a G4 fail; the ink sweep is what actually fails G4."""
@@ -582,24 +582,24 @@ def g8_audio_origin(reel, audio_wav, start_max=AUDIO_ORIGIN_START_MAX, lag_max=A
     return gate(not bad, f"{start_txt}, {lag_txt}", bad)
 
 
-# --- G-ACCENT your accent colour through the picture path ------------------------------------------------
+# --- G-ACCENT your accent color through the picture path ------------------------------------------------
 
 def g_accent(drift=None):
     """The accent gate: `drift` (accent_drift) over ACCENT_DRIFT_MAX is a FAIL, a fine one is stated in the numbers, and an accent that is not on screen (or a take whose
     source was HDR, which the conversion changes on purpose) is a visible SKIP, never a silent pass."""
     if not drift:
-        return gate(True, "accent colour not measured (it is not flat on screen in the source, or the source was HDR)", [], skipped=True)
+        return gate(True, "accent color not measured (it is not flat on screen in the source, or the source was HDR)", [], skipped=True)
     if drift["shift"] > ACCENT_DRIFT_MAX:
-        return gate(False, f"accent colour {drift['colour']} moved {drift['shift']} levels (limit {ACCENT_DRIFT_MAX:g})",
-                    [{"why": "accent_colour", "colour": drift["colour"], "source": drift["source"], "mezzanine": drift["mezzanine"], "shift": drift["shift"]}], accent_colour=drift)
-    return gate(True, f"accent colour {drift['colour']} within {drift['shift']} levels of the source", [], accent_colour=drift)
+        return gate(False, f"accent color {drift['color']} moved {drift['shift']} levels (limit {ACCENT_DRIFT_MAX:g})",
+                    [{"why": "accent_color", "color": drift["color"], "source": drift["source"], "mezzanine": drift["mezzanine"], "shift": drift["shift"]}], accent_color=drift)
+    return gate(True, f"accent color {drift['color']} within {drift['shift']} levels of the source", [], accent_color=drift)
 
 
-# --- the accent colour through the picture path (G-ACCENT) ---------------------------------------------------------------------------
+# --- the accent color through the picture path (G-ACCENT) ---------------------------------------------------------------------------
 
 ACCENT_DRIFT_MAX = 2.0    # levels per channel: your accent in the source and in the mezzanine may differ by this much
 ACCENT_NEAR = 30          # a source pixel is "the accent" when each channel is within this many levels of it
-ACCENT_MIN_PX = 300       # fewer flat pixels than this over the sampled frames: the colour is not on screen, nothing to compare
+ACCENT_MIN_PX = 300       # fewer flat pixels than this over the sampled frames: the color is not on screen, nothing to compare
 ACCENT_FRAMES = 10
 
 
@@ -628,9 +628,9 @@ def _rgb_frame(path, t, w, h, matrix, rng):
 
 
 def accent_drift(source, mez, accent, k=ACCENT_FRAMES, width=540):
-    """Where the source shows your accent as flat colour, what the mezzanine shows at the same pixels and times. {colour, pixels, source, mezzanine, shift} with
+    """Where the source shows your accent as flat color, what the mezzanine shows at the same pixels and times. {color, pixels, source, mezzanine, shift} with
     `shift` the largest per-channel difference of the two means, or None when the accent is not on screen. Each file is decoded the way a correct player does (its own
-    matrix and range), so a conform that moved the colour shows here and a different coding of the same colour does not: this reads the pictures, not a report."""
+    matrix and range), so a conform that moved the color shows here and a different coding of the same color does not: this reads the pictures, not a report."""
     tgt = np.array([int(accent.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4)], np.int16)
     meta = probe(mez)
     w, h = sweep_size(meta, width)
@@ -648,7 +648,7 @@ def accent_drift(source, mez, accent, k=ACCENT_FRAMES, width=540):
     a, b = np.concatenate(a_all), np.concatenate(b_all)
     if len(a) < ACCENT_MIN_PX: return None
     ma, mb = a.mean(axis=0), b.mean(axis=0)
-    return {"colour": accent.upper(), "pixels": int(len(a)), "source": [round(float(x), 1) for x in ma], "mezzanine": [round(float(x), 1) for x in mb],
+    return {"color": accent.upper(), "pixels": int(len(a)), "source": [round(float(x), 1) for x in ma], "mezzanine": [round(float(x), 1) for x in mb],
             "shift": round(float(np.abs(ma - mb).max()), 1)}
 
 
@@ -669,7 +669,7 @@ def calm_times(duration, plan, k=COLOR_PIXEL_FRAMES, fps=FPS):
 
 def pixel_color_drift(reel, mez, times, width=SWEEP_W):
     """Per-channel median |reel - mezzanine| over every pixel of the frames at `times`, worst frame, or None when no
-    frame could be compared. The median ignores caption ink (a small share of the picture); a wrong colour conversion
+    frame could be compared. The median ignores caption ink (a small share of the picture); a wrong color conversion
     moves every pixel."""
     worst = None
     for t in times:
@@ -683,8 +683,8 @@ def pixel_color_drift(reel, mez, times, width=SWEEP_W):
 def g9_color(reel, mez=None, times=()):
     """scripts/colortag_check.py (pix_fmt, range, matrix, primaries and transfer), called directly so its result rides inside
     the one reel-qc.json card. Same tag check runs standalone via `colortag_check.py <mp4>`. With the mezzanine and a few
-    calm frames it also compares PIXELS: a stream relabelled bt709 over full-range BT.601 pictures (the old render.sh
-    bug) has perfect tags and visibly shifted colours, and only this comparison sees it."""
+    calm frames it also compares PIXELS: a stream relabeled bt709 over full-range BT.601 pictures (the old render.sh
+    bug) has perfect tags and visibly shifted colors, and only this comparison sees it."""
     if not reel or not os.path.exists(reel):
         return gate(True, "no reel to check", skipped=True)
     r = colortag_check.check(reel)
@@ -695,8 +695,8 @@ def g9_color(reel, mez=None, times=()):
         if max(drift) > COLOR_PIXEL_TOL:
             ok = False
             detail.append({"why": "pixels", "drift": [round(x, 1) for x in drift],
-                           "plain": f"the picture's colours differ from the source by up to {max(drift):.0f} levels (limit {COLOR_PIXEL_TOL:g}): "
-                                    f"the render's colour conversion is wrong even if the tags look right. Re-render."})
+                           "plain": f"the picture's colors differ from the source by up to {max(drift):.0f} levels (limit {COLOR_PIXEL_TOL:g}): "
+                                    f"the render's color conversion is wrong even if the tags look right. Re-render."})
     return gate(ok, numbers, detail)
 
 
@@ -742,7 +742,7 @@ def pace_change_timeline(frames, plan, mez, fps=FPS, canvas=CANVAS):
 
 def g10_pace(spikes, t0, t1, median_max=PACE_MEDIAN_MAX, p90_max=PACE_P90_MAX, max_max=PACE_MAX_MAX,
              report_only_under=PACE_REPORT_ONLY_UNDER_S, mode="enforce"):
-    """spikes: cadence.detect_spikes() run on the RENDERED reel (the same 30fps/96x170 grey
+    """spikes: cadence.detect_spikes() run on the RENDERED reel (the same 30fps/96x170 gray
     frame-diff detector that finds source cuts on the mezzanine). Measured over the SPOKEN SPAN
     only (t0 = first word start, t1 = last word end -- the same span G-FACE uses), never the whole
     reel: a cold open or a tail card is not what "every few seconds" is asking about. Report-only
@@ -788,7 +788,7 @@ def ncc(a, b):
 
 
 def lag_and_strength(a, b, sr=16000, max_lag_s=0.5):
-    """(seconds `b` lags `a`, how well they match: the normalised correlation at that lag, 0 to 1), by FFT cross-correlation. Direct
+    """(seconds `b` lags `a`, how well they match: the normalized correlation at that lag, 0 to 1), by FFT cross-correlation. Direct
     correlation over a +/-0.5 s search on 2 s windows is ~1e8 multiplies per sample point; this is three transforms. (0.0, 0.0) when
     either side is silent or too short: nothing to measure is not a lag of zero."""
     n = min(len(a), len(b))
@@ -900,7 +900,7 @@ def _punch_gray(fb, punch, canvas=CANVAS):
     cw, ch = w / sc, h / sc
     cx, cy = punch["cx"] * w / canvas[0], punch["cy"] * h / canvas[1]
     # CSS `scale(s)` with `transform-origin: cx cy` keeps (cx, cy) fixed on screen: the visible window's
-    # top-left is (cx*(1-1/s), cy*(1-1/s)), NOT a window centred on (cx, cy) (the centred
+    # top-left is (cx*(1-1/s), cy*(1-1/s)), NOT a window centerd on (cx, cy) (the centerd
     # crop was ~50 px off vertically, so every punched frame still diffed as ink).
     x0 = min(max(0.0, cx * (1 - 1 / sc)), w - cw); y0 = min(max(0.0, cy * (1 - 1 / sc)), h - ch)
     im = Image.fromarray(fb).crop((int(round(x0)), int(round(y0)), int(round(x0 + cw)), int(round(y0 + ch))))
@@ -1150,7 +1150,7 @@ def picture_busy_spans(plan, fps=FPS):
 
 def busy_frames(plan, fps=FPS):
     """Frame numbers where the picture is being moved on purpose (a punch-in's snap, hold and ease, a whip, a layout event): the
-    contact sheet's and the colour check's reel-vs-mezzanine difference lights the whole frame there, so it is no use as evidence."""
+    contact sheet's and the color check's reel-vs-mezzanine difference lights the whole frame there, so it is no use as evidence."""
     busy = set()
     for a, b in layout_spans(plan, fps):
         busy.update(range(int(round(a * fps)), int(round(b * fps)) + 1))

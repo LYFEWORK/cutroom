@@ -47,7 +47,7 @@ import common  # noqa: E402
 from common import VIDEO_EXT, atomic_write_json, stop  # noqa: E402,F401  (VIDEO_EXT is re-exported: every module here asks job for it)
 
 SILENT_MAX_DB = -60.0    # max_volume below this = the camera recorded nothing; whisper text on it is hallucination
-MARK = "CLIP NOTES · "   # first line of every per-video .txt notes.py writes; reverse and re-runs recognise their own files by it
+MARK = "CLIP NOTES · "   # first line of every per-video .txt notes.py writes; reverse and re-runs recognize their own files by it
 TOP = {"interview": "Interview", "broll": "B-Roll", "bonus": "Bonus Answers", "unusable": "Unusable", "sidecars": "Camera Sidecars", "offtopic": "Off Topic"}
 GENERATED = ("README.txt", "START HERE.html", "Footage Manifest.csv", "Takes Manifest.csv")
 SHOOT_TYPES = ("interview", "ad")   # "ad" = the person on camera reads a written script line by line; "interview" = answers in their own words
@@ -116,7 +116,7 @@ def load_job(path):
         stop("job.subjects must be a list of folder names")
     if not isinstance(job["subject_overrides"], dict):
         stop("job.subject_overrides must be a {clip: folder} object")
-    resolve_brand(job)   # a bad colour stops here, before anything is probed, moved or written
+    resolve_brand(job)   # a bad color stops here, before anything is probed, moved or written
     return job
 
 
@@ -282,9 +282,9 @@ def resolve_brand(job):
     for k in ("accent", "ink"):
         if k in jb:
             if not _HEX.fullmatch(str(jb[k]).strip()):
-                stop(f"job.brand.{k} must be a hex colour like {DEFAULT_BRAND[k]} (got {jb[k]!r})")
-            if k == "ink" and _luminance(str(jb[k]).strip()) > 0.08:   # lighter than about #4a4a4a and no text colour reads on the surfaces derived from it
-                stop(f"job.brand.ink must be a dark colour, like {DEFAULT_BRAND['ink']}: it is the page's background in dark mode (got {jb[k]!r})")
+                stop(f"job.brand.{k} must be a hex color like {DEFAULT_BRAND[k]} (got {jb[k]!r})")
+            if k == "ink" and _luminance(str(jb[k]).strip()) > 0.08:   # lighter than about #4a4a4a and no text color reads on the surfaces derived from it
+                stop(f"job.brand.ink must be a dark color, like {DEFAULT_BRAND['ink']}: it is the page's background in dark mode (got {jb[k]!r})")
             b[k] = str(jb[k]).strip()
     if "font_display" in jb:
         if not _FONT.fullmatch(str(jb["font_display"]).strip()):

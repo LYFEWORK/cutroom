@@ -1,12 +1,12 @@
-// facepts — prints the largest face per image with its two eye centres, using Apple Vision landmarks (no downloads, no ML deps).
+// facepts — prints the largest face per image with its two eye centers, using Apple Vision landmarks (no downloads, no ML deps).
 // usage: facepts img1.jpg img2.jpg ...   ->  one line per image: <path>\t<x>\t<y>\t<w>\t<h>\t<lx>\t<ly>\t<rx>\t<ry>   ("none" when no face)
-// Pixels, top-left origin, sub-pixel floats. An eye centre is the mean of the eye's contour, not the pupil, so a glance
+// Pixels, top-left origin, sub-pixel floats. An eye center is the mean of the eye's contour, not the pupil, so a glance
 // sideways does not move it. Vision's landmarks request returns roll and yaw as 0, so neither is printed: the eye line carries the tilt.
 import Foundation
 import Vision
 import AppKit
 
-func centre(_ r: VNFaceLandmarkRegion2D?, _ size: CGSize) -> CGPoint? {
+func center(_ r: VNFaceLandmarkRegion2D?, _ size: CGSize) -> CGPoint? {
     guard let r = r, r.pointCount > 2 else { return nil }
     let pts = r.pointsInImage(imageSize: size)
     let n = CGFloat(pts.count)
@@ -23,7 +23,7 @@ for path in CommandLine.arguments.dropFirst() {
         do { try handler.perform([req]) } catch { print("\(path)\tnone"); return }
         let size = CGSize(width: cg.width, height: cg.height)
         guard let best = (req.results ?? []).max(by: { $0.boundingBox.width * $0.boundingBox.height < $1.boundingBox.width * $1.boundingBox.height }),
-              let l = centre(best.landmarks?.leftEye, size), let r = centre(best.landmarks?.rightEye, size) else {
+              let l = center(best.landmarks?.leftEye, size), let r = center(best.landmarks?.rightEye, size) else {
             print("\(path)\tnone"); return
         }
         let b = best.boundingBox   // normalized, origin bottom-left

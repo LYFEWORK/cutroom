@@ -12,11 +12,11 @@ The anchor is the midpoint between the eyes, read on every frame (Apple Vision t
   hold      a run of frames with no face longer than this eases the frame back to rest instead of guessing where the speaker went
   width     output width (default: the video's own). A 4K take rendered at 1080 pays for the punch-in with spare pixels, not sharpness
 The picture has to be SDR BT.709 at a constant frame rate (the mezzanine and the cut are); the audio is copied as it is, and so is the video's
-comment tag. Writes <out>.json: the punch-in, each piece's rest point and strength, how far the eye line travelled before and after, and where the
+comment tag. Writes <out>.json: the punch-in, each piece's rest point and strength, how far the eye line traveled before and after, and where the
 frames were read. plan() is the maths, with no video in it.
 
 A cut made from a bigger camera file (lock(sources=...); the command line has no flag for it): the tracker and the plan still run on the cut, and
-each piece's frames are read from its camera file instead, conformed the way the cut's source was (cover-scaled and centre-cropped to the cut's
+each piece's frames are read from its camera file instead, conformed the way the cut's source was (cover-scaled and center-cropped to the cut's
 shape, at the cut's frame rate) but only down to the width the punch-in needs, so the 1080 output is sampled from more than 1080 pixels. Every
 frame read that way is checked against the cut's own frame on a small copy: a piece that is not the same picture (another take, another grade) or
 is a frame out of step makes the whole video fall back to its own frames, and the report says why. So does a camera file that is no bigger than
@@ -50,7 +50,7 @@ import swiftbin  # noqa: E402
 
 stop = common.stop
 CAP, SIGMA, HOLD = 0.15, 2.5, 15
-TRACK_W = 540     # the tracker reads a 540-px copy: its eye centres land within about a pixel of the full-size read
+TRACK_W = 540     # the tracker reads a 540-px copy: its eye centers land within about a pixel of the full-size read
 MARGIN = 1.004    # the punch-in holds the frame edge about two source pixels off screen at the far end of the move: the bicubic resample reads that far
 JUMP = 0.5        # a read more than this many face widths from its neighbours is another face or a bad read (reject)
 SAME = 3.0        # a camera-file frame and the cut's frame, both an eighth of the size, differ by at most this many levels of 255 on average when they are one
@@ -129,7 +129,7 @@ def spans_of(pieces, fps, n):
 
 
 def gauss(a, sigma, carry=False):
-    """a (n, k) smoothed down its length with a Gaussian of sigma frames, centred on each frame (no lag). Past each end the first and last value are held;
+    """a (n, k) smoothed down its length with a Gaussian of sigma frames, centerd on each frame (no lag). Past each end the first and last value are held;
     with `carry` the movement carries on instead (the track mirrored through its end point), so a head that is moving when a piece starts or ends
     is not held back there: a cut has two such ends for every joint, and holding the value left the face sliding for the first frames after each one"""
     if sigma <= 0 or len(a) < 2: return a.copy()
@@ -181,10 +181,10 @@ def plan(anchor, spans, W, H, strength, cap=CAP, sigma=SIGMA, hold=HOLD, size=No
     A piece's `want` is the punch-in it would need at the strength asked for; past 1 + cap its own `strength` comes down until it fits"""
     anchor = np.asarray(anchor, dtype=float)
     if size is not None: anchor = reject(anchor, np.asarray(size, dtype=float), spans)
-    centre = np.array([W / 2, H / 2]); rows = []
+    center = np.array([W / 2, H / 2]); rows = []
     for f0, f1 in spans:
         a = anchor[f0:f1]; found = ~np.isnan(a[:, 0])
-        rest, d = centre.copy(), np.zeros((f1 - f0, 2))   # no face in the piece: it sits at the centre of the punch-in and does not move
+        rest, d = center.copy(), np.zeros((f1 - f0, 2))   # no face in the piece: it sits at the center of the punch-in and does not move
         if found.any():
             idx = np.arange(f1 - f0)
             smooth = gauss(np.stack([np.interp(idx, idx[found], a[found, i]) for i in (0, 1)], axis=1), sigma, carry=True)   # filled inside the piece only, never across a joint
@@ -198,7 +198,7 @@ def plan(anchor, spans, W, H, strength, cap=CAP, sigma=SIGMA, hold=HOLD, size=No
         reach = r["reach"] * strength
         k = min([1.0] + [room[i] / reach[i] for i in (0, 1) if reach[i] > room[i]])   # past the cap: this piece follows less
         r["strength"], r["want"] = strength * k, zoom_for(reach, W, H)
-        r["pin"] = centre + zoom * (r["rest"] - centre)                   # where the eye line sits in the output: where it sat, punched in about the centre
+        r["pin"] = center + zoom * (r["rest"] - center)                   # where the eye line sits in the output: where it sat, punched in about the center
         follow[r["f0"]:r["f1"]] = r["rest"] + r.pop("d") * r["strength"]
         pin[r["f0"]:r["f1"]] = r["pin"]
         del r["reach"]
@@ -329,7 +329,7 @@ def _own(video, DW, DH):
 
 def _camera(video, pl, W, H, rate, fps, DW, DH, feeds, seen):
     """each piece's frames from its camera file, DW x DH, in the cut's order: feeds is one (file, first frame, filters) a piece of pl. The file is
-    conformed the way the cut's source was (the frame rate first, so a frame number means what it meant there; then cover-scaled and centre-cropped
+    conformed the way the cut's source was (the frame rate first, so a frame number means what it meant there; then cover-scaled and center-cropped
     to the cut's shape) and its timestamps are kept through the seek, so the frame-rate conversion drops and repeats the frames it did then. Every
     frame is compared with the cut's own on a copy an eighth of the size; NotTheCut says which piece is a frame out of step (the read one frame
     off fits better), another picture (further apart than SAME) or too still to tell (a tie), so only a piece shown to be in step is used.
@@ -442,7 +442,7 @@ def bigger(sources, pieces, spans, fps, W, H, OW, zoom):
     """what render() needs to read the cut's frames from its camera files ({"size", "feeds", "fps", "seen"}) and what the report says of it
     ({"mode": "camera", ...}), or (None, why) when they cannot pay for the punch-in (NotRead when one of them is not a picture ffprobe can read).
     sources: one {"file", "frame", "vf"} for each of `pieces`, in order: the piece's first frame is frame `frame` of the file once it is at the cut's
-    frame rate, and `vf` (optional) is whatever makes its colours the cut's (HDR to SDR, a grade)"""
+    frame rate, and `vf` (optional) is whatever makes its colors the cut's (HDR to SDR, a grade)"""
     by = {}
     for p, s in zip(pieces or [], sources):
         if isinstance(p, dict) and isinstance(p.get("out_in"), (int, float)) and isinstance(s, dict) and s.get("file") and isinstance(s.get("frame"), int) and s["frame"] >= 0:
@@ -485,7 +485,7 @@ def lock(video, out, strength, pieces=None, cap=CAP, sigma=SIGMA, hold=HOLD, wid
     if not 0 < cap < 1: stop(f"cap {cap:g} is not a punch-in: 0.15 is 15%")
     W, H, rate, fps = probe(video)
     anchor, size = track(video, W)
-    if strength and not np.isfinite(anchor[:, 0]).any(): stop(f"no face in any frame of {video}: there is nothing to lock on")   # moves alone scale about the frame's centre then
+    if strength and not np.isfinite(anchor[:, 0]).any(): stop(f"no face in any frame of {video}: there is nothing to lock on")   # moves alone scale about the frame's center then
     spans = spans_of(pieces, fps, len(anchor))
     anchor = reject(anchor, size, spans)
     pl = plan(anchor, spans, W, H, strength, cap, sigma, hold)

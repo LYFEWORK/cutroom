@@ -18,7 +18,7 @@ SCRIPT = os.path.join(cap_helpers.REPO, "engine", "captions", "lookprofile.py")
     ("varsans", "InterDyn", "#FFD60A", "mixed"),
     ("upstatic", "InterStaticDyn", "#38E1B0", "upper"),
 ])
-def test_a_look_carries_the_colours_font_and_case_of_its_dna(brand_id, family, accent, case):
+def test_a_look_carries_the_colors_font_and_case_of_its_dna(brand_id, family, accent, case):
     p = cap_helpers.profile(brand_id)
     assert (p["font_family"], p["accent"], p["case"]) == (family, accent, case)
     assert p["font_faces"] and all(os.path.isfile(f) for f in p["font_abs"].values())
@@ -55,11 +55,11 @@ def test_without_a_style_the_look_is_exactly_what_the_dna_makes():
     assert {k: v for k, v in p.items() if k in base} == base
 
 
-def test_the_look_block_of_a_style_lays_colours_over_the_look():
+def test_the_look_block_of_a_style_lays_colors_over_the_look():
     p = cap_helpers.profile("upstatic", "rose-running")
     assert p["accent"] == "#E8456B" and p["base"] == "#F7F2EE" and p["on_accent"] == "#1A1014"
     assert p["hero_tint"] == "#FFB3C4" and p["chip_neg"] == "#B3122B" and p["display_weight"] == 700 and p["hero_shadow"] == "0 2px 10px rgba(0,0,0,0.5)"
-    # the colours of the DNA itself did not move
+    # the colors of the DNA itself did not move
     assert cap_helpers.profile("upstatic")["accent"] == "#38E1B0"
 
 
@@ -112,7 +112,7 @@ def test_deepgram_is_chosen_only_by_an_explicit_setting(monkeypatch):
     assert lookprofile.build(d, cap_helpers.brand_dir("varsans"))["transcribe"] == {"engine": "deepgram", "language": "es"}
 
 
-def test_a_colour_that_is_not_a_hex_stops_with_one_plain_line():
+def test_a_color_that_is_not_a_hex_stops_with_one_plain_line():
     p = cap_helpers.profile("varsans")
     p["accent"] = "yellow"
     with pytest.raises(EngineStop, match="accent is 'yellow'"):

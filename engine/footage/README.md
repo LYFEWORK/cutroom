@@ -32,7 +32,7 @@ Exit codes: 0 done, 1 the QC found a problem, 2 stopped with a reason. Every sto
 
 ## What the module guarantees
 
-- **Nothing is deleted that it did not make.** Generated files are the index, the two manifests, the README, `Edit/plan.json`, the notes files (recognised by their first line), the cuts, and the folders that held them. The only files it ever deletes from a folder it did not make are the operating system's own junk (`.DS_Store`, `._name`, `Thumbs.db`, `desktop.ini`).
+- **Nothing is deleted that it did not make.** Generated files are the index, the two manifests, the README, `Edit/plan.json`, the notes files (recognized by their first line), the cuts, and the folders that held them. The only files it ever deletes from a folder it did not make are the operating system's own junk (`.DS_Store`, `._name`, `Thumbs.db`, `desktop.ini`).
 - **The plan, the manifest and the README are written before the first file moves**, so any crash can be reversed from them. A move that fails half way, or is stopped with Ctrl-C, is rolled back (renames renamed back, copies deleted).
 - **Every move is a rename on one volume.** A destination that already exists, or two sidecars that would land on one name, refuses the whole run before anything moves.
 - **A card on another volume is copied, not moved.** `start` and `apply` copy each file beside its destination under a `.part` name, flush it, check it against the original (size and the sha256 of the first and last MiB), then rename it into place. The card is left exactly as it was, and one line says it can be ejected. Free space is checked first.
@@ -78,7 +78,7 @@ A clip name keeps its original name as the first part of its file name, and it m
 | `subjects` | the B-roll folders, set by `intake.py subjects` (`Other` is always one) |
 | `subject_overrides` | `{clip: folder}`, beats the record |
 | `bad_takes_folder` | one plain folder name; default `"Bad Takes"` on an ad shoot, `""` on an interview shoot (flubs stay in their line's folder) |
-| `brand` | `{accent, ink, font_display}` for `START HERE.html`, all optional: `#4F8CFF`, `#0B0C10` (a dark colour), `system-ui` |
+| `brand` | `{accent, ink, font_display}` for `START HERE.html`, all optional: `#4F8CFF`, `#0B0C10` (a dark color), `system-ui` |
 | `whisper_model`, `whisper_language` | default to `~/.cutroom/config.json` (`"en"`, or `"auto"`) |
 
 `<ROOT>` in `src`, `scratch` or `whisper_model` is replaced by the shoot folder. A placeholder left in `root`, `src`, `scratch` or `name` stops the run.

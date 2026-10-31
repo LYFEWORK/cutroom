@@ -124,7 +124,7 @@ def test_palette_json_and_source_json(main_run):
 def test_study_md_is_prefilled_with_empty_sections(main_run):
     _, out = main_run
     md = (out / "study.md").read_text()
-    for head in ("## Source", "## Numbers", "## Colours", "## Transcript", "## Moments"):
+    for head in ("## Source", "## Numbers", "## Colors", "## Transcript", "## Moments"):
         assert head in md
     for title in EMPTY_SECTIONS:
         sec = md.split(f"## {title}\n")[1].split("\n## ")[0].strip()
@@ -173,7 +173,7 @@ def test_rerun_refreshes_and_leaves_a_filled_in_study_alone(cli, synthetic_reel,
     assert r.returncode == 0 and "left alone" not in r.stdout
     assert (out / "metrics.json").stat().st_mtime_ns > first and not (out / "frames/dense/stale.jpg").exists()
     md = out / "study.md"
-    filled = md.read_text().replace("<!-- Where they sit, how big, case, colour roles (hex plus role), how the hero word is treated, how they enter and leave. Cite frames. -->", "Centre, big, upper case.")
+    filled = md.read_text().replace("<!-- Where they sit, how big, case, color roles (hex plus role), how the hero word is treated, how they enter and leave. Cite frames. -->", "Center, big, upper case.")
     assert filled != md.read_text()
     md.write_text(filled)
     r = cli(args)

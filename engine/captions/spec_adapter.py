@@ -28,7 +28,7 @@ chip_neg, cta_wash, page_bg, page_ink, display_font, display_weight, pill_bg, pi
 in "look" (only when your look sets them). A device switch your look leaves out is off.
 
 The soft build (README, "The soft build"): soft_build rides in "look" like the fields above, and only a spec with it on
-also carries on_accent (the colour of text drawn on the accent, white when the profile has none) and font_variable (whether the display
+also carries on_accent (the color of text drawn on the accent, white when the profile has none) and font_variable (whether the display
 font is one variable file: glyph.font_is_variable, asked of the display file the profile names). cluster_plan.py plans thoughts with
 them; every other spec.json is what it was.
 
@@ -39,7 +39,7 @@ cluster that devices.py apply() cuts off where the event starts.
 The gate's device_overrides pass through whole, among them "thoughts": the lines of GATE.md's Thoughts section a person
 edited, which cluster_plan.py's soft_events draws instead of its own split (their [bar] is the bar).
 
-Caption styles (styles.py, Brand/styles/<id>.json): a style's layout, motion, colour and font fields are already laid over your look when lookprofile.py
+Caption styles (styles.py, Brand/styles/<id>.json): a style's layout, motion, color and font fields are already laid over your look when lookprofile.py
 writes look.json (your look first, then the style's `set` and `look`; names and taught words never move), so this file reads them like any look field and has
 nothing to apply. It only carries the style's id into spec.json as "caption_style" (cluster_plan.py flags the plan with it), and only when look.json has one,
 the take's pick or your default style: a take made with no style gets the spec your look makes. When GATE.md asks for a style that look.json was not made
@@ -72,7 +72,7 @@ def tier_to_zone(tier, brand_zone):
     """The room-check tier's zone override. Pure, no I/O.
 
     MINIMAL and REDUCED both mean roomcheck.py found too little room above the crown for hero text
-    (roomcheck.BEHIND_ROOM), so neither can honour a brand's "top" zone preference. FULL defers to the brand."""
+    (roomcheck.BEHIND_ROOM), so neither can honor a brand's "top" zone preference. FULL defers to the brand."""
     tier = (tier or "").upper()
     if tier not in TIERS:
         raise EngineStop(f"spec_adapter: unknown tier {tier!r} (one of {', '.join(TIERS)})")

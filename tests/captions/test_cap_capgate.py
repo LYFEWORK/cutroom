@@ -272,7 +272,7 @@ def test_apply_records_subject_none_and_allow(tmp_path):
 
 
 def test_a_grade_line_is_a_line_the_gate_does_not_understand(tmp_path):
-    """The engine has no colour grade, so GATE.md offers no grade line and an approved one that carries `grade: off` is any other line the Overrides block does not know:
+    """The engine has no color grade, so GATE.md offers no grade line and an approved one that carries `grade: off` is any other line the Overrides block does not know:
     ignored with the one warning such a line gets, and gate.json carries no grade."""
     take_dir = cap_takes.make_take(tmp_path)
     capgate.build(str(take_dir))
@@ -285,7 +285,7 @@ def test_a_grade_line_is_a_line_the_gate_does_not_understand(tmp_path):
 
 
 # ---------------------------------------------------------------------------
-# apply: the Tier & zone section is honoured when edited
+# apply: the Tier & zone section is honored when edited
 # ---------------------------------------------------------------------------
 
 def test_an_edit_in_the_tier_and_zone_section_is_an_override(tmp_path):
@@ -406,7 +406,7 @@ def test_a_take_whose_captions_say_no_do_not_say_word_has_no_such_section(tmp_pa
     assert "## Do not say" not in _gate_text(take_dir)
 
 
-def test_banned_hits_matches_whole_words_phrases_and_honours_allow():
+def test_banned_hits_matches_whole_words_phrases_and_honors_allow():
     plan = {"events": [{"mode": "front", "start": 1.0, "words": [{"text": "Very", "at": 1.0}, {"text": "cheap", "at": 1.2}]},
                        {"mode": "page", "start": 3.0, "text": "no refunds"}]}
     assert capgate.banned_hits(["cheap"], plan) == [("cheap", 1.2)]
@@ -431,7 +431,7 @@ def test_apply_missing_gate_md_stops(tmp_path):
 SOFT_FACE = {"cx": 540, "cy": 700, "w": 300, "h": 300}
 SOFT_TRACK = {"samples": {str(s): SOFT_FACE for s in range(0, 120)}, "median": SOFT_FACE}
 
-# Thirty-seven spoken words of plain English as a recogniser times them: three sentences with a pause after each and a comma pause inside two of them, and no pause
+# Thirty-seven spoken words of plain English as a recognizer times them: three sentences with a pause after each and a comma pause inside two of them, and no pause
 # between "it" and "than" (the second thought ends on "it" and the third starts on "than" at once).
 WINDOW_TIMES = [
     ("That's", 0.50, 0.84), ("when", 0.86, 1.10), ("the", 1.12, 1.22), ("doors", 1.24, 1.52), ("open.", 1.54, 1.96),
@@ -692,12 +692,12 @@ def test_a_thought_too_quick_to_read_is_a_check_line(tmp_path):
     assert "too quick to read" not in _gate_text(window)
 
 
-def test_a_named_red_word_drawn_in_its_lines_own_colour_is_a_check_line(tmp_path):
-    """a red word the look (neg_words) or a person (GATE.md neg:) named that its thought's payoff does not hold draws in its line's own colour, the look's text colour: one
+def test_a_named_red_word_drawn_in_its_lines_own_color_is_a_check_line(tmp_path):
+    """a red word the look (neg_words) or a person (GATE.md neg:) named that its thought's payoff does not hold draws in its line's own color, the look's text color: one
     CHECK line under the thoughts, the word as spoken and its time. A built-in red word off the payoff says nothing: it was only ever drawn on a cluster's hero row"""
     take = _soft_take(tmp_path, said("Broken ads cost you every single lead you get."))        # the varsans look names "broken"
     capgate.build(str(take))
-    assert ('CHECK 1.00s "Broken" draws in the line\'s own colour: red is drawn only on a payoff, and its thought\'s payoff does not hold it; regroup its '
+    assert ('CHECK 1.00s "Broken" draws in the line\'s own color: red is drawn only on a payoff, and its thought\'s payoff does not hold it; regroup its '
             "line, or let it stand") in _gate_text(take).splitlines()
     assert "draws white" not in _gate_text(take)
     built_in = _soft_take(tmp_path / "built-in", said("Scam shops cost you every single order you get."), brand="upstatic")

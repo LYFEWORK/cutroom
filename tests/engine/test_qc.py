@@ -223,7 +223,7 @@ def blank(h=426, w=240):
     return np.zeros((h, w), dtype=np.int16)
 
 
-def test_crown_y_is_a_fraction_of_the_face_height_above_the_face_box_centre():
+def test_crown_y_is_a_fraction_of_the_face_height_above_the_face_box_center():
     """the crown sits 0.30 of the face height above the top of Vision's face box, which starts at the BROW"""
     assert qc.crown_y(FACE) == 900 - 400 * (0.5 + qc.CROWN_H) == 580
     assert qc.crown_y(None) is None
@@ -262,7 +262,7 @@ def test_g4_fails_one_frame_of_ink_outside_the_safe_box():
 
 def test_g4_fails_ink_across_the_face():
     """the gate that must never trip: a caption drawn over the speaker's mouth"""
-    d = blank(); d[195:205, 110:130] = 255                 # canvas ~ (540, 900): dead centre of the face
+    d = blank(); d[195:205, 110:130] = 255                 # canvas ~ (540, 900): dead center of the face
     c = qc.ink_counts(d, FACE, qc.crown_y(FACE))
     assert c["on_face"] > 0
     g = qc.g4_captions([{"n": 0, "t": 0.0, **c}], [], 30)
@@ -906,7 +906,7 @@ def test_a_captions_plan_that_misses_a_spoken_word_fails_g5_and_the_run(take):
 # --- COLOR, WORDS and G7 inside the run ---------------------------------------------------------
 
 @needs_ffmpeg
-def test_a_master_with_the_wrong_tags_fails_the_colour_gate_and_the_run(tmp_path):
+def test_a_master_with_the_wrong_tags_fails_the_color_gate_and_the_run(tmp_path):
     t = make_take(tmp_path, tagged_master=False)
     r = cli(t)
     assert r.returncode == 1, r.stdout + r.stderr
@@ -916,7 +916,7 @@ def test_a_master_with_the_wrong_tags_fails_the_colour_gate_and_the_run(tmp_path
 
 
 @needs_ffmpeg
-def test_the_colour_gate_compares_with_the_reference_it_is_given_and_defaults_to_the_cut(take):
+def test_the_color_gate_compares_with_the_reference_it_is_given_and_defaults_to_the_cut(take):
     default = qc.run(take.T, take.name)["gates"]["COLOR"]
     assert "pixels vs the cut: median drift R0.0 G0.0 B0.0" in default["numbers"]
     other = take.path("other.mp4")

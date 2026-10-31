@@ -130,7 +130,7 @@ def test_a_word_un_struck_after_a_run_comes_back():
 
 
 def test_a_filler_left_unstruck_is_kept_in_the_cut():
-    """build() pre-strikes fillers; un-striking one has to survive the cut, and the cutter only honours that through seg["keep_fillers"]"""
+    """build() pre-strikes fillers; un-striking one has to survive the cut, and the cutter only honors that through seg["keep_fillers"]"""
     md = script.build(WORDS, PLAN).replace("approved: no", "approved: yes")
     kept = script.apply(md.replace("~~um~~", "um"), PLAN)
     assert kept["segments"][0]["drop"] == [] and kept["segments"][0]["keep_fillers"] is True

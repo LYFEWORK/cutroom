@@ -12,7 +12,7 @@ single line is a lead-in with no payoff (pay_px 0), and the tail draws at lead_p
 
 The hard rules: a lead-in is 2 to 6 words, a payoff 1 to 5, a tail 2 to 5, a single line up to 7 and a thought up to 14; each line fits
 its width at its floor; a thought is never only function words and a payoff never is; no boundary falls right after a glued word, between
-a number and its unit, inside a run of capitalised words (a name) or right after a word that needs the next one (an article, a possessive
+a number and its unit, inside a run of capitalized words (a name) or right after a word that needs the next one (an article, a possessive
 or a preposition that takes an object) unless that word carries a comma or a stop, save that a lead-in may end on such a word right
 before a struck run whose whole run is its payoff ("We did it all without | shortcuts.") or, when the word is a preposition, before a
 place name that is exactly its payoff and ends its phrase ("Everything we make ships from | Florida."), and nowhere else; no thought runs
@@ -83,7 +83,7 @@ _OPENS = frozenset("a an the this that these those my your his her its our their
 _CLAUSE = frozenset("and but so because then which when if".split())       # a thought may end before one of these
 _NUMBER_WORDS = frozenset("zero two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen "
                           "eighteen nineteen twenty thirty forty fifty sixty seventy eighty ninety hundred thousand million billion".split())
-_I = frozenset("i i'm i've i'll i'd".split())                               # capitalised everywhere, so never a sign of a name
+_I = frozenset("i i'm i've i'll i'd".split())                               # capitalized everywhere, so never a sign of a name
 _CONTRACTION = re.compile(r"'(s|re|ve|ll|d|m)$")
 
 # The cost weights, named in the module notes. At these values the reference windows (tests/captions/softbuild/fixtures/approved_windows.json) split as intended.
@@ -145,7 +145,7 @@ def pick_bar(thoughts: list[dict], words: list[dict], measure: Measure, pipeline
 
 def red_left_off(thought: dict, words: list[dict]) -> list[int]:
     """The indices of a thought's red words (neg) that its payoff does not hold, in order. Red is drawn only on a payoff, so these draw in their line's own
-    colour, the brand's text colour, as the words around them do, and both planners name each in a CHECK line (the caption chain only those a person or
+    color, the brand's text color, as the words around them do, and both planners name each in a CHECK line (the caption chain only those a person or
     your look named). A single line has no payoff, so every red word in it is one."""
     pay = set(thought["pay"])
     return [k for k in thought["lead"] + thought["pay"] + thought["tail"] if words[k].get("neg") and k not in pay]
@@ -374,7 +374,7 @@ class _Words:
 
     def _may_split(self, k, lean=True):
         """Whether a boundary may fall before word k: always where a stretch ends (ends: a hard end, or a long silence with content words on
-        both sides) or at a comma or a stop; never right after a glued word, between a number and its unit, inside a run of capitalised words
+        both sides) or at a comma or a stop; never right after a glued word, between a number and its unit, inside a run of capitalized words
         (a name) or, with lean, right after a word that needs the next one."""
         if self.ends[k - 1] or self.stop[k - 1] or self.comma[k - 1]:
             return True

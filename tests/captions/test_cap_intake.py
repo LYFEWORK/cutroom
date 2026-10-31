@@ -23,7 +23,7 @@ SCRIPT = os.path.join(CAPTIONS, "intake.py")
 def make_video(path, width=216, height=384, duration=0.5, audio=True, channels=2, vf=None, rotate=None):
     """A tiny real H.264/AAC mp4 (9:16 by default): fast to build, enough for ffprobe/ffmpeg to treat as a real
     take. `audio=False` produces a video-only file (the missing-audio-track failure path); `vf` filters the picture
-    (setparams stamps colour tags); `rotate` writes a display-rotation tag (degrees) on the video stream."""
+    (setparams stamps color tags); `rotate` writes a display-rotation tag (degrees) on the video stream."""
     args = ["ffmpeg", "-v", "error", "-y",
             "-f", "lavfi", "-i", f"testsrc=size={width}x{height}:rate=30:duration={duration}"]
     if audio:

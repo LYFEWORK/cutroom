@@ -28,7 +28,7 @@ The vocabulary of single editing devices a format is built from, grouped by what
 
 - Blur reveal: upcoming items sit blurred and sharpen on the word that names them.
 - Empty slots: blank numbered slots fill in as each item is said.
-- Chapter tabs: numbered tabs persist across sections. The active one lights in your accent colour and the rest dim.
+- Chapter tabs: numbered tabs persist across sections. The active one lights in your accent color and the rest dim.
 - Ghost-to-lit: a whole line sits faint and each word lights as it is said.
 - Stacked tags: labels stack one under another as they are said.
 - Typewriter build: a line types in as it is said, with the key blanks highlighted.
@@ -38,16 +38,16 @@ The vocabulary of single editing devices a format is built from, grouped by what
 - Bracket formula: the ingredients of one idea build left to right in square brackets, each landing on its spoken word.
 - Themed bullets: the bullets are props from the metaphor, such as chips, plates or coins.
 - Check and cross chips: when an on and an off are said in one breath, a check chip and then a cross chip pop under the caption on their words.
-- Progress rail: a thin track under the captions fills across the whole video, with a labelled dash added as each section starts.
+- Progress rail: a thin track under the captions fills across the whole video, with a labeled dash added as each section starts.
 
 ## Captions and type
 
-- One-word captions: one huge word at a time, centred or on the seam of a split.
-- Punch words: single words slam on the beat and the key word takes your accent colour.
+- One-word captions: one huge word at a time, centerd or on the seam of a split.
+- Punch words: single words slam on the beat and the key word takes your accent color.
 - Echo graphics: graphics repeat the speaker's words and act as the captions, so the caption line steps aside.
 - Tiered captions: size and weight tiers per word, with hero and keyword levels.
 - Statement line: one bold statement that builds line by line on the speaker's words.
-- Negative-colour phrase: the bad-news phrase (two to four words) in a third caption colour, each word landing on its own word time.
+- Negative-color phrase: the bad-news phrase (two to four words) in a third caption color, each word landing on its own word time.
 - Payoff caption: the key phrase switches caption style for a beat, heavier and bigger.
 - Title with a highlight bar: a headline with a bar behind the key phrase.
 - Tracking animation: letters spread wide tighten into the word.
@@ -62,10 +62,10 @@ The vocabulary of single editing devices a format is built from, grouped by what
 - Donut fill: a donut fills slice by slice as each share is said, and legend rows land with it.
 - Growing bars: bars grow on the spoken words, values land at the end, and the winner glows.
 - Big number with a ghost label: a huge number with its label ghosted behind it.
-- Loop diagram: a dashed loop ties a centre card to the nodes around it.
+- Loop diagram: a dashed loop ties a center card to the nodes around it.
 - Data race: a bar-chart race where one bar lights up.
 - Days-later dial: a ruler slides to show time passing.
-- Reach radar: a profile at the centre with rings and dots spreading out.
+- Reach radar: a profile at the center with rings and dots spreading out.
 - Data overlay: a second line sweeps over the first while a counter ticks.
 - Path metaphor: two paths, where a spotlight follows A and then the road snaps to B.
 
@@ -81,9 +81,9 @@ The vocabulary of single editing devices a format is built from, grouped by what
 
 ## Transitions
 
-- Band wipe: a diagonal band wipes to the next scene, its edge in your accent colour.
+- Band wipe: a diagonal band wipes to the next scene, its edge in your accent color.
 - Whip: a motion-blur whip into the next section.
-- Mono drop: on the cut that starts the punchline, one wash frame, then hard black and white for the phrase, then back to colour on the next cut.
+- Mono drop: on the cut that starts the punchline, one wash frame, then hard black and white for the phrase, then back to color on the next cut.
 - Glass shatter: a small inset picture card breaks into glass shards on the bad-news word.
 - Light streak: a light streak wipes across the frame.
 - Push into an object: the camera dives into an icon or a screen.
@@ -92,7 +92,7 @@ The vocabulary of single editing devices a format is built from, grouped by what
 
 ## Scenes and inserts
 
-- B-roll cutaway: real footage on a wipe, labelled, one clip per batch.
+- B-roll cutaway: real footage on a wipe, labeled, one clip per batch.
 - Card stage: b-roll leaves full frame and plays in a rounded card on a softly lit ground, swapping sides beat to beat while captions carry on in the empty half.
 - Analogy scene: the story as film shots with one line of text (real footage, AI for environments only).
 - Environment swap: the speaker cut out into another world for a joke or a contrast (an AI-made environment).
@@ -117,9 +117,9 @@ The vocabulary of single editing devices a format is built from, grouped by what
 - Link pop-up: on `click the link below`, a pill rises on a long smooth ease-out, a finger taps, and an arrow glides down toward the link, with a tick and a click in word gaps.
 - Phone screens: SMS, notifications, search, DM, profile, calendar and landing page.
 - Edge-entry cards: proof or stat cards slide in from the frame edges and stack on the stage.
-- Glow focus: a soft glow in your accent colour behind the number or element being discussed.
+- Glow focus: a soft glow in your accent color behind the number or element being discussed.
 - Cursor click: a cursor moves in and clicks a real button.
-- Skeleton to content: grey loading rows fill in with real content.
+- Skeleton to content: gray loading rows fill in with real content.
 - Live counters: numbers tick up, only to a value the speaker says.
 - Scarcity pill: a limited-spots pill flips state, with real numbers only.
 - Focus pull per item: each row sharpens and lifts as it is named while the rest blur.

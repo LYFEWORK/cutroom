@@ -65,8 +65,8 @@ def test_a_style_only_lowers_the_tier(brand):
     assert dna.style(D, "loud", brand)["caption_tier_max"] == "REDUCED"           # and a style never raises it
 
 
-def test_a_colour_or_font_or_word_list_in_set_is_refused(brand):
-    for key, value, part in (("hero_base", "#FFFFFF", "set.hero_base: a colour, the display weight and the font go in look, not in set"),
+def test_a_color_or_font_or_word_list_in_set_is_refused(brand):
+    for key, value, part in (("hero_base", "#FFFFFF", "set.hero_base: a color, the display weight and the font go in look, not in set"),
                              ("hero_tint", "#FFFFFF", "go in look"), ("chip_neg", "#E3161B", "go in look"), ("display_weight", 700, "go in look"),
                              ("hero_shadow", "none", "go in look"), ("hero_stroke", None, "go in look"),
                              ("neg_words", ["x"], "set.neg_words: that field is the brand's: a style may not set it"), ("places", ["x"], "the brand's"),
@@ -78,7 +78,7 @@ def test_a_colour_or_font_or_word_list_in_set_is_refused(brand):
         refused(brand, "bad", part)
 
 
-def test_a_style_cannot_carry_colours_fonts_or_words_anywhere_else_either(brand):
+def test_a_style_cannot_carry_colors_fonts_or_words_anywhere_else_either(brand):
     for field in ({"colors": {"accent": "#FF0000"}}, {"fonts": {}}, {"words": {"banned": []}}, {"captions": {}}, {"spelling": {}}, {"accent": "#FF0000"}):
         add_style(brand, "bad", **field)
         refused(brand, "bad", f"{next(iter(field))}: not a known field")
@@ -92,7 +92,7 @@ def test_a_style_set_field_takes_the_type_and_range_of_the_captions_field(brand)
         refused(brand, "bad", part)
 
 
-def test_look_lays_colours_over_the_profile_and_text_is_base(brand):
+def test_look_lays_colors_over_the_profile_and_text_is_base(brand):
     look = {"accent": "#FF8800", "text": "#F0F0F0", "on_accent": "#101010", "hero_base": "#FFFFFF", "hero_tint": "#FFE0B0", "hero_shadow": "0 2px 4px #000",
             "hero_stroke": {"width": 3, "color": "#000000"}, "chip_neg": "#CC0000", "display_weight": 700}
     add_style(brand, "warm", look=look)
@@ -156,7 +156,7 @@ def test_feed_block_rules(brand):
     add_style(brand, "none")
     assert dna.style(D, "none", brand)["feed"] == {}
     for feed, part in (({"place": "middle"}, "feed.place: 'middle' is not one of chest, lower, top"), ({"size": 3}, "feed.size: 3 is above 1.5"), ({"words": 4}, "feed.words: 4 is above 3"),
-                       ({"hero": {"scale": 9}}, "feed.hero.scale: 9 is above 2.8"), ({"hero": {"look": "huge"}}, "feed.hero.look"), ({"colour": "#FFF"}, "feed.colour: not a known field"),
+                       ({"hero": {"scale": 9}}, "feed.hero.scale: 9 is above 2.8"), ({"hero": {"look": "huge"}}, "feed.hero.look"), ({"color": "#FFF"}, "feed.color: not a known field"),
                        ({"hero": {"color": "#FFFFFF"}}, "feed.hero.color: not a known field"), ({"motion": "spin"}, "feed.motion")):
         add_style(brand, "bad", feed=feed)
         refused(brand, "bad", part)
@@ -197,7 +197,7 @@ def test_the_users_style_wins_over_a_starter_of_the_same_name_and_the_list_says_
 def test_check_names_a_broken_style_file_by_its_file_name(brand):
     add_style(brand, "bad", set={"hero_base": "#FFFFFF"}, look={"cta_wash": "#FFFFFF"})
     assert sorted(check(brand)) == ["styles/bad.json: look.cta_wash: not a known field",
-                                    "styles/bad.json: set.hero_base: a colour, the display weight and the font go in look, not in set"]
+                                    "styles/bad.json: set.hero_base: a color, the display weight and the font go in look, not in set"]
     (brand / "styles" / "bad.json").write_text("[]")
     assert check(brand)[0].startswith("styles/bad.json: ") and "must be a JSON object" in check(brand)[0]
     (brand / "styles" / "bad.json").unlink()

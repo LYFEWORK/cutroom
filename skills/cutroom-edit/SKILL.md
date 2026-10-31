@@ -42,7 +42,7 @@ Write `<project>/edit.json` for the renderer (`~/cutroom/remotion/README.md` has
 - `cut`: the mastered cut; `theme`: `python3 ~/cutroom/engine/dna.py theme`; `output` from the DNA.
 - `hook`: the text and look. The card is fully formed from frame 0 and holds 3 to 6.5 s. Its words are words the speaker says in the first 5 s, whole or cut, never new words (the triple: text, first line and picture agree). At most 3 lines of 27 characters, 14 words. It never covers a face or touches the top of the head in any frame of its window: read the face track; if the DNA's spot would, move this one video's card below the chin and say so, or ship with no card.
 - `zooms`: one to three emphasis zooms (1.12 to 1.22) on payoff lines only, held, never in the hook window, never two sentences in a row.
-- `inserts`: b-roll that shows what the words say, or none. The menu is `python3 ~/cutroom/engine/review/approved.py list --status keep --kind broll --json`, nothing else; each insert inside its kept range, 1.5 to 4 s, landing on its phrase, one visual language per video, the speaker back for the key lines, never the same clip twice. A horizontal clip is centre-cropped: pick ones that survive it.
+- `inserts`: b-roll that shows what the words say, or none. The menu is `python3 ~/cutroom/engine/review/approved.py list --status keep --kind broll --json`, nothing else; each insert inside its kept range, 1.5 to 4 s, landing on its phrase, one visual language per video, the speaker back for the key lines, never the same clip twice. A horizontal clip is center-cropped: pick ones that survive it.
 - `graphics`: only components listed in the DNA's `graphics.built` (a lower third once after the hook; a title card on a section change). A wished-for graphic that is not built yet: build it now as a component in `<workspace>/Brand/graphics/` from `~/cutroom/remotion/graphics/` examples, test-render it, show the user a frame, and register it in `graphics.built` before use. Real content only, never placeholder bars.
 - `end_card`: from the DNA (`delivery.end_card`).
 - `music`: a track from the DNA's library that has not played in the last `repeat_gap_videos` videos (`<workspace>/Brand/ledger.jsonl`), picked for this video's mood; the renderer sits it 22 dB under the speech and 14 dB under where the voice is absent with 1.5 s eases. `null` when the DNA says talking heads get none.
@@ -56,7 +56,7 @@ Check it: `python3 ~/cutroom/engine/review/gate.py "<project>/edit.json"` (every
 python3 ~/cutroom/engine/render.py "<project>/edit.json" --out "<project>/edit.mp4"
 ```
 
-The `Edit` composition draws the inserts, hook, graphics and end card over the cut; the music bed and sound effects are mixed under the mastered voice; the final is normalised to -16 LUFS with a -2 dBTP peak and tagged BT.709. Read two frames (the hook, an insert) before moving on.
+The `Edit` composition draws the inserts, hook, graphics and end card over the cut; the music bed and sound effects are mixed under the mastered voice; the final is normalized to -16 LUFS with a -2 dBTP peak and tagged BT.709. Read two frames (the hook, an insert) before moving on.
 
 ## 5. Captions in the user's style
 

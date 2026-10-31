@@ -60,12 +60,12 @@ DEVICE_KEYS = ("glow", "neg", "count", "strike", "pin", "spaced")
 
 def test_neg_tags_a_builtin_word_as_the_cluster_plan_hero():
     words = [W("This", 0.0, 0.2), W("deal", 0.2, 0.4), W("is", 0.4, 0.5), W("weak.", 0.5, 0.8)]
-    negative = cap_helpers.profile("upstatic")["chip_neg"]        # the look's own negative colour, not the engine's fallback red
+    negative = cap_helpers.profile("upstatic")["chip_neg"]        # the look's own negative color, not the engine's fallback red
     plan = cluster_plan.build(words, TRACK, base_spec(look={"chip_neg": negative}), cut_s=1.1, total_frames=33)
     row = hero_row(plan, "weak")
     assert row.get("neg") is True
     assert row["color"] == negative and plan["chipNeg"] == negative
-    assert "glow" not in row   # neg colours the row chipNeg, not accent: glow never applies to it
+    assert "glow" not in row   # neg colors the row chipNeg, not accent: glow never applies to it
 
 
 def test_a_neg_row_takes_the_engines_own_red_when_the_look_names_none():
@@ -238,7 +238,7 @@ def test_glow_applies_to_every_accent_row_when_hero_glow_is_on():
              W("Over", 1.0, 1.2), W("here.", 1.2, 1.5)]
     plan = cluster_plan.build(words, TRACK, base_spec(hero_glow=True), cut_s=1.8, total_frames=54)
     accent_rows = [w for w in all_rows(plan) if w["color"] == plan["accent"]]
-    assert accent_rows, "expected at least one accent-coloured hero row"
+    assert accent_rows, "expected at least one accent-colored hero row"
     assert all(w.get("glow") is True for w in accent_rows)
     non_accent_rows = [w for w in all_rows(plan) if w["color"] != plan["accent"]]
     assert not any(w.get("glow") for w in non_accent_rows)

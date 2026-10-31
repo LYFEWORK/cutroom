@@ -7,7 +7,7 @@ can be mapped back to the camera files).
     python3 engine/join.py <out.mp4> <take1> <take2> ... [--size 1080x1920|1920x1080|auto] [--fps 30] [--crf 16]
 
 auto (the default) uses the first take's orientation: 1080x1920 for a vertical source, 1920x1080 otherwise. A take that is not
-the same orientation is centre-cropped to fit (cover). Audio: first stream, stereo 48 kHz AAC; a silent take gets silence.
+the same orientation is center-cropped to fit (cover). Audio: first stream, stereo 48 kHz AAC; a silent take gets silence.
 """
 import argparse
 import json

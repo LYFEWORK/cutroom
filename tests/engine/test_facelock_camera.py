@@ -1,6 +1,6 @@
 """Face lock-on paid from the camera file (facelock.lock(sources=...)): a cut made from a bigger camera file has its locked picture read out of that
 file, so the punch-in costs spare pixels and not sharpness. Real ffmpeg on synthetic footage through a mezzanine line like the prep stage's and the
-real cutter (frame for frame, a clip joined from two camera files, a cut with a colour correction on it). The tracker is stood in for: the frames,
+real cutter (frame for frame, a clip joined from two camera files, a cut with a color correction on it). The tracker is stood in for: the frames,
 the encode and the check are the engine's own."""
 import json
 import os
@@ -28,7 +28,7 @@ def camera_file(path, seconds, size="540x960", rate="30000/1001", tint=""):
 
 
 def mezzanine(raw, out):
-    """the prep stage's mezzanine line at this size (cover-scale, centre crop, 30 fps), without the gain staging"""
+    """the prep stage's mezzanine line at this size (cover-scale, center crop, 30 fps), without the gain staging"""
     ff("-i", raw, "-map", "0:v:0", "-map", "0:a:0", "-vf", f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps=30,format=yuv420p",
        "-c:v", "libx264", "-preset", "fast", "-crf", "16", "-g", "30", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-movflags", "+faststart", out)
     return out
@@ -310,7 +310,7 @@ def test_a_tracker_that_read_more_frames_than_the_cut_has_is_still_one_plain_sto
 
 
 @needs_ffmpeg
-def test_the_locked_picture_keeps_the_cuts_colours_and_its_comment_tag(tmp_path):
+def test_the_locked_picture_keeps_the_cuts_colors_and_its_comment_tag(tmp_path):
     """the frames go through RGB and back: they come out the cut's own levels (ffmpeg's quick 8-bit path read about 2 of 255 dark), and the comment tag
     a file carries (some tools leave a mark there) is copied to the locked picture as it is"""
     src, out = str(tmp_path / "bars.mp4"), str(tmp_path / "bars.lock.mp4")
@@ -329,8 +329,8 @@ def test_the_locked_picture_keeps_the_cuts_colours_and_its_comment_tag(tmp_path)
 
 
 @needs_ffmpeg
-def test_a_colour_correction_on_the_cut_is_put_on_its_camera_frames_too(shoot, tracked, tmp_path):
-    """a cut that was colour corrected after it was made is no longer the camera file's own picture: each piece's camera frames get the same correction
+def test_a_color_correction_on_the_cut_is_put_on_its_camera_frames_too(shoot, tracked, tmp_path):
+    """a cut that was color corrected after it was made is no longer the camera file's own picture: each piece's camera frames get the same correction
     put on (the source's `vf`), and the check passes only with it"""
     fix = "eq=brightness=0.08:contrast=1.15"
     plain_cut, graded = shoot.cut("plain"), str(tmp_path / "graded-cut.mp4")

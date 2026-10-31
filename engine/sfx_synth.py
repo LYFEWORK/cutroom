@@ -56,7 +56,7 @@ def _pink(rng, n):
 
 
 def _bandsweep(rng, n, f0, f1, q=1.2):
-    """noise through a band-pass whose centre sweeps f0 to f1 (the biquad is recomputed every 64 samples)"""
+    """noise through a band-pass whose center sweeps f0 to f1 (the biquad is recomputed every 64 samples)"""
     x = _pink(rng, n)
     y = np.zeros(n)
     z1 = z2 = 0.0

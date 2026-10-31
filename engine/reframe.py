@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """reframe.py <src> <out.mp4> [--proxy-h 540]
-Face-centred 9:16 crop for LANDSCAPE talking-head sources. Scaling a landscape clip straight to 1080x1920 with no crop STRETCHES it, so prep.py
+Face-centerd 9:16 crop for LANDSCAPE talking-head sources. Scaling a landscape clip straight to 1080x1920 with no crop STRETCHES it, so prep.py
 sends a landscape source through here first when asked to (--reframe).
 
 Method: probe the source; stop if it is already portrait (that is the caller's job, never a silent copy). Build a small landscape proxy with ffmpeg
@@ -13,7 +13,7 @@ So median["cx"] / 1080 is the face's FRACTIONAL x-position across the width of w
 face_cx_in_source() below multiplies it back out by the source's real width.
 
 The crop is a single FIXED box for the whole clip (no per-second tracking or panning): crop height = full source height, crop width =
-round(height * 9/16) (even), x centred on the face and clamped to stay inside the frame.
+round(height * 9/16) (even), x centerd on the face and clamped to stay inside the frame.
 
 ROTATION TRAP: a clip can report width=3840 / height=2160 in its stream header yet also carry a Display Matrix side-data tag with rotation +-90.
 ffmpeg auto-applies that rotation BEFORE any -vf filter runs (a plain frame grab off such a file decodes to 2160x3840, and a `crop=3840:2160:0:0`

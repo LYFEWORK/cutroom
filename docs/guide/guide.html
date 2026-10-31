@@ -93,9 +93,9 @@ th { font-weight:700; background:var(--panel); border-bottom:1px solid #b9bec9; 
   <h3>What makes it different</h3>
   <ul>
     <li><b>It never clips a word.</b> Every cut edge sits on the voice's own onset or decay, read off the audio, and every joint is re-checked and re-cut if a word was hurt.</li>
-    <li><b>Your look, not a template.</b> A setup wizard builds your brand DNA from your colours, fonts and logo and from reference videos you paste in. Caption styles are previewed on your own clip before you keep one.</li>
+    <li><b>Your look, not a template.</b> A setup wizard builds your brand DNA from your colors, fonts and logo and from reference videos you paste in. Caption styles are previewed on your own clip before you keep one.</li>
     <li><b>Only approved footage.</b> You keep, cut and trim on a review page. The system refuses to place a clip you did not keep.</li>
-    <li><b>Hard gates.</b> Loudness, safe zones, head clearance, every spoken word on screen, colour tags. A failed gate means nothing ships, and the line tells you the second and the reason.</li>
+    <li><b>Hard gates.</b> Loudness, safe zones, head clearance, every spoken word on screen, color tags. A failed gate means nothing ships, and the line tells you the second and the reason.</li>
     <li><b>Nothing posts.</b> Finished videos land in a folder. Posting is yours.</li>
     <li><b>It cleans up after itself.</b> When a video is delivered, the heavy intermediates go to the Trash with a receipt. Originals and finals are never touched.</li>
   </ul>
@@ -117,7 +117,7 @@ th { font-weight:700; background:var(--panel); border-bottom:1px solid #b9bec9; 
   <h3>What to gather for the setup wizard</h3>
   <p>You can run the wizard with nothing and fill things in later, but it goes faster with these at hand:</p>
   <ul>
-    <li><b>Your colours.</b> One main colour as a hex code (for example <code>#1F5EFF</code>) and your dark and light colours if you have them. A brand folder, a style guide or your website also works: the wizard can read colours out of it.</li>
+    <li><b>Your colors.</b> One main color as a hex code (for example <code>#1F5EFF</code>) and your dark and light colors if you have them. A brand folder, a style guide or your website also works: the wizard can read colors out of it.</li>
     <li><b>Your font.</b> A font file (.ttf, .otf, .woff2), or the name of a Google Fonts family. One display face is enough; a second running face is optional.</li>
     <li><b>Your logo.</b> An emblem (the mark) and a lockup (mark plus name), as SVG or PNG. Optional: with no logo, nothing is drawn.</li>
     <li><b>Reference videos.</b> Three to ten links to videos whose captions, pace, hook or graphics you want to learn from, each with a few words on what you like. TikTok, Reels, Shorts and YouTube links work; Instagram often needs a login, so a downloaded file is the fallback.</li>
@@ -160,9 +160,9 @@ bash ~/cutroom/bin/doctor.sh   # safe any time</pre>
     <tr><th style="width:4%">#</th><th style="width:22%">Step</th><th>What it asks</th><th style="width:26%">What it writes</th></tr>
     <tr><td>1</td><td>Where footage lives</td><td>A folder for your video work: the default <code>~/Movies/Cutroom</code>, or a folder on your SSD. Big libraries belong on an SSD.</td><td>The workspace: <code>Drop/ Footage/ Projects/ Finished/ Brand/ Review/ Archive/</code></td></tr>
     <tr><td>2</td><td>Who you are</td><td>Your name or brand, your handle, what the videos are about, who watches, who is on camera.</td><td><code>Brand/dna.json</code> (identity, people), <code>Brand/DNA.md</code> (in your words)</td></tr>
-    <tr><td>3</td><td>Your look</td><td>Point at a brand folder and the wizard proposes an accent, a dark ink, a text colour, the text colour that reads on your accent, a font and a logo. Or give a hex and a font. Every colour is checked for contrast.</td><td>Colours, fonts (copied into <code>Brand/assets/fonts/</code>), logo files</td></tr>
+    <tr><td>3</td><td>Your look</td><td>Point at a brand folder and the wizard proposes an accent, a dark ink, a text color, the text color that reads on your accent, a font and a logo. Or give a hex and a font. Every color is checked for contrast.</td><td>Colors, fonts (copied into <code>Brand/assets/fonts/</code>), logo files</td></tr>
     <tr><td>4</td><td>References</td><td>Paste as many links as you like, each with what you like about it. Each is downloaded, measured (cuts a minute, shot length, text share, sound hits), its frames and on-screen text pulled, and Claude writes a breakdown. Then a synthesis: what your references share, and a proposal for caption styles, a hook look, formats and a graphics wishlist. You pick.</td><td><code>Brand/references/&lt;slug&gt;/</code> with boards, strips, numbers, transcript and the breakdown</td></tr>
-    <tr><td>5</td><td>Caption styles</td><td>One to three styles, each started from a base (clean clusters, top clusters, hero lockup, keyword slam, quiet, soft build) and tuned: where the words sit, how big, upper or mixed case, the hero word, how words arrive, optional own colours. Each is previewed on your clip. You keep, change or drop it. One becomes the default.</td><td><code>Brand/styles/&lt;id&gt;.json</code> and a preview image each</td></tr>
+    <tr><td>5</td><td>Caption styles</td><td>One to three styles, each started from a base (clean clusters, top clusters, hero lockup, keyword slam, quiet, soft build) and tuned: where the words sit, how big, upper or mixed case, the hero word, how words arrive, optional own colors. Each is previewed on your clip. You keep, change or drop it. One becomes the default.</td><td><code>Brand/styles/&lt;id&gt;.json</code> and a preview image each</td></tr>
     <tr><td>6</td><td>Formats</td><td>Which kinds of video you make (talking head, graphic talking head, story, montage, screen walkthrough, podcast clip), each with its caption style, whether graphics are allowed, the b-roll rule, music on or off.</td><td><code>formats</code> in the DNA</td></tr>
     <tr><td>7</td><td>Graphics wishlist</td><td>What you want to see on screen: lower third, title card, list reveal, quote card, pop-up card, progress bar, picture-in-picture, counter. Two ship built (lower third, title card); the rest are built the first time an edit needs them, test-rendered, and shown to you.</td><td><code>graphics.wishlist</code>, <code>graphics.built</code></td></tr>
     <tr><td>8</td><td>Music and sound</td><td>Your music folder (or none), a bed under talking heads or not, how many videos before a track may repeat, sound effects on or off (clicks and ticks on graphics, very subtle).</td><td><code>music</code>, <code>sound</code></td></tr>
@@ -172,10 +172,10 @@ bash ~/cutroom/bin/doctor.sh   # safe any time</pre>
     <tr><td>12</td><td>Test run</td><td>One clip through the whole chain: intake, review, one short video. You see every stop and every file.</td><td>Your first <code>Finished/</code> video and <code>Brand/SETUP.md</code></td></tr>
   </table>
   <h3>What a caption style is</h3>
-  <p>A style is a small file that says where the words sit (chest height under the chin, or up top behind the head), how wide the block is, how big the hero word gets, the row heights, the clearance under the chin, whether the accent draws as a chip, the glow, how words arrive (whip cuts between phrases, numbers that count up) and, for the soft build, that each phrase lays out once as a lead-in, a payoff and a tail with the words settling in from your accent colour. A style may also carry its own colours and font slot, so a "quiet white" style and a "loud accent" style can live side by side. The base colours and fonts come from your DNA; a style never carries someone else's.</p>
+  <p>A style is a small file that says where the words sit (chest height under the chin, or up top behind the head), how wide the block is, how big the hero word gets, the row heights, the clearance under the chin, whether the accent draws as a chip, the glow, how words arrive (whip cuts between phrases, numbers that count up) and, for the soft build, that each phrase lays out once as a lead-in, a payoff and a tail with the words settling in from your accent color. A style may also carry its own colors and font slot, so a "quiet white" style and a "loud accent" style can live side by side. The base colors and fonts come from your DNA; a style never carries someone else's.</p>
   <div class="panel"><p class="t">The one rule about looks</p><p>Pick one hook look and one spot for it. Every video of yours shows the hook card in the same place and style, and the captions in the same home. Variety comes from the edit (the lead move, the inserts, the graphics), never from moving the furniture around.</p></div>
   <h3>Changing things later</h3>
-  <p>Any step can be re-run alone: say "run the setup for my colours" or "add a caption style". Changing colours, fonts or logo re-previews every style, because they change the captions. A new reference can be added any time with the study skill (chapter 6).</p>
+  <p>Any step can be re-run alone: say "run the setup for my colors" or "add a caption style". Changing colors, fonts or logo re-previews every style, because they change the captions. A new reference can be added any time with the study skill (chapter 6).</p>
 </section>
 
 <section class="chapter">
@@ -198,7 +198,7 @@ bash ~/cutroom/bin/doctor.sh   # safe any time</pre>
     <li><b>You ask for a video.</b> "Make a talking head from the answer about pricing." Claude picks the best take (or joins several), runs the cutter to the first stop, and shows you <code>SCRIPT.md</code>: the transcript as lines. You strike what goes; you never rewrite a word. On your yes it cuts, with every edge on the voice, re-checks every joint, masters the voice.</li>
     <li><b>You see the plan.</b> The hook card text (words you actually say in the first seconds), where the b-roll inserts land and why, the graphics, the music track, the end card. Change what you want. Go.</li>
     <li><b>It renders and captions.</b> The picture renders with the inserts, hook, graphics and end card; the music sits well under your voice and eases down before you speak. Then the caption chain plans every phrase against your words and your face and stops at <code>GATE.md</code>: the hero words, the thoughts, any warning. You approve. It renders the captions and remuxes the sound.</li>
-    <li><b>Gates check it.</b> Face on camera, picture equals sound, every spoken word on screen in order, caption ink inside the safe box and off the face, loudness at the platform standard, colour tags right, pacing as you set it. A failure names the second and the gate; nothing ships until it passes.</li>
+    <li><b>Gates check it.</b> Face on camera, picture equals sound, every spoken word on screen in order, caption ink inside the safe box and off the face, loudness at the platform standard, color tags right, pacing as you set it. A failure names the second and the gate; nothing ships until it passes.</li>
     <li><b>It ships and cleans up.</b> The final lands in <code>Finished/&lt;title&gt;/</code> with its transcript and caption file. A line goes in your ledger. The project's heavy files go to the Trash with a receipt (or Claude asks first, as you chose).</li>
   </ol>
   <h3>Who decides what</h3>
@@ -206,7 +206,7 @@ bash ~/cutroom/bin/doctor.sh   # safe any time</pre>
     <div><h4>You decide</h4><ul><li>What to keep, cut or trim.</li><li>Which lines stay in the cut.</li><li>The hook text, the plan, the music.</li><li>The caption words, hero words and style.</li><li>When a CHECK is fine, with a reason.</li><li>When anything is removed from disk.</li></ul></div>
     <div><h4>Claude decides, inside the rules</h4><ul><li>Clip names, folders, take boundaries.</li><li>Where cuts land on the voice.</li><li>Which kept b-roll matches which words.</li><li>Caption layout against the face.</li><li>Levels, tags, sizes, safe zones.</li><li>What a gate failure means and how to fix it.</li></ul></div>
   </div>
-  <div class="panel note"><p class="t">Where the rules live</p><p><code>~/cutroom/rules/</code> holds the craft rulebook: cutting, hook, captions, b-roll, graphics, sound, colour, delivery, review, footage, storage, formats, QC gates. Claude reads the file for the step it is on. If you disagree with a rule, say so; most are defaults you can change in your DNA, and the measurable ones are listed in chapter 7.</p></div>
+  <div class="panel note"><p class="t">Where the rules live</p><p><code>~/cutroom/rules/</code> holds the craft rulebook: cutting, hook, captions, b-roll, graphics, sound, color, delivery, review, footage, storage, formats, QC gates. Claude reads the file for the step it is on. If you disagree with a rule, say so; most are defaults you can change in your DNA, and the measurable ones are listed in chapter 7.</p></div>
 </section>
 
 <section class="chapter">
@@ -223,11 +223,11 @@ bash ~/cutroom/bin/doctor.sh   # safe any time</pre>
   <h3>Caption a cut you already have</h3>
   <p><i>"Caption this cut in my quiet style."</i> The two-pass caption chain runs on your file (9:16, 1080x1920 or 4K). You approve at <code>GATE.md</code>, it renders, checks and files the result.</p>
   <h3>Learn from a reference</h3>
-  <p><i>"Here is a reel I like: &lt;link&gt;. The captions are what I want."</i> Claude downloads and measures it, pulls the frames, writes a breakdown, and proposes what to change in your DNA (a style, the hook spot, pacing targets). Nothing changes until you say yes. A reference never carries over its colours, fonts or logo: your videos reuse the move, not the look.</p>
+  <p><i>"Here is a reel I like: &lt;link&gt;. The captions are what I want."</i> Claude downloads and measures it, pulls the frames, writes a breakdown, and proposes what to change in your DNA (a style, the hook spot, pacing targets). Nothing changes until you say yes. A reference never carries over its colors, fonts or logo: your videos reuse the move, not the look.</p>
   <h3>Change a caption style, or add one</h3>
   <p><i>"Make my default captions bigger and move them up a little"</i> or <i>"Add a loud upper-case style for the list videos."</i> Claude edits or writes the style file, previews it on your clip, and keeps it on your yes.</p>
   <h3>Add a graphic</h3>
-  <p><i>"I want a progress bar across the top for step videos."</i> Claude writes the component in your <code>Brand/graphics/</code> folder using only your colours and fonts, renders a test, shows you a frame, and registers it. From then on edits can use it.</p>
+  <p><i>"I want a progress bar across the top for step videos."</i> Claude writes the component in your <code>Brand/graphics/</code> folder using only your colors and fonts, renders a test, shows you a frame, and registers it. From then on edits can use it.</p>
   <h3>Check the system</h3>
   <p><i>"Run the doctor."</i> Any time. It changes nothing.</p>
   <div class="panel"><p class="t">Approvals are files you can read</p><p><code>SCRIPT.md</code> (the cut) and <code>GATE.md</code> (the captions) are plain text in the project folder. Claude walks you through them, but you can open them yourself, strike a line or fix a name, set <code>approved: yes</code>, and say "run it again".</p></div>
@@ -328,7 +328,7 @@ bash ~/cutroom/bin/doctor.sh   # safe any time</pre>
     <tr><th style="width:40%">The line</th><th>What it means</th></tr>
     <tr><td>waiting for approval</td><td>Not an error. Open <code>SCRIPT.md</code> or <code>GATE.md</code>, approve, run the same command again.</td></tr>
     <tr><td>no speech</td><td>The clip has no words the transcriber heard. Check the right audio track was recorded.</td></tr>
-    <tr><td>source is not 9:16</td><td>The caption chain wants 1080x1920 or 2160x3840. A landscape talking head can be reframed face-centred in the edit; a finished landscape cut needs a 16:9 workflow.</td></tr>
+    <tr><td>source is not 9:16</td><td>The caption chain wants 1080x1920 or 2160x3840. A landscape talking head can be reframed face-centerd in the edit; a finished landscape cut needs a 16:9 workflow.</td></tr>
     <tr><td>HDR source</td><td>An HLG or PQ phone recording. The edit tone-maps it; a finished HDR cut should be exported as SDR first.</td></tr>
     <tr><td>a clip is CUT or NOT REVIEWED</td><td>The edit named footage you did not keep. Review it first.</td></tr>
     <tr><td>caption pending</td><td>Write the post caption into <code>caption.md</code> and run again.</td></tr>
@@ -357,7 +357,7 @@ bash ~/cutroom/bin/doctor.sh   # safe any time</pre>
     <tr><td>cutroom-study</td><td>Learn from a reference video and propose DNA changes.</td></tr>
     <tr><td>cutroom-storage</td><td>Report, cleanup, archive.</td></tr>
   </table>
-  <h3>Commands Claude runs (so you recognise them)</h3>
+  <h3>Commands Claude runs (so you recognize them)</h3>
   <pre>bash ~/cutroom/bin/doctor.sh
 python3 ~/cutroom/engine/dna.py check | todo | styles | scan &lt;folder&gt; | theme
 python3 ~/cutroom/engine/study.py &lt;url or file&gt; --out &lt;folder&gt; --liked "..."
@@ -376,7 +376,7 @@ python3 ~/cutroom/engine/storage.py report | archive &lt;shoot&gt; --to &lt;fold
     <tr><td>~/.cutroom/keys.env</td><td>Optional service keys, empty by default. Never shared, never printed.</td></tr>
     <tr><td>Brand/dna.json</td><td>Your look and your rules as data (below).</td></tr>
     <tr><td>Brand/DNA.md</td><td>Your look in words: who is on camera, the voice, the look, how much motion, captions, b-roll, music, formats, never.</td></tr>
-    <tr><td>Brand/styles/&lt;id&gt;.json</td><td>A caption style: layout and motion in <code>set</code>, optional own colours and font slot in <code>look</code>.</td></tr>
+    <tr><td>Brand/styles/&lt;id&gt;.json</td><td>A caption style: layout and motion in <code>set</code>, optional own colors and font slot in <code>look</code>.</td></tr>
     <tr><td>Projects/&lt;title&gt;/SCRIPT.md, GATE.md</td><td>Your two approvals, as text.</td></tr>
     <tr><td>Finished/&lt;title&gt;/Build/</td><td>The gate, the QC report, the evidence sheets of a delivered video.</td></tr>
   </table>
@@ -384,7 +384,7 @@ python3 ~/cutroom/engine/storage.py report | archive &lt;shoot&gt; --to &lt;fold
   <table>
     <tr><th style="width:18%">Section</th><th>What it holds</th></tr>
     <tr><td>id, name, handle, people</td><td>Who you are and who is on camera (name, role, whether a name tag shows).</td></tr>
-    <tr><td>colors</td><td>ink, base (your text colour), accent, on_accent (text on the accent), negative (bad-news words), bg, card.</td></tr>
+    <tr><td>colors</td><td>ink, base (your text color), accent, on_accent (text on the accent), negative (bad-news words), bg, card.</td></tr>
     <tr><td>fonts, type, logo</td><td>Your display face (and optional running and mono faces), caps and skew, emblem and lockups.</td></tr>
     <tr><td>captions</td><td>The caption preset every style starts from: case, zone, width, sizes, clearance, chip, shadow, glow, whip cuts, count-up, negative words, place names, icon words, the default style, the pacing gate mode.</td></tr>
     <tr><td>hook</td><td>On or off, the look (card, accent, ink, big type, bar, mono), the spot (never under 220 px), the hold.</td></tr>

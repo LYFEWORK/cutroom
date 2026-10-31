@@ -3,7 +3,7 @@
  * bottom band), arrives on one long smooth ease-out with a little blur and rise, and leaves on a short fade.
  *
  * props: { name: string, role?: string }
- * Uses only theme colours: the accent for the name chip, the card colour for the role. A role that does not fit beside the name
+ * Uses only theme colors: the accent for the name chip, the card color for the role. A role that does not fit beside the name
  * wraps under it.
  */
 import React from "react";

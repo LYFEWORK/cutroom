@@ -3,12 +3,12 @@
 
 Says whether a clip is HDR, and with --to turns it into plain BT.709 SDR (the picture, and the source's first audio track beside it).
 
-An iPhone shooting HDR records HLG (BT.2020 colours, arib-std-b67), and some cameras record PQ (smpte2084). Cut and scaled straight through
+An iPhone shooting HDR records HLG (BT.2020 colors, arib-std-b67), and some cameras record PQ (smpte2084). Cut and scaled straight through
 yuv420p such a clip keeps its HDR tags and plays flat, washed or tinted. So prep.py sends an HDR clip through here first; an SDR clip never comes
 here at all.
 
 HDR is read from the probe: color_transfer arib-std-b67 (HLG) or smpte2084 (PQ), or color_primaries bt2020 (a wide-gamut picture that needs its
-colours mapped to BT.709 whatever its transfer says).
+colors mapped to BT.709 whatever its transfer says).
 
 The conversion is Apple's own tone mapping (the engine/swift/hdr2sdr helper: VideoToolbox through AVFoundation, HLG / PQ / Dolby Vision 8.x to
 BT.709, every frame keeps its presentation time, video only), muxed back with the source's audio. It comes back as 8-bit H.264 tagged BT.709

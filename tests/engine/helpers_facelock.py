@@ -1,4 +1,4 @@
-"""Shared pieces for the face lock tests: a stub `facepts` helper that finds two coloured dots instead of a face, and a picture that carries them.
+"""Shared pieces for the face lock tests: a stub `facepts` helper that finds two colored dots instead of a face, and a picture that carries them.
 
 The real helper is Apple Vision and finds real faces only. These tests need a "face" they control, so the stub reads the same frames the engine
 hands the real helper (JPEG files, one path per argument) and answers in the same nine-field format:
@@ -83,7 +83,7 @@ TAGS = ["-colorspace", "bt709", "-color_primaries", "bt709", "-color_trc", "bt70
 
 def eyes_video(path, w=540, h=960, secs=3, at=(220, 300), gap=100, amp=(24, 14), dot=18, crf=12):
     """a picture with a "face": a red dot (left eye) and a green dot (right eye) `gap` px apart that sway around `at` (the left eye's top-left corner)
-    by `amp` px across and up and down, over a grey moving test picture, with a sine track. 30 fps, BT.709."""
+    by `amp` px across and up and down, over a gray moving test picture, with a sine track. 30 fps, BT.709."""
     x, y = f"{at[0]}+{amp[0]}*sin(2*PI*t/3)", f"{at[1]}+{amp[1]}*cos(2*PI*t/2)"
     ff("-f", "lavfi", "-i", f"testsrc2=s={w}x{h}:r=30:d={secs},hue=s=0", "-f", "lavfi", "-i", f"color=c=red:s={dot}x{dot}:r=30", "-f", "lavfi", "-i", f"color=c=lime:s={dot}x{dot}:r=30",
        "-f", "lavfi", "-i", f"sine=d={secs}",
@@ -93,7 +93,7 @@ def eyes_video(path, w=540, h=960, secs=3, at=(220, 300), gap=100, amp=(24, 14),
 
 
 def faceless_video(path, w=540, h=960, secs=1):
-    """a grey moving picture with nobody in it"""
+    """a gray moving picture with nobody in it"""
     ff("-f", "lavfi", "-i", f"testsrc2=s={w}x{h}:r=30:d={secs},hue=s=0", "-c:v", "libx264", "-pix_fmt", "yuv420p", *TAGS, str(path))
     return str(path)
 

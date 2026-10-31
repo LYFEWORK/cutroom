@@ -18,7 +18,7 @@ bed      Music that sits under the talk and never pops up between lines. Levels 
          an open before the first word, an end card). Any pause shorter than 4 s is held at the under-speech level; the bed eases down over
          `ease_s` before a voice and back up over as long after one (a raised cosine in dB, so it never steps), and fades out at the end.
 sfx      A budget rule for subtle sound effects (clicks, pops, punches, shutters): about 12 a minute at most, each placed in a gap, each a few
-         dB over the speaker's speaking level at its loudest, off-centre sounds swapping sides so the voice keeps the middle. The kit is
+         dB over the speaker's speaking level at its loudest, off-center sounds swapping sides so the voice keeps the middle. The kit is
          engine/sfx/ (synthesized by sfx_synth.py, nothing recorded or licensed) or the folder config.json "sfx_dir" names.
 """
 import sys
@@ -107,7 +107,7 @@ def downmix(media, out, rate=48000):
 # the voice master
 # =================================================================================================================================
 
-SILENT_LUFS = -70.0   # loudnorm cannot normalise below this: a master that quiet is an empty one
+SILENT_LUFS = -70.0   # loudnorm cannot normalize below this: a master that quiet is an empty one
 
 CHAIN = ("highpass=f=80,afftdn=nf=-45:nr=12:tn=1,atrim=start=0.025,asetpts=PTS-STARTPTS,equalizer=f=250:t=q:w=1.2:g=-2,"
          "equalizer=f=3200:t=q:w=1:g=1.5,deesser=i=0.4,acompressor=threshold=-20dB:ratio=2.5:attack=6:release=110:makeup=2")
@@ -427,7 +427,7 @@ def kit(families, bank=None):
 
 
 class Plan:
-    """candidate sounds: want(t, tier, (family, dB, centred), ...); lo/hi keep a sound inside its scene. Every family is in the kit (kit() stops otherwise)."""
+    """candidate sounds: want(t, tier, (family, dB, centerd), ...); lo/hi keep a sound inside its scene. Every family is in the kit (kit() stops otherwise)."""
     def __init__(self, K):
         self.K, self.cand = K, []
 
@@ -482,12 +482,12 @@ def mix(ev, K, n, vref, level=0.0):
     """(n, 2) float array of the picked sounds"""
     yl, yr, cnt, side = np.zeros(n), np.zeros(n), {}, 1
     for t0, p, snd in ev:
-        side = -side   # off-centre sounds swap sides event to event
-        for fam, d_, centred in snd:
+        side = -side   # off-center sounds swap sides event to event
+        for fam, d_, centerd in snd:
             i = cnt.get(fam, 0); cnt[fam] = i + 1
             clip = K[fam][i % len(K[fam])]   # never the same sound twice in a row
             k_ = clip[:max(0, n - int(t0 * SR))] * vref * 10 ** ((FAM.get(fam, EXTRA_DB.get(fam, 3)) + d_ + level - (3 if p >= 3 else 0)) / 20)
-            gl, gr = (1, 1) if centred else ((0.42, 1) if side > 0 else (1, 0.42))
+            gl, gr = (1, 1) if centerd else ((0.42, 1) if side > 0 else (1, 0.42))
             s0 = int(t0 * SR); yl[s0:s0 + len(k_)] += k_ * gl; yr[s0:s0 + len(k_)] += k_ * gr
     return np.stack([yl, yr], 1)
 

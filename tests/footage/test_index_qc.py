@@ -18,7 +18,7 @@ from conftest import intake, ok, run_tool, sha_tree
 from test_takes_encode import run_takes, shoot  # noqa: F401 (shoot is a pytest fixture)
 
 
-# ---------------------------------------------------------------- colour: both themes must read
+# ---------------------------------------------------------------- color: both themes must read
 def css_sets(page):
     """the two :root variable sets of a page: (dark, light)"""
     dark = re.search(r":root\{color-scheme:dark light;([^}]*)\}", page).group(1)
@@ -32,7 +32,7 @@ PAIRS = [("--txt", "--ink"), ("--txt", "--ink2"), ("--txt2", "--ink2"), ("--mut"
 
 @pytest.mark.parametrize("accent", ["#4F8CFF", "#777777", "#ffffff", "#000000", "#ff0000", "#00ff00", "#ffe600", "#1b3a8a", "#808080", "#abc"])
 @pytest.mark.parametrize("ink", ["#0B0C10", "#1a1d29", "#222222", "#000000", "#4a4a4a"])
-def test_every_text_colour_reads_on_its_surface_in_both_themes(accent, ink):
+def test_every_text_color_reads_on_its_surface_in_both_themes(accent, ink):
     dark, light = index.tokens({"accent": accent, "ink": ink, "font_display": "system-ui"})
     for name, t in (("dark", dark), ("light", light)):
         css = {f"--{k.replace('_', '-')}": v for k, v in t.items()}
@@ -51,7 +51,7 @@ def test_the_page_carries_both_themes_and_asks_the_browser_which(organized):
             assert index.contrast(t[fg], t[bg]) >= 4.5
 
 
-def test_the_brand_changes_the_colours_and_the_heading_font_and_nothing_else(organized):
+def test_the_brand_changes_the_colors_and_the_heading_font_and_nothing_else(organized):
     j = json.loads((organized / "job.json").read_text())
     j["brand"] = {"accent": "#e4572e", "ink": "#101820", "font_display": "Georgia"}
     (organized / "job.json").write_text(json.dumps(j))
@@ -293,4 +293,4 @@ def test_an_ink_that_is_not_dark_stops_the_run_because_it_is_the_dark_themes_bac
     (tmp_path / "job.json").write_text(json.dumps({"shoot_type": "interview", "brand": brand}))
     with pytest.raises(SystemExit):
         jobmod.load_job(tmp_path / "job.json")
-    assert "job.brand.ink must be a dark colour" in capsys.readouterr().err
+    assert "job.brand.ink must be a dark color" in capsys.readouterr().err

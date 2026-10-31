@@ -22,7 +22,7 @@
 # Your look is your DNA (Brand/dna.json, through engine/dna.py), made into <take-dir>/look.json by lookprofile.py on every run.
 #
 # Resume. Every stage checks its own output and the files it was built from (make-style: an output older than an input is stale). A stage whose
-# output is fresh is skipped, so editing your DNA (colours, layout, a font file), a style file, GATE.md or the words and running the same command
+# output is fresh is skipped, so editing your DNA (colors, layout, a font file), a style file, GATE.md or the words and running the same command
 # again rebuilds exactly what depends on the edit: look.json -> spec.json -> plan.json -> render -> qc. Nothing needs FORCE for that.
 #
 # FORCE=1 wipes the DERIVED artifacts (cuts.json, devices.json, plan, matte, video, qc, and the tier/spec/gate records) and rebuilds them. It keeps the
@@ -209,7 +209,7 @@ check_intake() { tk valid "$T/intake.json"; }
 run_stage intake check_intake -- python3 "$SK/intake.py" "$VIDEO" "$T"
 
 # --- stage: conform --------------------------------------------------------------------------------------------
-# The mezzanine is the picture everything reads: H.264, yuv420p, BT.709 limited range, 30 fps, no audio. There is no colour grade; the cut keeps its colour.
+# The mezzanine is the picture everything reads: H.264, yuv420p, BT.709 limited range, 30 fps, no audio. There is no color grade; the cut keeps its color.
 check_conform() { [ -s "$T/mez.mp4" ] && [ -s "$T/audio.wav" ] && [ -s "$T/audio16.wav" ] && tk valid "$T/avskew.json"; }
 run_stage conform check_conform -- bash "$SK/conform.sh" "$T"
 

@@ -3,7 +3,7 @@
 
     python3 verify_proxies.py [--all] [--ids ID ...]
 
-Takes a 32 x 32 grey frame from the proxy and from the original at 30% and 90% of the clip and compares them. A big gap means
+Takes a 32 x 32 gray frame from the proxy and from the original at 30% and 90% of the clip and compares them. A big gap means
 the proxy is the wrong picture, the wrong stream, or out of step with the original, and ranges set on it would land in the
 wrong place. Exit 0 when every clip matches, 1 when any does not. Ingest runs this for the proxies it just made and prints a
 WARN line per mismatch.
@@ -22,10 +22,10 @@ from review import store  # noqa: E402
 
 POINTS = (0.30, 0.90)
 SIZE = 32
-TOLERANCE = 22.0      # mean difference on a 0 to 255 scale. Compression and colour range stay well under it; a wrong picture does not.
+TOLERANCE = 22.0      # mean difference on a 0 to 255 scale. Compression and color range stay well under it; a wrong picture does not.
 
 
-def grey_frame(path: str, t: float, stream: str) -> bytes:
+def gray_frame(path: str, t: float, stream: str) -> bytes:
     r = common.run(["ffmpeg", "-nostdin", "-v", "error", "-ss", f"{max(0.0, t):.3f}", "-i", path, "-map", stream, "-frames:v", "1",
                     "-vf", f"scale={SIZE}:{SIZE},format=gray", "-f", "rawvideo", "-"], check=False, text=False)
     return r.stdout if isinstance(r.stdout, bytes) else b""
@@ -45,7 +45,7 @@ def check_clip(clip: dict, proxy: Path, src: str) -> tuple[bool, str]:
     worst = 0.0
     for p in POINTS:
         t = dur * p
-        g = gap(grey_frame(str(proxy), t, "0:v:0"), grey_frame(src, t, stream))
+        g = gap(gray_frame(str(proxy), t, "0:v:0"), gray_frame(src, t, stream))
         worst = max(worst, g)
     return worst <= TOLERANCE, f"frames differ by {worst:.0f} of 255"
 

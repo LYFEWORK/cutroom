@@ -7,10 +7,10 @@ for one take. It has two blocks:
 
   "set"   the layout and motion fields: where the words sit, how big they are, how they move (ALLOWED below, 17 fields, each held to the type and
           range of the captions schema)
-  "look"  the colours and the font slot this style draws in (LOOK below): accent, text, on_accent, hero_base, hero_tint, hero_shadow, hero_stroke,
+  "look"  the colors and the font slot this style draws in (LOOK below): accent, text, on_accent, hero_base, hero_tint, hero_shadow, hero_stroke,
           chip_neg, display_weight, and font ("display" or "running": which of your two faces draws the words)
 
-A colour or a font in "set" is refused (it belongs in "look"), and so is any key that is not in one of the two lists, so a typo never slips through.
+A color or a font in "set" is refused (it belongs in "look"), and so is any key that is not in one of the two lists, so a typo never slips through.
 Whatever a style leaves out is your look's own value. The things that name you (id, brand name, handle) and the words you taught the engine
 (spelling, do_not_say) never move, and the font files only move when look.font swaps the slot.
 
@@ -72,7 +72,7 @@ MOTION = ("whip_frames", "whip_amount", "count_up")
 TIER = ("caption_tier_max",)
 SOFT = ("soft_build",)
 ALLOWED = LAYOUT + TREATMENT + MOTION + TIER + SOFT
-# the look block: colours, the shadow and stroke, the page weight, and which face draws the words. Each maps to one key of the profile.
+# the look block: colors, the shadow and stroke, the page weight, and which face draws the words. Each maps to one key of the profile.
 LOOK = ("accent", "text", "on_accent", "hero_base", "hero_tint", "hero_shadow", "hero_stroke", "chip_neg", "display_weight", "font")
 LOOK_PROFILE_KEY = {"accent": "accent", "text": "base", "on_accent": "on_accent", "hero_base": "hero_base", "hero_tint": "hero_tint",
                     "hero_shadow": "hero_shadow", "hero_stroke": "hero_stroke", "chip_neg": "chip_neg", "display_weight": "display_weight"}
@@ -251,7 +251,7 @@ def _line_problem(where_, key, v, what):
 
 def problems(doc, filename=None, props=None):
     """[] when a style is sound, else one plain line per problem: unknown keys, a missing line, an id that is not its file name, a field in the wrong block (a
-    colour or the font in `set`), a value outside the range the schema allows. props: the fields' schemas (read when left out)"""
+    color or the font in `set`), a value outside the range the schema allows. props: the fields' schemas (read when left out)"""
     where_ = filename or (doc.get("id") if isinstance(doc, dict) and isinstance(doc.get("id"), str) else "style")
     if not isinstance(doc, dict):
         return [f"{where_}: a style must be a JSON object"]
@@ -293,7 +293,7 @@ def problems(doc, filename=None, props=None):
         else:
             for k, v in sets.items():
                 if k not in ALLOWED:
-                    hint = "colours, the shadow, the stroke and the font slot go in the `look` block" if k in LOOK else \
+                    hint = "colors, the shadow, the stroke and the font slot go in the `look` block" if k in LOOK else \
                         f"a style's `set` lays layout and motion over your look ({', '.join(ALLOWED)})"
                     out.append(f"{where_}: set.{k} is not a field a style may set: {hint}")
                 else:
@@ -304,7 +304,7 @@ def problems(doc, filename=None, props=None):
     if "look" in doc:
         look = doc["look"]
         if not isinstance(look, dict):
-            out.append(f"{where_}: look must be an object of colours and the font slot")
+            out.append(f"{where_}: look must be an object of colors and the font slot")
         else:
             for k, v in look.items():
                 if k not in LOOK:

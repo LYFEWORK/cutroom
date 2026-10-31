@@ -47,26 +47,26 @@ def clean_room_pattern():
 
 
 def fixture_brand_marks():
-    """(names, colours) that identify the two fixture brands: their ids, names, handles and font families, and every colour of their DNA that is not also one of the
+    """(names, colors) that identify the two fixture brands: their ids, names, handles and font families, and every color of their DNA that is not also one of the
     engine's own neutral defaults (templates/dna.json: white, the default negative red, ...)."""
     with open(os.path.join(cap_helpers.REPO, "templates", "dna.json"), encoding="utf-8") as fh:
         neutral = {c.lower() for c in json.load(fh)["colors"].values()}
-    names, colours = set(), set()
+    names, colors = set(), set()
     for brand in cap_helpers.BRANDS:
         with open(os.path.join(cap_helpers.FIXTURES, "brands", brand, "dna.json"), encoding="utf-8") as fh:
             dna = json.load(fh)
         names |= {dna["id"], dna["name"], dna["handle"].lstrip("@")} | {f["family"] for f in dna["fonts"].values() if f}
-        colours |= {c.lower() for c in dna["colors"].values()} - neutral
-    return names, colours
+        colors |= {c.lower() for c in dna["colors"].values()} - neutral
+    return names, colors
 
 
 # --- the source -------------------------------------------------------------------------------------------------------------------------------
-def test_no_house_word_brand_name_or_brand_colour_is_written_in_the_composition_source():
-    """Fonts, colours and names reach the composition only through the plan. Every file of it is held to the engine's clean-room word list (check/clean.sh), and its code
-    (comments aside) names neither of the two fixture brands, nor one of their fonts, nor hard-codes one of their colours."""
+def test_no_house_word_brand_name_or_brand_color_is_written_in_the_composition_source():
+    """Fonts, colors and names reach the composition only through the plan. Every file of it is held to the engine's clean-room word list (check/clean.sh), and its code
+    (comments aside) names neither of the two fixture brands, nor one of their fonts, nor hard-codes one of their colors."""
     pattern = clean_room_pattern()
-    names, colours = fixture_brand_marks()
-    assert names and colours
+    names, colors = fixture_brand_marks()
+    assert names and colors
     for name in FILES:
         text = src(name)
         hit = pattern.search(text)
@@ -74,8 +74,8 @@ def test_no_house_word_brand_name_or_brand_colour_is_written_in_the_composition_
         code = code_only(text)
         for token in sorted(names):
             assert not re.search(rf"(?<![A-Za-z0-9]){re.escape(token)}(?![A-Za-z0-9])", code, re.I), f"{name} names the fixture brand's {token!r}"
-        for colour in sorted(colours):
-            assert colour not in code.lower(), f"{name} hard-codes the fixture brand colour {colour}"
+        for color in sorted(colors):
+            assert color not in code.lower(), f"{name} hard-codes the fixture brand color {color}"
     assert "fontsDir" not in code_only(src("CaptionsDynamic.tsx"))
 
 
@@ -144,8 +144,8 @@ def test_remotion_lists_the_captions_composition_at_1080_by_1920_and_30_fps(proj
     assert listed == [("Captions", "30", "1080", "1920")], r.stdout[-300:]
 
 
-def ffmpeg_clip(path, colour="black", seconds=2):
-    subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", f"color={colour}:size=270x480:rate=30:duration={seconds}",
+def ffmpeg_clip(path, color="black", seconds=2):
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", f"color={color}:size=270x480:rate=30:duration={seconds}",
                     "-c:v", "libx264", "-pix_fmt", "yuv420p", str(path)], check=True)
 
 
@@ -176,7 +176,7 @@ def test_a_render_with_a_missing_font_file_fails_and_names_the_file(project, tmp
 # measure the ink: the width must follow the formula, checked against the face's own advance, with the plan's `glyph` factors and with the renderer's own when the plan has none.
 BUDGET = 960
 PAGE_BUDGET = 950                                        # the page word's own budget (PAGE_MAXW in the composition: a page has no video under it)
-# (text, planned size, hero, colour): every row is planned far over its cap, so the cap sets the size drawn. A hero is drawn in the display face, the other row in the running face.
+# (text, planned size, hero, color): every row is planned far over its cap, so the cap sets the size drawn. A hero is drawn in the display face, the other row in the running face.
 ROWS = [("RESPONSIBILITY", 400, True, (255, 255, 255)), ("ADS", 500, True, (0, 0, 255)), ("WHAT'S THE WHAT'S THE", 300, False, (255, 0, 0))]
 
 
@@ -276,11 +276,11 @@ def test_a_cluster_rows_width_cap_follows_the_plans_factors_and_the_renderers_ow
     for label, factors in glyph_variants(spec).items():
         found = masks(still("rows", row_events(), 20, factors))
         floor_em = n["FLOOR_LETTERS"] * (factors["caps"] if factors else n["GLYPH_CAPS"])
-        for text, planned, hero, colour in ROWS:
+        for text, planned, hero, color in ROWS:
             per = (factors["caps"] if hero else factors["word"]) if factors else n["GLYPH_CAPS"]
             size = min(planned, cap(BUDGET, text, per, floor_em))
             want = model(display if hero else running, text, size, 800, -0.04, 0.06)
-            got = ink_width(found[colour])
+            got = ink_width(found[color])
             assert abs(got / want - 1) < 0.03, f"{text!r} with the {label} factors: cap size {size}, model {want:.0f} px, drawn {got} px"
             if label == "measured":
                 assert got <= BUDGET, f"{text!r} is drawn {got} px wide with the look's own measured factors, over its {BUDGET} px budget"
@@ -298,13 +298,13 @@ def test_the_planners_row_cap_is_the_size_the_composition_really_draws(stills):
     display, running = spec["font"]["measure"], spec["look"]["word_font"]["measure"]
     for label, factors in glyph_variants(spec).items():
         found = masks(still("rows", row_events(), 20, factors))
-        for text, planned, hero, colour in ROWS:
+        for text, planned, hero, color in ROWS:
             size = cluster_plan.row_drawn({"text": text, "size": planned, "hero": hero}, BUDGET, factors)
             assert size < planned, f"{text!r} is planned over the cap"
             if text == "ADS":
                 assert size == cluster_plan.short_hero_cap(BUDGET, factors)
             want = model(display if hero else running, text, size, 800, -0.04, 0.06)
-            got = ink_width(found[colour])
+            got = ink_width(found[color])
             assert abs(got / want - 1) < 0.03, f"{text!r} with the {label} factors: the planner says {size} px (model {want:.0f} px wide), drawn {got} px"
 
 

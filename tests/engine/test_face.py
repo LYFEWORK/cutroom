@@ -205,7 +205,7 @@ def test_anchor_scales_boxes_by_the_pictures_width(stub_helper, tmp_path):
     assert (a["cx"], a["cy"], a["w"], a["h"]) == (160, 260, 120, 120) and (a["W"], a["H"]) == (540, 960)      # a 540-px picture is read at its own size
 
 
-def test_anchor_with_fewer_than_three_hits_falls_back_to_a_marked_centre(stub_helper, tmp_path):
+def test_anchor_with_fewer_than_three_hits_falls_back_to_a_marked_center(stub_helper, tmp_path):
     stub_helper("import re, sys\nfor f in sys.argv[1:]:\n    i = int(re.search(r'f(\\d\\d)\\.png$', f).group(1))\n    print(f + ('\\t100\\t200\\t120\\t120' if i == 0 else '\\tnone'))\n")
     a = face.anchor(video(tmp_path / "v.mp4", size="1080x1920", dur=1), str(tmp_path / "anchor.json"), 4)
     assert a["fallback"] is True and a["hits"] == 1 and a["frames"] == 4

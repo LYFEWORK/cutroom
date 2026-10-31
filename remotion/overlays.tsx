@@ -22,7 +22,7 @@ import { BrandMark, hasMark } from "./mark";
 import type { Layout } from "./layout";
 import type { EndCardSpec, Face, HookLook, HookSpec, Word } from "./types";
 
-/** "*word*" -> the word in the accent colour */
+/** "*word*" -> the word in the accent color */
 export function rich(text: string, accent: string = C.accent) {
   return String(text ?? "")
     .split(/(\*[^*]+\*)/g)
@@ -42,7 +42,7 @@ export function rich(text: string, accent: string = C.accent) {
 const along = (v: number, frame: number, ref: number) => (v <= 1 ? v * frame : (v / ref) * frame);
 
 /* ---------------- head clearance ---------------- */
-/** top of the head above the face centre, in face heights (the face box is forehead to chin) */
+/** top of the head above the face center, in face heights (the face box is forehead to chin) */
 export const K_CROWN = 0.76;
 
 export type EditCtx = {
@@ -142,12 +142,12 @@ export const hookTopOf = (hook: HookSpec, L: Layout) =>
 /**
  * The text hook, on screen fully formed from frame 0 and holding to end_s. One look in one place: the theme's hook_look, hook_top
  * and hook_size, unless the hook names its own. The looks:
- *   card     light card (the base colour), ink type, accent key words
+ *   card     light card (the base color), ink type, accent key words
  *   accent   accent card, on-accent type, ink key words
  *   ink      solid dark card (the theme's surface), base type, accent key words
- *   bigtype  no card: big base-colour type straight over the picture on a soft top shade, accent key words
- *   bar      no card: base-colour type, the key words sit on an accent highlight bar
- *   mono     no card: big type like bigtype; on turn_s the key words flip to the negative colour with a glow and the picture drops
+ *   bigtype  no card: big base-color type straight over the picture on a soft top shade, accent key words
+ *   bar      no card: base-color type, the key words sit on an accent highlight bar
+ *   mono     no card: big type like bigtype; on turn_s the key words flip to the negative color with a glow and the picture drops
  *            to black and white (Edit draws that part) until the hook leaves
  */
 export const Hook: React.FC<{ hook: HookSpec; t: number; L: Layout }> = ({ hook, t, L }) => {
@@ -488,7 +488,7 @@ export const MarkLayer: React.FC<{
 };
 
 /* ---------------- end card ---------------- */
-/** a full-frame card in the theme's colours from at_s to the end: the mark (when there is one), the line in big type and the
+/** a full-frame card in the theme's colors from at_s to the end: the mark (when there is one), the line in big type and the
  *  handle in the accent. The card fades up and each part rises in after the one before, on one long ease-out. */
 export const EndCard: React.FC<{ spec: EndCardSpec; t: number; L: Layout }> = ({ spec, t, L }) => {
   const k = L.k;

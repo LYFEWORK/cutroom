@@ -1,8 +1,8 @@
-"""The colour gate (qc.color_check, qc.g_color, `qc.py color`): tags AND pixels.
+"""The color gate (qc.color_check, qc.g_color, `qc.py color`): tags AND pixels.
 
 A finished file has to be yuv420p, limited range, with BT.709 as its matrix, primaries and transfer (a platform's uploader rejects anything else, and
-a picture left untagged shifts every colour against the BT.709 mezzanine the cut was made from). Tags alone are not enough: a stream relabelled
-bt709 over pictures converted with the wrong matrix or range has perfect tags and shifted colours, so the picture's own colours are compared with
+a picture left untagged shifts every color against the BT.709 mezzanine the cut was made from). Tags alone are not enough: a stream relabeled
+bt709 over pictures converted with the wrong matrix or range has perfect tags and shifted colors, so the picture's own colors are compared with
 the cut it was made from."""
 import os
 import shutil
@@ -73,13 +73,13 @@ def test_a_file_with_no_video_stream_stops_with_one_line(tmp_path, capsys):
 
 # --- the pixels -------------------------------------------------------------------------------------------------------------------
 
-def test_a_relabelled_picture_fails_on_pixels_even_with_perfect_tags(tmp_path):
+def test_a_relabeled_picture_fails_on_pixels_even_with_perfect_tags(tmp_path):
     """tags say bt709 / tv, but the pixels went through the wrong levels: only the pixel comparison sees it"""
     good = clip(tmp_path / "good.mp4", BT709)
     shifted = clip(tmp_path / "shifted.mp4", BT709, vf="format=yuv420p,eq=brightness=0.15:contrast=1.3")
     assert qc.color_check(shifted)["pass"], "the tags alone are perfect"
     r = qc.color_check(shifted, good)
-    assert not r["pass"] and any("colours differ from the cut" in b for b in r["bad"]), r
+    assert not r["pass"] and any("colors differ from the cut" in b for b in r["bad"]), r
 
 
 def test_a_reencode_of_the_same_picture_stays_inside_the_pixel_tolerance(tmp_path):
@@ -101,7 +101,7 @@ def test_a_picture_that_cannot_be_decoded_to_compare_is_a_failure_not_a_pass(tmp
     a = clip(tmp_path / "a.mp4", BT709)
     monkeypatch.setattr(qc, "frame_medians", lambda path, t: None)
     r = qc.color_check(a, a)
-    assert not r["pass"] and r["bad"] == ["no frame could be decoded to compare the picture's colours with the cut"]
+    assert not r["pass"] and r["bad"] == ["no frame could be decoded to compare the picture's colors with the cut"]
 
 
 def test_the_gate_record_carries_the_verdict_the_numbers_and_each_problem(tmp_path):
@@ -139,7 +139,7 @@ def test_cli_exit_codes(tmp_path):
     ok, bad, drift, gone, none = run(good, good), run(old, good), run(shifted, good), run(str(tmp_path / "nope.mp4")), run()
     assert ok.returncode == 0 and ok.stdout.startswith("COLOR PASS"), ok.stdout + ok.stderr
     assert bad.returncode == 1 and bad.stdout.startswith("COLOR FAIL") and "  pix_fmt is yuvj420p, not yuv420p" in bad.stdout, bad.stdout + bad.stderr
-    assert drift.returncode == 1 and "  the picture's colours differ from the cut" in drift.stdout, drift.stdout + drift.stderr
+    assert drift.returncode == 1 and "  the picture's colors differ from the cut" in drift.stdout, drift.stdout + drift.stderr
     for r in (gone, none):
         assert r.returncode == 2 and r.stderr.startswith("STOP:") and r.stderr.count("STOP:") == 1 and "Traceback" not in r.stderr, r.stdout + r.stderr
     assert "ffprobe could not read a video stream" in gone.stderr and "usage:" in none.stderr

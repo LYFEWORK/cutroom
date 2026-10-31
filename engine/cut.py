@@ -165,7 +165,7 @@ def pause_run(db, thr, t, hop=HOP_S):
 
 
 def band_db(y, sr, hop=HOP_S, band=HI_BAND, win_s=0.02):
-    """dB per hop of the energy in `band` (Hz), from a 20 ms Hann window centred on each hop: levels_db's hops, on a scale of its own (a hop is
+    """dB per hop of the energy in `band` (Hz), from a 20 ms Hann window centerd on each hop: levels_db's hops, on a scale of its own (a hop is
     only ever compared with the same band's room). Worked out in blocks, so an hour of audio stays small"""
     n, w = int(hop * sr), int(win_s * sr)
     y = np.asarray(y, dtype=np.float32)
@@ -177,7 +177,7 @@ def band_db(y, sr, hop=HOP_S, band=HI_BAND, win_s=0.02):
     win = np.hanning(w).astype(np.float32)
     pad = np.concatenate([np.zeros(w // 2, np.float32), y, np.zeros(w, np.float32)])
     view = np.lib.stride_tricks.sliding_window_view(pad, w)
-    starts = np.arange(m) * n + n // 2          # the window centred on the middle of hop i starts here in `pad`
+    starts = np.arange(m) * n + n // 2          # the window centerd on the middle of hop i starts here in `pad`
     out = np.empty(m, dtype=np.float32)
     for a in range(0, m, 8192):
         p = (np.abs(np.fft.rfft(view[starts[a:a + 8192]] * win, axis=1)[:, sel]) ** 2).sum(1)
@@ -531,7 +531,7 @@ def load_words(path):
 
 
 def _stream(words):
-    """the transcript as one run of normalised characters: (the run, the word each character belongs to, where words begin, where words end)"""
+    """the transcript as one run of normalized characters: (the run, the word each character belongs to, where words begin, where words end)"""
     stream, cmap, begins, ends = "", [], set(), set()
     for i, w in enumerate(words):
         t = norm_word(w["text"])
@@ -545,7 +545,7 @@ def _stream(words):
 
 
 def find_hits(words, match, whole=True):
-    """[(first word index, last word index)] of every place `match` sits in `words`, in order. The comparison runs on the normalised character
+    """[(first word index, last word index)] of every place `match` sits in `words`, in order. The comparison runs on the normalized character
     stream, so punctuation and case never matter and "chat gpt" finds "chatgpt". With `whole` (the default) a hit has to start where a word starts
     and end where a word ends: "um" is the word "um", never the middle of "number", and "ah" is never the end of "yeah"."""
     stream, cmap, begins, ends = _stream(words)
@@ -625,7 +625,7 @@ def resolve_drops(words, drops, fail=None):
 
 EDL_INTERNAL = ("lo", "hi", "floor", "ceil", "keep", "_c0_was", "_c1_was", "refine_c0", "refine_c1")   # the planner's working keys: never written to the EDL
 BT709 = ["-colorspace", "bt709", "-color_primaries", "bt709", "-color_trc", "bt709", "-color_range", "tv",
-         "-x264-params", "colorprim=bt709:transfer=bt709:colormatrix=bt709"]   # every cut says what it is, so the colour gate passes (this ffmpeg build
+         "-x264-params", "colorprim=bt709:transfer=bt709:colormatrix=bt709"]   # every cut says what it is, so the color gate passes (this ffmpeg build
                                                                                # writes the matrix from the flags above but leaves primaries and transfer
                                                                                # unknown unless x264 is told too)
 
@@ -1275,7 +1275,7 @@ def _judge(tokens, x, y, forbid):
     return bool(xs), bool(ys) and not xs, False
 
 def _edge_tok(p, words, which):
-    """the word a piece's edge plays, normalised: a matched piece's own text says it; a span's text is its whole row, so the span's own words do"""
+    """the word a piece's edge plays, normalized: a matched piece's own text says it; a span's text is its whole row, so the span's own words do"""
     if p.get("explicit") and words:
         _, w = _edge_words(p, words, which)
         if w is not None: return norm_word(w["text"])
@@ -1283,7 +1283,7 @@ def _edge_tok(p, words, which):
     return (toks[-1] if which == "last" else toks[0]) if toks else ""
 
 def _edge_ctx(p, words, which, n=6):
-    """the words a piece plays next to its edge, normalised (the context _clean_forbid keeps out of a joint's forbidden list)"""
+    """the words a piece plays next to its edge, normalized (the context _clean_forbid keeps out of a joint's forbidden list)"""
     if p.get("explicit") and words:
         ids = [i for i in (p.get("keep") or []) if words[i]["start"] < p["c1"] and words[i]["end"] > p["c0"]]
         toks = [norm_word(words[i]["text"]) for i in ids]
@@ -1456,7 +1456,7 @@ def qc(plan, outp, pieces, intent, review):
     for op, i1, i2, j1, j2 in sm.get_opcodes():
         if op in ("delete", "replace") and i2 - i1 >= 3: missing.append(exp_c[i1:i2])
         if op in ("insert", "replace") and j2 - j1 >= 3: extra.append(got_c[j1:j2])
-    # pause scan threshold: -35 dB misses breath-floor gaps in loudness-normalised audio; a plan can pass qc_noise_db -30 to count them
+    # pause scan threshold: -35 dB misses breath-floor gaps in loudness-normalized audio; a plan can pass qc_noise_db -30 to count them
     r = run(["ffmpeg", "-i", outp, "-af", f"silencedetect=noise={plan.get('qc_noise_db', -35)}dB:d=0.10", "-f", "null", "-"])
     sil, cur = [], None
     for line in r.stderr.splitlines():
@@ -1875,7 +1875,7 @@ def check_joints(edl, src_words, out_words, floor=0.8, eps=0.02, tol=STAMP_TOL, 
     `asr_variance` warning. Each joint (one per piece after the first, `edl["pieces"][1:]`) carries its OWN piece's head (does IT start inside its
     first word) and the PREVIOUS piece's tail (does the piece that just finished playing end inside ITS last word): together the two source-side edges
     of that one splice point in the output. The very last piece's own tail never finishes as anyone's "previous piece", since nothing splices in after
-    it, so it gets one extra check below. A head failure is labelled `fixable_by: "head_pad"` and a tail failure `fixable_by: "tail_pad"`, because
+    it, so it gets one extra check below. A head failure is labeled `fixable_by: "head_pad"` and a tail failure `fixable_by: "tail_pad"`, because
     the retry ladder widens the two sides separately; `needed_pads()` turns a whole result into the pad to widen.
 
     The asr_corroborated band deliberately stays at 0 <= head < 0.02 rather than widening with the tolerance: `first_word_after` only keeps
@@ -1927,7 +1927,7 @@ def check_joints(edl, src_words, out_words, floor=0.8, eps=0.02, tol=STAMP_TOL, 
 def needed_pads(result):
     """Which pad the retry ladder should widen for THIS result: 'head' | 'tail' | 'both' | 'none'.
 
-    Each joint reports ONE reason, so a joint clipped at both ends is labelled `fixable_by:
+    Each joint reports ONE reason, so a joint clipped at both ends is labeled `fixable_by:
     "head_pad"` and its tail would only surface on the next pass -- a wasted re-cut out of three.
     Both edges are read here instead: head_adj/tail_adj are already the tolerance-adjusted numbers,
     so `< 0` on a failing joint is exactly "this edge is genuinely clipped".
@@ -2066,8 +2066,8 @@ def sentence_spans(words):
 
 
 def segments(spans, hook_first=None):
-    """plan.segments: one segment per sentence, in transcript order, labelled 01, 02 ... With hook_first (a sentence number) that sentence goes
-    first and is labelled "hook". Off by default: a cut keeps the order the speaker said things in."""
+    """plan.segments: one segment per sentence, in transcript order, labeled 01, 02 ... With hook_first (a sentence number) that sentence goes
+    first and is labeled "hook". Off by default: a cut keeps the order the speaker said things in."""
     segs = [{"match": s["match"], "occurrence": s["occurrence"], "label": "%02d" % s["n"]} for s in spans]
     if hook_first:
         k = int(hook_first)
@@ -2103,7 +2103,7 @@ def wx_sidecar(words):
 
 
 def check_plan(plan, words_path=None):
-    """Static check of a plan BEFORE cutting: every segment match resolves (occurrence honoured), every strike resolves inside its segment as a
+    """Static check of a plan BEFORE cutting: every segment match resolves (occurrence honored), every strike resolves inside its segment as a
     whole word, a match found only by the head-and-tail fallback is flagged (the span is much longer than the text), and the kept text is
     listed in output order with source times and an estimated duration. -> (lines, failures)"""
     words = load_words(words_path or plan["words_json"])

@@ -19,19 +19,19 @@ Cutroom is three layers: skills (what Claude reads to run a job), the engine (th
 | Module | Job | Reads | Writes |
 |---|---|---|---|
 | `common.py` | config, workspace paths, probe, fingerprint, safe names, atomic JSON, STOP lines, Trash | `~/.cutroom/config.json` | |
-| `dna.py` | the brand DNA: load, fill defaults, validate, the caption profile and renderer theme views, style loading with `set` and `look`, folder scan for colours and fonts, init and check | `Brand/dna.json`, `Brand/styles/`, `templates/` | `Brand/dna.json`, `DNA.md` |
+| `dna.py` | the brand DNA: load, fill defaults, validate, the caption profile and renderer theme views, style loading with `set` and `look`, folder scan for colors and fonts, init and check | `Brand/dna.json`, `Brand/styles/`, `templates/` | `Brand/dna.json`, `DNA.md` |
 | `footage/` | the organizer: probe and transcribe a dump, contact sheets, the classification contract Claude fills, plan and move with rollback, the index page, QC, word timing, take cutting with handles, per-clip notes | `Drop/`, `job.json` | `Footage/<shoot>/` |
 | `review/` | inventory by content fingerprint, proxies, posters and filmstrips, the page, the local server with Range support and a save endpoint, `approved` (the kept list and the check), `gate` (an edit plan against the kept list), `apply` (trims as verified stream copies, cuts to the Trash) | `Footage/` | `Review/` |
 | `words.py` | transcription and word timing: whisper.cpp segments, WhisperX alignment in the venv, fillers flagged | audio or video | `words.json` |
 | `cut.py`, `script.py` | the cutter: plan to cut with every edge on the voice's own onset and decay, the joints ladder, the EDL and QC card, the script gate (SCRIPT.md strikes, whole words only) | a source clip, `words.json`, `plan.json` | the cut, EDL, QC, SCRIPT.md |
-| `face.py`, `matte.py`, `reframe.py` | Apple Vision face boxes per second, room tiers, face lock, the person matte, a face-centred 9:16 crop of a landscape source | the mezzanine | JSON, mattes |
+| `face.py`, `matte.py`, `reframe.py` | Apple Vision face boxes per second, room tiers, face lock, the person matte, a face-centerd 9:16 crop of a landscape source | the mezzanine | JSON, mattes |
 | `prep.py`, `avskew.py`, `hdr.py` | mezzanine, conform of stalled phone captures, HDR to SDR through the Apple helper | a source | `mez/`, `wx/`, `tx/` |
 | `sound.py` | the voice master (-16 LUFS, -2 dBTP), downmix, the music bed envelope under the voice, the sound-effect budget, a synthesized click kit | wavs | wavs |
-| `qc.py` | the gates: speech-only pieces, picture equals sound, clipped words, caption ink in the box, caption events, loudness, colour tags, the human strip and sheet | a final, its sources | `reel-qc.json`, evidence |
+| `qc.py` | the gates: speech-only pieces, picture equals sound, clipped words, caption ink in the box, caption events, loudness, color tags, the human strip and sheet | a final, its sources | `reel-qc.json`, evidence |
 | `sidecars.py` | Transcript.md and Caption.txt beside every final, and the delivery check | a final, words | the two files |
 | `run_take.sh` | one talking-head take through prep, words, face, plan, the script gate, the cut and ladder, the master, QC and sidecars | a take | the mastered cut |
 | `join.py` | several takes to one working clip, conformed, with a parts map | takes | one clip |
-| `render.py` | an `edit.json` to a rendered video: conform the inserts, link the brand assets, render the Edit composition, mix the bed and effects under the voice, normalise, tag, verify | `edit.json` | the edit video |
+| `render.py` | an `edit.json` to a rendered video: conform the inserts, link the brand assets, render the Edit composition, mix the bed and effects under the voice, normalize, tag, verify | `edit.json` | the edit video |
 | `captions/` | the caption chain: intake, conform, the look, words, face, room, spec, plan, devices, pacing, legibility, GATE.md, matte, render, remux, QC, deliver; styles; a style preview | a final cut, the DNA | the captioned final with sidecars |
 | `study.py` | a reference link or file to numbers, boards, moment strips, a transcript and a breakdown template | a URL or file | `Brand/references/<slug>/` |
 | `finish.py` | cleanup after delivery with a receipt, Trash by default | a project | `CLEANUP.md` |
@@ -48,7 +48,7 @@ The user's graphics live in `Brand/graphics/` as components registered by id in 
 
 ## The DNA
 
-`Brand/dna.json` is one closed-object document (a typo fails the check) with sections for identity, colours, fonts, logo, the caption preset, feed captions, the hook, formats, motion, graphics, b-roll, music, sound, words, grade, output, delivery, review, cleanup, storage, pacing, studies and notes. `Brand/DNA.md` is the judgment in words. `Brand/styles/<id>.json` are caption styles: `set` (layout and motion over the preset) and an optional `look` (colours and font slot). `dna.py` fills optional keys from the neutral template, never identity keys, so nothing in the repo ever leaks a look into a user's brand.
+`Brand/dna.json` is one closed-object document (a typo fails the check) with sections for identity, colors, fonts, logo, the caption preset, feed captions, the hook, formats, motion, graphics, b-roll, music, sound, words, grade, output, delivery, review, cleanup, storage, pacing, studies and notes. `Brand/DNA.md` is the judgment in words. `Brand/styles/<id>.json` are caption styles: `set` (layout and motion over the preset) and an optional `look` (colors and font slot). `dna.py` fills optional keys from the neutral template, never identity keys, so nothing in the repo ever leaks a look into a user's brand.
 
 ## Approvals and gates
 

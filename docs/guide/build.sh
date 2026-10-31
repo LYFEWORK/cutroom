@@ -1,6 +1,6 @@
 #!/bin/bash
 # Build docs/GUIDE.pdf from docs/guide/guide.html through headless Chrome, then prove it prints plain:
-# no soft masks (blur or see-through colour becomes solid blocks in some PDF viewers), every page rendered and listed.
+# no soft masks (blur or see-through color becomes solid blocks in some PDF viewers), every page rendered and listed.
 #   bash docs/guide/build.sh
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"

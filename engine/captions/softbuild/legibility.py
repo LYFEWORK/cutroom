@@ -69,7 +69,7 @@ def pieces(t0: float, t1: float, spans: list[tuple]) -> list[tuple]:
 
 
 def lockup_boxes(lines: list[tuple[float, float, float, bool]], top: float, gap: float) -> list[tuple[float, float, float, float]]:
-    """The boxes to read under a lockup, (x0, y0, x1, y1) in canvas px, both planners' one layout of it. Its lines are (centre x, drawn width,
+    """The boxes to read under a lockup, (x0, y0, x1, y1) in canvas px, both planners' one layout of it. Its lines are (center x, drawn width,
     size, on the bar), stacked down from top, each as tall as its size, gap px between two. A line on the bar sits on the opaque accent, so it
     is left out and each run of lines off the bar is one box, from its leftmost edge to its rightmost: a bar between a lead-in and a tail
     leaves two boxes."""

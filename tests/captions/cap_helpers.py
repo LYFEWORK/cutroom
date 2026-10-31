@@ -1,11 +1,11 @@
 """cap_helpers.py: shared test helpers: real looks and specs built through the DNA module (engine/dna.py) and lookprofile.py from two neutral fixture brands, never hand-written
-font or colour dicts.
+font or color dicts.
 
 The fixture brands (tests/captions/fixtures/brands/):
 
     varsans    mixed case, one variable font (the shipped Inter), no running face, accent yellow, a few places, neg words, icon words, pill icons, a spelling map
                and a do-not-say word; default style soft-build, pace gate report
-    upstatic   upper case, a static Inter ExtraBold display face and the variable Inter as its running face, base colour a warm white, a chip and a hero stroke,
+    upstatic   upper case, a static Inter ExtraBold display face and the variable Inter as its running face, base color a warm white, a chip and a hero stroke,
                a place; default style keyword-slam, pace gate enforce
 
 materialize() makes a real Brand/ folder from one (dna.json, DNA.md, assets/fonts/ with the font files, styles/ with the fixture styles; a style that asks for

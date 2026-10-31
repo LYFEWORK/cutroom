@@ -1,6 +1,6 @@
 """styles.py: the named caption styles. A style is a PARTIAL look laid over your look (the captions section of your DNA) for one take, in two blocks: `set`, the layout and
-motion fields (17 of them, each held to the type and range of the captions schema), and `look`, the colours and the font slot (accent, text, on_accent, hero_base, hero_tint,
-hero_shadow, hero_stroke, chip_neg, display_weight, font). A colour or a font in `set` is refused, so is a layout field in `look`, the names and the taught words of the look never
+motion fields (17 of them, each held to the type and range of the captions schema), and `look`, the colors and the font slot (accent, text, on_accent, hero_base, hero_tint,
+hero_shadow, hero_stroke, chip_neg, display_weight, font). A color or a font in `set` is refused, so is a layout field in `look`, the names and the taught words of the look never
 move, and a library with one bad file still serves the others.
 
 The fixture styles (tests/captions/fixtures/styles) stand in for a user's own library and are only read. Everything that writes goes to a scratch folder, which
@@ -35,7 +35,7 @@ FACE = ("font", "font_fallback", "fonts_dir", "font_prefix", "font_family", "fon
 # the profile key each look.<name> lays itself over, written out here so a change to styles.LOOK_PROFILE_KEY is caught (look.text is the profile's `base`)
 LOOK_LANDS_ON = {"accent": "accent", "text": "base", "on_accent": "on_accent", "hero_base": "hero_base", "hero_tint": "hero_tint", "hero_shadow": "hero_shadow",
                  "hero_stroke": "hero_stroke", "chip_neg": "chip_neg", "display_weight": "display_weight"}
-# a look block that moves every colour key and the weight, each to something neither fixture brand has
+# a look block that moves every color key and the weight, each to something neither fixture brand has
 LOOK_ALL = {"accent": "#E8456B", "text": "#F7F2EE", "on_accent": "#1A1014", "hero_base": "#FEFEFE", "hero_tint": "#FFB3C4", "hero_shadow": "0 2px 10px rgba(0,0,0,0.5)",
             "hero_stroke": {"width": 3, "color": "#101418"}, "chip_neg": "#B3122B", "display_weight": 700}
 # every profile key the DNA module's own style layering and styles.apply set the same way for a style without a font swap (the rest is what lookprofile adds)
@@ -110,7 +110,7 @@ def test_the_fixture_library_is_sound_and_holds_exactly_the_fixture_styles():
             assert d[k].strip() and "\n" not in d[k], f"{d['id']}: {k} is one plain line"
 
 
-def test_every_starter_is_sound_ownerless_and_carries_no_colour_or_face():
+def test_every_starter_is_sound_ownerless_and_carries_no_color_or_face():
     """the starters carry a feed object (the video editor reads it, this chain does not) and no added date: check takes both"""
     docs, bad = styles.check(styles.STARTER_DIR)
     on_disk = sorted(f[:-len(".json")] for f in os.listdir(styles.STARTER_DIR) if f.endswith(".json"))
@@ -118,7 +118,7 @@ def test_every_starter_is_sound_ownerless_and_carries_no_colour_or_face():
     assert on_disk and [d["id"] for d in docs] == on_disk
     for d in docs:
         assert d.get("owner") is None and d["set"], f"{d['id']}: ownerless, and it sets something"
-        assert "look" not in d, f"{d['id']}: a starter carries no colour and no face, those are the user's"
+        assert "look" not in d, f"{d['id']}: a starter carries no color and no face, those are the user's"
         assert styles.where(d) == "starter" and styles.usable(d, "anyone") is d
         for k in ("summary", "use_when", "never_when"):
             assert d[k].strip() and "\n" not in d[k], f"{d['id']}: {k} is one plain line"
@@ -159,12 +159,12 @@ def test_a_style_may_switch_the_soft_build_on_or_off_but_never_name_the_default_
     assert "soft_build" not in styles.apply(never_wrote, doc(set={"hero_max": 300})), "and a profile that never carried it still has none"
 
 
-def test_every_field_a_style_may_set_is_a_caption_field_and_none_is_a_colour_a_font_or_a_name():
+def test_every_field_a_style_may_set_is_a_caption_field_and_none_is_a_color_a_font_or_a_name():
     with open(styles.SCHEMA, encoding="utf-8") as fh:
         props = json.load(fh)["properties"]["captions"]["properties"]
     assert set(styles.ALLOWED) <= set(props)
     for k in styles.ALLOWED:
-        assert "$ref" not in props[k], f"{k} is a colour or a stroke: those go in the look block"
+        assert "$ref" not in props[k], f"{k} is a color or a stroke: those go in the look block"
     assert len(styles.ALLOWED) == 17 and sorted(styles.ALLOWED) == sorted(styles.LAYOUT + styles.TREATMENT + styles.MOTION + styles.TIER + styles.SOFT)
     assert not set(styles.ALLOWED) & set(styles.LOOK), "a field is in one block or the other"
     assert not set(styles.ALLOWED) & (set(NAMES) | set(WORDS) | set(FACE))
@@ -298,7 +298,7 @@ def test_added_is_optional_but_a_real_date_when_it_is_there(added, ok):
 
 
 @pytest.mark.parametrize("key", styles.LOOK)
-def test_a_colour_the_weight_or_the_font_slot_in_set_is_sent_to_the_look_block(key):
+def test_a_color_the_weight_or_the_font_slot_in_set_is_sent_to_the_look_block(key):
     bad = styles.problems(doc(set={key: "#FFFFFF"}), "demo.json")
     assert len(bad) == 1, bad
     assert f"set.{key} is not a field a style may set" in bad[0] and "`look` block" in bad[0], bad
@@ -366,7 +366,7 @@ def test_a_look_block_that_keeps_the_rules_is_sound(look):
 @pytest.mark.parametrize("look", ["red", None, [], 5])
 def test_a_look_that_is_not_an_object_is_one_plain_line(look):
     bad = styles.problems(doc(look=look), "demo.json")
-    assert bad == ["demo.json: look must be an object of colours and the font slot"]
+    assert bad == ["demo.json: look must be an object of colors and the font slot"]
 
 
 @pytest.mark.parametrize("field,low,high", [
@@ -726,7 +726,7 @@ def test_a_look_with_no_tier_cap_takes_the_styles():
 
 @pytest.mark.parametrize("key", ["accent", "hero_tint", "font", "font_family", "places", "master_audio", "caption_style", "id", "handle", "spelling"])
 def test_apply_refuses_a_style_built_in_code_that_reaches_for_a_field_it_may_not_set(key):
-    """the file check already refuses these; apply says it again, so a style that never went through a file cannot move a name or a colour in set either"""
+    """the file check already refuses these; apply says it again, so a style that never went through a file cannot move a name or a color in set either"""
     with pytest.raises(styles.StyleError, match=rf"caption style demo: set\.{key} is not a field a style may set"):
         styles.apply(base_look("varsans"), doc(set={key: "x"}))
 
@@ -784,7 +784,7 @@ def test_a_feed_block_never_changes_what_the_engine_lays_over_a_look():
 
 # ------------------------------------------------------------------ the look block
 
-def test_the_look_block_lays_colours_the_shadow_the_stroke_and_the_weight_over_the_look():
+def test_the_look_block_lays_colors_the_shadow_the_stroke_and_the_weight_over_the_look():
     base = base_look("varsans")
     for k, v in LOOK_ALL.items():
         assert base[LOOK_LANDS_ON[k]] != v, f"{k}: the fixture look must not already have it"
@@ -874,7 +874,7 @@ def test_look_font_running_on_a_look_without_a_running_face_is_refused_in_one_pl
     assert styles.apply(base_look("upstatic"), fx("rose-running"))["caption_style"] == "rose-running", "and a look that has one takes it"
 
 
-def test_the_rose_running_style_lays_its_colours_its_weight_and_the_running_face_over_upstatic():
+def test_the_rose_running_style_lays_its_colors_its_weight_and_the_running_face_over_upstatic():
     base = base_look("upstatic")
     d = fx("rose-running")
     got = styles.apply(base, d)
@@ -885,7 +885,7 @@ def test_the_rose_running_style_lays_its_colours_its_weight_and_the_running_face
     assert got["font_family"] == base["word_font"]["family"] != base["font_family"]
     assert [k for k, _, _ in styles.diff(base, d)] == [k for k in ("hero_max", "accent", "base", "on_accent", "hero_tint", "hero_shadow", "chip_neg", "display_weight",
                                                                   "font_family")], "zone is the look's own value already"
-    assert base["accent"] == "#38E1B0", "the colours of the DNA itself did not move"
+    assert base["accent"] == "#38E1B0", "the colors of the DNA itself did not move"
 
 
 # ------------------------------------------------------------------ the same answer as the DNA module
@@ -910,7 +910,7 @@ def test_a_style_with_a_look_block_and_no_font_swap_agrees_with_the_dna_module(t
     assert {k: v for k, v in got.items() if k not in PARITY_SKIP} == {k: v for k, v in want.items() if k not in PARITY_SKIP}
 
 
-def test_a_look_block_with_the_running_face_agrees_with_the_dna_module_on_colours_weight_and_face():
+def test_a_look_block_with_the_running_face_agrees_with_the_dna_module_on_colors_weight_and_face():
     """the DNA module also moves font, font_fallback and font_variable, its own bookkeeping for the slot; styles.apply leaves those three on the display face"""
     d = fx("rose-running")
     got = styles.apply(base_look("upstatic"), d)
@@ -994,7 +994,7 @@ def test_show_prints_the_card_and_with_diff_what_it_changes_in_your_look(workspa
     assert (code, err) == (0, "") and "  in your look: it changes\n" in out
     for k, before, after in changes:
         assert f"    {k}: {before} -> {after}" in out
-    assert "    accent:" not in out and "    font_family:" not in out, "a layout style changes no colour and no face"
+    assert "    accent:" not in out and "    font_family:" not in out, "a layout style changes no color and no face"
     code, out, err = run("show", "--diff", "keyword-slam")
     assert code == 0 and "  in your look: it changes\n" in out, "the flag may come first"
 
@@ -1006,7 +1006,7 @@ def test_show_diff_says_so_when_a_style_sets_what_the_look_already_has(workspace
     assert (code, err) == (0, "") and "  in your look: no field changes (it sets what your look already has)" in out and "    zone:" not in out
 
 
-def test_show_diff_of_a_style_with_a_look_block_lists_the_colours_and_the_face_it_changes(workspace):
+def test_show_diff_of_a_style_with_a_look_block_lists_the_colors_and_the_face_it_changes(workspace):
     cap_helpers.install_brand(workspace, "upstatic")
     d = styles.load("rose-running")
     code, out, err = run("show", "rose-running", "--diff")

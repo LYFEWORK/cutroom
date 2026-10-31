@@ -62,7 +62,7 @@ def test_paths_start_with_the_prefix_when_given_and_are_absolute_when_not(brand)
     assert dna.captions_profile(D, brand)["fonts_dir"] == str(brand / "assets") and dna.captions_profile(D, brand, "brand-acme")["fonts_dir"] == "brand-acme"
 
 
-def test_chip_neg_follows_the_negative_colour_until_set_and_text_hook_follows_hook_on(brand):
+def test_chip_neg_follows_the_negative_color_until_set_and_text_hook_follows_hook_on(brand):
     D = dna.load(brand)
     assert dna.captions_profile(D, brand)["chip_neg"] == D["colors"]["negative"] and dna.captions_profile(D, brand)["text_hook"] == "on"
     D["captions"]["chip_neg"], D["colors"]["negative"] = "#112233", "#AA0000"

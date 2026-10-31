@@ -1,5 +1,5 @@
 /**
- * icon.tsx: a monochrome SVG file drawn inline in any colour. Inline, not a CSS mask: the frame waits (delayRender) until the SVG
+ * icon.tsx: a monochrome SVG file drawn inline in any color. Inline, not a CSS mask: the frame waits (delayRender) until the SVG
  * text has loaded, so an icon can never be missing from a rendered frame.
  */
 import React, { useEffect, useState } from "react";
@@ -43,7 +43,7 @@ export const SvgIcon: React.FC<{
     ...style,
   };
   if (!svg) return <div style={box} />;
-  // a file that carries no fill is black by default: give the root our colour, and strip anything executable
+  // a file that carries no fill is black by default: give the root our color, and strip anything executable
   let out = svg
     .replace(/<script[\s\S]*?<\/script>/gi, "")
     .replace(/\son\w+\s*=\s*("[^"]*"|'[^']*')/gi, "")

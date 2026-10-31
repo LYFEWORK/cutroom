@@ -21,8 +21,8 @@ TAGS = ["-colorspace", "bt709", "-color_primaries", "bt709", "-color_trc", "bt70
         "-x264-params", "colorprim=bt709:transfer=bt709:colormatrix=bt709"]
 FACE = {"cx": 540, "cy": 900, "w": 400, "h": 400}
 WORDS = [{"text": "why", "start": 0.02, "end": 0.90, "filler": False}]
-# A smooth grey picture that moves: three crossing sine waves. A gate that compares the per-channel MEDIAN of a frame needs a picture whose
-# histogram is dense at its median (a test card of flat colour bars is not: a few pixels of caption flip its median by 60 levels), and the frame
+# A smooth gray picture that moves: three crossing sine waves. A gate that compares the per-channel MEDIAN of a frame needs a picture whose
+# histogram is dense at its median (a test card of flat color bars is not: a few pixels of caption flip its median by 60 levels), and the frame
 # match needs something that moves and has structure. {size} is filled in by video().
 SMOOTH = "nullsrc=size={size}:rate=30,geq=lum='128+28*sin(2*PI*(X/45+T))+28*sin(2*PI*(Y/70+1.3*T))+28*sin(2*PI*((X+Y)/90-0.7*T))':cb=128:cr=128"
 

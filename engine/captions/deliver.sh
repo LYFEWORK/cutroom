@@ -132,7 +132,7 @@ if g7.get("lufs") is None:
 else:
     loudness = f"{g7['lufs']} LUFS, true peak {g7['true_peak']} dBTP"
     if g7.get("mode") == "enforced":
-        loudness += " (your look's master_audio is loudnorm: normalised to -16 LUFS, true peak -2 dBTP, and checked at -16 +/- 1 LUFS)"
+        loudness += " (your look's master_audio is loudnorm: normalized to -16 LUFS, true peak -2 dBTP, and checked at -16 +/- 1 LUFS)"
     else:
         loudness += " (audit only: your look's master_audio is off, so the engine leaves the mix as it came)"
 

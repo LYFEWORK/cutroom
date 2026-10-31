@@ -122,7 +122,7 @@ def test_a_piece_with_no_face_plays_as_shot_at_the_same_punch_in():
     pl = fl.plan(a, [(0, 120), (120, 180)], W, H, 1.0)
     assert pl["pieces"][1]["found"] == 0
     b = boxes(pl)[120:]
-    assert np.allclose(b, b[0]) and np.allclose((b[0][0] + b[0][2]) / 2, W / 2) and np.allclose((b[0][1] + b[0][3]) / 2, H / 2)   # still, centred
+    assert np.allclose(b, b[0]) and np.allclose((b[0][0] + b[0][2]) / 2, W / 2) and np.allclose((b[0][1] + b[0][3]) / 2, H / 2)   # still, centerd
 
 
 def test_a_read_that_jumps_to_another_face_is_thrown_out():
@@ -285,7 +285,7 @@ def test_an_hdr_picture_is_refused_before_anything_is_tracked(tmp_path, monkeypa
 
 @pytest.mark.skipif(not swiftc_works(), reason="the tracker is Apple Vision: it needs macOS and swiftc to build engine/swift/facepts")
 def test_the_real_helper_runs_and_finds_no_face_in_a_picture_with_nobody_in_it(tmp_path, capsys):
-    """no stub here: swiftbin builds (or confirms) the real facepts binary, and the engine tracks a grey moving picture through it"""
+    """no stub here: swiftbin builds (or confirms) the real facepts binary, and the engine tracks a gray moving picture through it"""
     src = faceless_video(tmp_path / "empty.mp4")
     binary = fl.swiftbin.ensure(os.path.join(ENGINE, "swift", "facepts"))
     assert os.path.isfile(binary) and os.access(binary, os.X_OK)

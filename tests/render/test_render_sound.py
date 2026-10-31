@@ -1,5 +1,5 @@
 """The sound half of render.py, without Remotion: the music bed under the voice (22 dB under the talk, 14 dB under the voice alone, measured on
-the final), effects at their times, and the final normalised to -16 LUFS at -1.5 dBTP or lower. The picture here is a plain test pattern."""
+the final), effects at their times, and the final normalized to -16 LUFS at -1.5 dBTP or lower. The picture here is a plain test pattern."""
 import re
 import shutil
 
@@ -28,7 +28,7 @@ def job_for(tmp_path, cut, **over):
 
 
 def finish(tmp_path, job, work):
-    """mix, normalise and check, the way main() does after the picture: returns the final file"""
+    """mix, normalize and check, the way main() does after the picture: returns the final file"""
     import render
 
     video = tmp_path / "video-only.mp4"
@@ -160,7 +160,7 @@ def test_automatic_effects_are_on_unless_the_plan_says_otherwise(tmp_path, long_
 
 
 def test_a_piece_with_music_and_no_voice_loops_the_track_and_fades(tmp_path, music, clip):
-    """a montage with no voiceover: the track alone, looped to the length, faded in and out, normalised by the final step"""
+    """a montage with no voiceover: the track alone, looped to the length, faded in and out, normalized by the final step"""
     import numpy as np
     import render
 

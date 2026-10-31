@@ -7,7 +7,7 @@ Writes <video name>.txt beside every video file under the shoot folder (intervie
 what the clip is, what is said with m:ss times inside THAT file (a cut take is re-timed to the cut), what is on screen, the flags, and for a cut take its
 question or script line, its take number and quality, and where in the file the speech sits ("The rest is handle").
 A clip with no speech says so: "NO SPEECH. The camera recorded no sound on this clip." or "NO SPEECH. Natural sound only."
-Built from the transcripts, the word timestamps and the two manifests, no agent. A notes file is recognised by its first line (job.MARK), so a re-run
+Built from the transcripts, the word timestamps and the two manifests, no agent. A notes file is recognized by its first line (job.MARK), so a re-run
 rewrites its own files and reverse removes them, and a .txt of your own is never touched.
 
 Everything here is rebuilt from the .work folder (transcripts, word timestamps, evidence.json). So it refuses, before it touches a single file, when that folder cannot

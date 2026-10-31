@@ -67,13 +67,13 @@ NOTES = {
     "mix_lufs": "approximate: integrated loudness of the whole track, voice and music together; a mix figure, not the level of the music alone",
 }
 EMPTY = [
-    ("Captions", "Where they sit, how big, case, colour roles (hex plus role), how the hero word is treated, how they enter and leave. Cite frames."),
+    ("Captions", "Where they sit, how big, case, color roles (hex plus role), how the hero word is treated, how they enter and leave. Cite frames."),
     ("Hook", "The text, how long it stays, where it sits, and what is shown in the first 3 seconds. Cite frames."),
     ("Cuts and pacing", "What the cut rhythm does for the viewer, where it speeds up or holds. Compare with the numbers above."),
     ("B-roll and graphics", "What cuts away from the speaker or sits over the picture: footage, cards, devices, overlays. Cite frames."),
     ("Sound", "What is heard on each beat: voice, music, clicks, thumps, silence before a payoff. Anything not heard is a guess, say so."),
     ("Steal list", "At most six moves worth copying, in plain words, each tied to a moment number."),
-    ("Leave out", "What should not be copied from this reference: its brand, its faces, its colours, anything tied to its subject."),
+    ("Leave out", "What should not be copied from this reference: its brand, its faces, its colors, anything tied to its subject."),
 ]
 
 
@@ -603,7 +603,7 @@ def kmeans(px, k=5, iters=25, seed=0):
 
 
 def merge_close(colors, shares, scale=1.0):
-    merged = []   # clusters closer than 24 in RGB are one colour: [colour, share]
+    merged = []   # clusters closer than 24 in RGB are one color: [color, share]
     for col, s in sorted(zip(colors, shares), key=lambda x: -x[1]):
         s = s * scale
         for m in merged:
@@ -618,7 +618,7 @@ def merge_close(colors, shares, scale=1.0):
 
 def palette_of(paths, k=5):
     """[{hex, share, kind}] biggest first. "dominant": k-means over every pixel, near-black and near-white clusters under 3% dropped
-    (video edges, white flashes). "accent": up to two bright, saturated colours covering at least 0.4% of the frame (a small
+    (video edges, white flashes). "accent": up to two bright, saturated colors covering at least 0.4% of the frame (a small
     accent never wins a k-means on area, so it is looked for on its own)."""
     import numpy as np
     from PIL import Image
@@ -652,7 +652,7 @@ def palette_of(paths, k=5):
 # ---------------------------------------------------------------- boards and strips
 
 def make_sheet(tiles, title, out, cols, tile_w):
-    """tiles [(path, label)] to one jpg sheet, each tile labelled on a bar across its top"""
+    """tiles [(path, label)] to one jpg sheet, each tile labeled on a bar across its top"""
     from PIL import Image, ImageDraw
     ims = []
     for p, label in tiles:
@@ -709,10 +709,10 @@ def study_md(name, meta, info, m, palette, moments, segs, reason, persistent):
           f"| Words per minute | {na(m['words_per_minute'])} | {NOTES['words_per_minute']} |",
           f"| Mix loudness | {na(m['mix_lufs'], ' LUFS')} | {NOTES['mix_lufs']} |",
           f"| Hook window (first {HOOK_S:g} s) | {h['cuts']} cut(s), text on screen: {seen}, first words: {cell(h['first_words']) or 'none'} | from the same scans |", ""]
-    L += ["## Colours", ""]
+    L += ["## Colors", ""]
     if palette:
-        L += ["| Colour | Share | Role |", "|---|---|---|"] + [f"| {c['hex']} | {100 * c['share']:.1f}% | {'accent (small area)' if c['kind'] == 'accent' else ''} |" for c in palette]
-        L += ["", "Dominant colours are k-means over the shot frames and each moment's middle frame. Accent rows are bright, saturated colours too small to win a k-means. Fill each Role: background, panel, text, accent, glow, depth."]
+        L += ["| Color | Share | Role |", "|---|---|---|"] + [f"| {c['hex']} | {100 * c['share']:.1f}% | {'accent (small area)' if c['kind'] == 'accent' else ''} |" for c in palette]
+        L += ["", "Dominant colors are k-means over the shot frames and each moment's middle frame. Accent rows are bright, saturated colors too small to win a k-means. Fill each Role: background, panel, text, accent, glow, depth."]
     L += ["", "## Transcript", ""]
     L += [f"[{fmt_t(s['t0'])} - {fmt_t(s['t1'])}] {s['text']}" for s in segs[:5]] or [f"(No speech: {reason}.)"]
     L += ["", "The whole transcript is in transcript.md.", "", f"## Moments ({len(moments)}, from {m['moments_from']})", "",

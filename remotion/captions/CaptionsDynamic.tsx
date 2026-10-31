@@ -1,19 +1,19 @@
 /**
  * CaptionsDynamic.tsx — the dynamic caption composition: cluster captions and the soft build.
- * One font family (the plan's `font`), a base colour + one accent, content decides the mode.
+ * One font family (the plan's `font`), a base color + one accent, content decides the mode.
  *   behind  — huge word(s) above/behind the head; the person matte (RGBA webp sequence) sits over them.
  *   front   — a stacked lockup in front (the payoff), word by word, last line in the accent.
  *             A front event with `soft` is a soft build thought instead, drawn by SoftThought (softthought.tsx, by its own rules).
  * Layout events (README, Devices) take the frame for a beat instead:
  *   cta     — wash + a two-row call to action + pulsing chevrons (the video stays under it).
- *   page    — a full-frame solid colour page with one display word sliding in.
+ *   page    — a full-frame solid color page with one display word sliding in.
  *   frame   — the video shrinks into a rounded card, spoken-list pills drop in above it.
  *   igpost  — the video inside a mock post card, slow zoom-out, optional mosaic.
  * Layers: video → behind → matte → front → cta → page/frame/igpost.
  * Footage moves (README, Pacing): `punches` scale the full-frame clip AND the matte
  * about a fixed origin (snap in, hold, ease back to 1); `whips` blur + push the clip on top of that.
  * Row marks (§2): a behind/front row may lead with ONE of pin / logo / icon, dropping in on the
- * pin's 4-frame curve in the row's own colour.
+ * pin's 4-frame curve in the row's own color.
  *
  * props: {
  *   src, font, durationInFrames, accent?,
@@ -22,7 +22,7 @@
  *   events: [
  *     {mode:"behind", words:[{text,at,size}], start, end, y, stack:"column"|"row"},
  *     {mode:"front",  words:[{text,at,size,accent,pin|logo|icon}], start, end, y},
- *     {mode:"front", soft:true, words:[{text,at,ats,role,size,weight,dx,bar,devices}], start, end, exitAt, y, shadow?},  // with the plan's `soft` colours
+ *     {mode:"front", soft:true, words:[{text,at,ats,role,size,weight,dx,bar,devices}], start, end, exitAt, y, shadow?},  // with the plan's `soft` colors
  *     {mode:"cta", rows, start, end, chevrons?, wash?, y?},
  *     {mode:"page", text, start, end, color?, ink?, font?, size?, weight?, slide?},
  *     {mode:"frame", list, start, end, bg?, card?, pill?},
@@ -55,7 +55,7 @@ import {
 } from "./Icons";
 import {
   SNAP,
-  SoftColours,
+  SoftColors,
   SoftThought,
   WHITE,
   countText,
@@ -78,7 +78,7 @@ const FORMATS: Record<string, string> = {
   otf: "opentype",
 };
 // Each font's load, started once and kept by its family and files. loadFonts answers it, so a drawing that measures glyphs in the browser
-// (the soft bar) waits for the face to be in document.fonts: it settles once the faces are added, or once the render is cancelled.
+// (the soft bar) waits for the face to be in document.fonts: it settles once the faces are added, or once the render is canceled.
 const loaded: Record<string, Promise<void>> = {};
 const fontKey = (font: FontSpec) =>
   `${font.family}|${font.faces.map((f) => `${f.src}@${f.weight}`).join(",")}`;
@@ -139,7 +139,7 @@ type LWord = {
   pin?: boolean; // §1e map-pin glyph before the row (place names)
   spaced?: boolean; // §1f 0.28em tracking + blur reveal, accent→base (place-name hero)
   // Row pops (README, Devices): a mark that drops in before the row's text, in the
-  // row's own colour, with the pin's entrance. A row carries AT MOST ONE — pin > logo > icon.
+  // row's own color, with the pin's entrance. A row carries AT MOST ONE — pin > logo > icon.
   logo?: LogoName; // §2 platform logo, 0.9em (public/logos/<name>.svg, filled)
   icon?: IconName; // §2 line icon, 0.8em (the §2c vocabulary, stroked)
   // A line of a soft build thought (a front event with `soft`, SoftThought):
@@ -190,7 +190,7 @@ type Ev =
       chevrons?: boolean; // default true
       wash?: string; // default ctaWash ?? accent
       y?: number; // default 700
-      maxW?: number; // width budget for the rows (default 960: a CTA is centred on the canvas, not the caption safe box)
+      maxW?: number; // width budget for the rows (default 960: a CTA is centerd on the canvas, not the caption safe box)
     }
   | {
       mode: "page"; // §2b
@@ -238,12 +238,12 @@ export type DynProps = {
   accent: string;
   font: FontSpec;
   matte?: { dir: string; windows: [number, number][] };
-  // Colour deployment: `base` is the colour of every non-accent glyph (default white); `chip` renders the
-  // accent as a chip device — accent block, base-coloured text, skewed — instead of accent text. Both
+  // Color deployment: `base` is the color of every non-accent glyph (default white); `chip` renders the
+  // accent as a chip device — accent block, base-colored text, skewed — instead of accent text. Both
   // default to a white-text, accent-hero look, so a plan that sets neither renders as it always did.
   base?: string;
   chip?: boolean;
-  // `heroBase` colours the behind/front lockup glyphs (default = base), for a look whose running text and heroes differ.
+  // `heroBase` colors the behind/front lockup glyphs (default = base), for a look whose running text and heroes differ.
   heroBase?: string;
   // A second face for the RUNNING words only (heroes, lockups, chips, hook keep `font`): e.g. a condensed cut for
   // the running words while the big words stay normal width.
@@ -268,25 +268,25 @@ export type DynProps = {
   // look, unchanged. A whip that lands inside a punch composes on top of it (scales multiply).
   punches?: Punch[];
   // ---- device props. Every one is optional and every default reproduces a plan that sets none of them.
-  chipNeg?: string; // §1b/§1d box + strike colour (default #E3161B)
+  chipNeg?: string; // §1b/§1d box + strike color (default #E3161B)
   heroGlow?: boolean; // §1a master switch for the `glow` word device
   heroTint?: string; // §1a gradient start (default = accent mixed 55% toward white)
   glowPx?: number; // §1a near drop-shadow radius (default 14; the far one scales with it)
-  ctaWash?: string; // §2a wash colour (default accent)
+  ctaWash?: string; // §2a wash color (default accent)
   pageBg?: string; // §2b page fill (default accent)
   pageInk?: string; // §2b page text (default by the luma rule)
   displayFont?: FontSpec; // §2b page face (default = the caption font)
   displayWeight?: number; // brand display_weight: the page word's weight unless the event sets its own
   pillBg?: string; // §2c pill fill (default accent)
   pillInk?: string; // §2c pill icon + text (default by the luma rule)
-  // The soft build's colours (cluster_plan.soft_plan), read by soft events only: the accent's deep and light tints a word settles through,
+  // The soft build's colors (cluster_plan.soft_plan), read by soft events only: the accent's deep and light tints a word settles through,
   // text (the brand's colors.white, what every other line settles to), barInk (what the payoff on the bar settles to) and neg (what a red payoff
-  // settles to, and a strike's colour).
-  soft?: SoftColours;
+  // settles to, and a strike's color).
+  soft?: SoftColors;
   events: Ev[];
 };
 
-// ONE width budget for every mode (cluster_plan.MAXW). Lines are centred on canvas x=540 and the
+// ONE width budget for every mode (cluster_plan.MAXW). Lines are centerd on canvas x=540 and the
 // safe box (x 65..940) is not symmetric around that point, so the binding limit is the tighter
 // side: 2*(940-540) = 800 px of total text width. GLYPH_CAPS/GLYPH_RUN are the reference face's measured
 // px per pt per char for heavy uppercase and for the running words (glyph.py holds the same two numbers). A look whose
@@ -313,7 +313,7 @@ const MARK_ICON_EM = 1.0;
 
 const OVERSHOOT = Easing.bezier(0.2, 1.35, 0.4, 1); // lands past 1 then settles (cluster entrances)
 const shadow = "0 3px 18px rgba(0,0,0,0.45), 0 0 2px rgba(0,0,0,0.5)";
-// The chip: an accent block with base-coloured text, skewed -8deg with the glyphs un-skewed inside
+// The chip: an accent block with base-colored text, skewed -8deg with the glyphs un-skewed inside
 // Width grows by ~0.44em of padding — the planner/hand pass must budget for it (cluster_plan chip-aware sizes).
 const CHIP_SKEW = "skewX(-8deg)";
 const chipBox = (accent: string, base: string): React.CSSProperties => ({
@@ -410,7 +410,7 @@ export type Punch = {
   scale?: number; // default 1.12, the planner's own (cadence.py PUNCH_SCALE)
   frames?: number; // snap-in length, default 3
   hold?: number; // frames at `scale` before the return; default = up to the next punch, capped at 24
-  cx?: number; // zoom origin in 1080x1920 px; default = canvas centre
+  cx?: number; // zoom origin in 1080x1920 px; default = canvas center
   cy?: number;
 };
 const PUNCH_SCALE = 1.12;
@@ -725,8 +725,8 @@ const Lockup: React.FC<{
                   : {}),
               }}
             >
-              {/* §1e/§2: the leading mark sits inline before the row, centred on the cap height.
-                  The pin keeps its accent fill; a logo/icon takes the ROW's colour (`ink`), which is
+              {/* §1e/§2: the leading mark sits inline before the row, centerd on the cap height.
+                  The pin keeps its accent fill; a logo/icon takes the ROW's color (`ink`), which is
                   base on a plain row and the accent on an accent one. */}
               {w.pin ? (
                 <PinGlyph color={accent} style={markStyle} />
@@ -843,7 +843,7 @@ const Cta: React.FC<{
           const caps = k === 0; // §2a: row 0 is the 800-weight caps slam
           const en2 = enter(k);
           // the reference "FILL OUT" is ~190 px; the caption safe box (MAXW 800) would cap it at 133, so a
-          // CTA carries its own budget (default 960 = the top-zone width) — centred, it stays on canvas.
+          // CTA carries its own budget (default 960 = the top-zone width) — centerd, it stays on canvas.
           const budget = e.maxW ?? 960;
           const size = Math.min(
             r.size ?? (caps ? 190 : 74),
@@ -1039,7 +1039,7 @@ const FrameEvent: React.FC<{
         }}
       >
         {/* the SAME clip, drawn a second time inside the card: full-frame box translated to the
-            card centre and scaled by card.w/1080, so the shrink reads as the video moving in. */}
+            card center and scaled by card.w/1080, so the shrink reads as the video moving in. */}
         <div
           style={{
             position: "absolute",
@@ -1298,14 +1298,14 @@ const IgPost: React.FC<{
 };
 
 // A soft build line's mark (SoftThought draws the line): its pin, else its logo, else its icon, with this file's glyphs at their row-mark
-// sizes, in the colour and the style the thought gives it as it arrives.
-const softMark = (w: LWord, colour: string, style: React.CSSProperties) =>
+// sizes, in the color and the style the thought gives it as it arrives.
+const softMark = (w: LWord, color: string, style: React.CSSProperties) =>
   w.pin ? (
-    <PinGlyph color={colour} style={style} />
+    <PinGlyph color={color} style={style} />
   ) : w.logo ? (
-    <LogoGlyph name={w.logo} color={colour} em={0.9} style={style} />
+    <LogoGlyph name={w.logo} color={color} em={0.9} style={style} />
   ) : w.icon ? (
-    <RowIcon name={w.icon} color={colour} em={0.8} style={style} />
+    <RowIcon name={w.icon} color={color} em={0.8} style={style} />
   ) : null;
 
 export const CaptionsDynamic: React.FC<DynProps> = ({
@@ -1364,7 +1364,7 @@ export const CaptionsDynamic: React.FC<DynProps> = ({
   if (!soft && fronts.some((e) => e.soft))
     cancelRender(
       new Error(
-        "a soft event needs the plan's soft colours {deep, light, text, barInk, neg}: plan the take with cluster_plan.py",
+        "a soft event needs the plan's soft colors {deep, light, text, barInk, neg}: plan the take with cluster_plan.py",
       ),
     );
   const ctas = events.filter((e) => e.mode === "cta") as Extract<
@@ -1401,7 +1401,7 @@ export const CaptionsDynamic: React.FC<DynProps> = ({
     if (d <= n) whip = Math.max(whip, (w.amount ?? 1) * (1 - d / (n + 1)));
   }
   // §1: the punch — sorted so `punchAt` can take the last one that has started. The clip carries
-  // punch × whip about the punch's origin (with no punch, origin = the canvas centre, so a lone whip
+  // punch × whip about the punch's origin (with no punch, origin = the canvas center, so a lone whip
   // renders exactly as it did before punches existed); the matte carries the punch alone, since the
   // whip has never moved it and that does not change here.
   const punchList = React.useMemo(
@@ -1475,7 +1475,7 @@ export const CaptionsDynamic: React.FC<DynProps> = ({
               e={e}
               family={font}
               accent={accent}
-              colours={soft}
+              colors={soft}
               fontReady={fontReady}
               spread={SPACED_EM}
               mark={softMark}

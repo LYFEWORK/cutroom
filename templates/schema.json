@@ -57,6 +57,8 @@
       "soft_build": {"type": "boolean"},
       "default_style": {"type": ["string", "null"], "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$", "why": "a style id (lower case words joined by hyphens), or null for the brand's own preset"},
       "pace_gate": {"type": "string", "enum": ["off", "report", "enforce"]},
+      "devices": {"type": "string", "enum": ["on", "off"]},
+      "master_audio": {"type": "string", "enum": ["off", "loudnorm"]},
       "hero_glow": {"type": "boolean"},
       "hero_tint": {"$ref": "#/definitions/hexOrNull"},
       "glow_px": {"type": "integer", "minimum": 0, "maximum": 80},
@@ -137,6 +139,9 @@
     "words": {"type": "object", "additionalProperties": false, "properties": {
       "spelling": {"type": "object", "additionalProperties": {"type": "string", "minLength": 1}},
       "banned": {"$ref": "#/definitions/words"}}},
+    "transcribe": {"type": "object", "additionalProperties": false, "properties": {
+      "engine": {"type": "string", "enum": ["local", "deepgram"], "why": "local runs on this Mac with no key; deepgram needs DEEPGRAM_API_KEY in keys.env"},
+      "language": {"type": ["string", "null"], "pattern": "^(auto|[a-z]{2,3}(-[A-Za-z]{2,4})?)$", "why": "a language code like en, auto to let the transcriber decide, or null for the config default"}}},
     "grade": {"type": "object", "additionalProperties": false, "properties": {
       "enabled": {"type": "boolean"},
       "lut": {"$ref": "#/definitions/assetOrNull"}}},

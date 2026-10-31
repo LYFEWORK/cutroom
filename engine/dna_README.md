@@ -1,10 +1,10 @@
 # DNA: one place for who the user is
 
-The DNA is the one place the user's identity lives: colours, fonts, logo, caption look, hook, formats, motion, music and sound rules, graphics wishlist and folders. The setup wizard writes it and every other module reads it. The few sections that fill in later (`studies`, `pacing`, `graphics`) are written with `save`, which refuses a file that is not well formed. It is two files in the user's `Brand/` folder, plus the files they point at.
+The DNA is the one place the user's identity lives: colors, fonts, logo, caption look, hook, formats, motion, music and sound rules, graphics wishlist and folders. The setup wizard writes it and every other module reads it. The few sections that fill in later (`studies`, `pacing`, `graphics`) are written with `save`, which refuses a file that is not well formed. It is two files in the user's `Brand/` folder, plus the files they point at.
 
 | In `Brand/` | What it holds |
 |---|---|
-| `dna.json` | The values: colours, fonts, logo, caption look, hook, formats, motion, b-roll, music and sound rules, graphics wishlist, output, delivery, storage. |
+| `dna.json` | The values: colors, fonts, logo, caption look, hook, formats, motion, b-roll, music and sound rules, graphics wishlist, output, delivery, storage. |
 | `DNA.md` | The judgment, in ten short sections of plain words: who is on camera, the voice, the look, how much motion, captions, b-roll, music and sound, formats, never, where things are. |
 | `assets/` | The files `dna.json` points at: `fonts/`, `logos/`, `luts/`. Every path in `fonts`, `logo` and `grade` is relative to `assets/`. |
 | `styles/` | Caption styles, one JSON file each. `init` copies the six starters here. |
@@ -17,7 +17,7 @@ The DNA is the one place the user's identity lives: colours, fonts, logo, captio
 - **Closed objects.** A key the schema does not list fails the check: `captions.zoen: not a known field`.
 - **TODO fails.** Any string in `dna.json` that contains `TODO`, and any line of `DNA.md` that does, is a problem. `init` writes `TODO` where it could not find an answer (a font, a line of `DNA.md`). `dna.py todo` prints just those, one per line: the wizard's list.
 - **Required keys are never filled in.** `id`, `name`, `colors` (all seven), `fonts.display` (`family` and `file`), `output` (`aspect` and `size`). A file that leaves one out is refused by name. Everything else is optional and comes from the template when left out.
-- **Types are exact.** An integer field takes an integer: `3.0` fails. A colour is `#RRGGBB`. An enum is one of its words.
+- **Types are exact.** An integer field takes an integer: `3.0` fails. A color is `#RRGGBB`. An enum is one of its words.
 - **The hook never sits in the top 220 px.** `hook.top_px` is at least 220, because the platform's own header covers that band of a 1080 x 1920 frame.
 - **Fields that depend on each other are checked together:** `formats.home` is in `formats.list`, `hook.hold_s` and `broll` holds run short to long, `output.size` has the shape of `output.aspect`, `hook.font` "running" needs `fonts.running`, and ids in `graphics` and `studies` are unique.
 - **Files are checked on disk** (`check`, not `show`): every font, logo and LUT exists, a font starts like a font (TTF, OTF, WOFF or WOFF2), a logo is an `.svg` or `.png`, `captions.default_style` names a style file, every file in `Brand/styles/` reads, and `DNA.md` exists with no `TODO` line.
@@ -70,7 +70,7 @@ Both are flat dicts of plain data. Every asset path is absolute, unless a `prefi
 | `font_faces` | `[{weight, src}]`, one entry per distinct file (`"100 900"` for a variable or single file) |
 | `font_abs` | The same files as absolute paths, for measuring text |
 | `word_font` | `fonts.running` as `{fonts_dir, prefix, family, files, faces, abs}`, or `None` |
-| `case` `zone` `width` `top_y0` `hero_max` `row_px` `chin_gap` `chip` `hero_base` `hero_shadow` `hero_stroke` `text_opacity` `text_soften` `whip_frames` `whip_amount` `caption_tier_max` `soft_build` `default_style` `pace_gate` `hero_glow` `hero_tint` `glow_px` `chip_neg` `neg_words` `count_up` `places` `cta_wash` `page_bg` `page_ink` `display_weight` `pill_bg` `pill_ink` `icon_words` `pill_icons` `feel` `look_note` `text_hook` | Every field of the `captions` section, under its own name. `chip_neg` is `colors.negative` when it is null. `text_hook` is `"off"` whenever `hook.on` is false. |
+| `case` `zone` `width` `top_y0` `hero_max` `row_px` `chin_gap` `chip` `hero_base` `hero_shadow` `hero_stroke` `text_opacity` `text_soften` `whip_frames` `whip_amount` `caption_tier_max` `soft_build` `default_style` `pace_gate` `hero_glow` `hero_tint` `glow_px` `chip_neg` `neg_words` `count_up` `places` `cta_wash` `page_bg` `page_ink` `display_weight` `pill_bg` `pill_ink` `icon_words` `pill_icons` `feel` `look_note` `text_hook` `devices` `master_audio` | Every field of the `captions` section, under its own name. `chip_neg` is `colors.negative` when it is null. `text_hook` is `"off"` whenever `hook.on` is false. |
 | `spelling`, `do_not_say` | `words.spelling`, `words.banned` |
 | `auto_punches` | `motion.auto_punches` |
 | `pace_gate` | `captions.pace_gate` (one of the captions fields above, named here because the caption chain reads it) |
@@ -107,8 +107,8 @@ A style is one small JSON file: `Brand/styles/<id>.json` first, then the starter
   "feed": {"place": "lower", "size": 0.85, "hero": {"look": "color"}, "motion": "quiet"}}
 ```
 
-- **`set`** lays fields over the `captions` section for one video. Only these may be set: layout (`case`, `zone`, `width`, `top_y0`, `hero_max`, `row_px`, `chin_gap`), treatment (`chip`, `text_opacity`, `text_soften`, `hero_glow`, `glow_px`), motion (`whip_frames`, `whip_amount`, `count_up`), the tier (`caption_tier_max`) and `soft_build`. Each takes the type and range of the captions field. A colour, the display weight or a font key in `set` is refused with a pointer to `look`; a word list or any other field is refused as the brand's. The tier only ever goes down: a cap the brand set lower stays.
-- **`look`** is optional, and every key in it is optional (a missing key is the brand's value; `null` is not a value). It lays colour and font choices over the profile: `accent`, `text` (the profile's `base`), `on_accent`, `hero_base`, `hero_tint`, `hero_shadow`, `hero_stroke` (`{width, color}`), `chip_neg`, `display_weight`, and `font`. A key not on that list is refused. `font: "running"` swaps the font slot: the font keys (`font`, `font_family`, `font_prefix`, `fonts_dir`, `font_files`, `font_faces`, `font_abs`, `font_fallback`, `font_variable`) read the running face, so the words draw in it; `display_font` (page and pill text) stays the display face and `word_font` stays the running face. It needs `fonts.running`. Starter styles ship with no `look`.
+- **`set`** lays fields over the `captions` section for one video. Only these may be set: layout (`case`, `zone`, `width`, `top_y0`, `hero_max`, `row_px`, `chin_gap`), treatment (`chip`, `text_opacity`, `text_soften`, `hero_glow`, `glow_px`), motion (`whip_frames`, `whip_amount`, `count_up`), the tier (`caption_tier_max`) and `soft_build`. Each takes the type and range of the captions field. A color, the display weight or a font key in `set` is refused with a pointer to `look`; a word list or any other field is refused as the brand's. The tier only ever goes down: a cap the brand set lower stays.
+- **`look`** is optional, and every key in it is optional (a missing key is the brand's value; `null` is not a value). It lays color and font choices over the profile: `accent`, `text` (the profile's `base`), `on_accent`, `hero_base`, `hero_tint`, `hero_shadow`, `hero_stroke` (`{width, color}`), `chip_neg`, `display_weight`, and `font`. A key not on that list is refused. `font: "running"` swaps the font slot: the font keys (`font`, `font_family`, `font_prefix`, `fonts_dir`, `font_files`, `font_faces`, `font_abs`, `font_fallback`, `font_variable`) read the running face, so the words draw in it; `display_font` (page and pill text) stays the display face and `word_font` stays the running face. It needs `fonts.running`. Starter styles ship with no `look`.
 - **`feed`** is for the renderer's simple caption pages: `place` (`chest`, `lower`, `top`), `size` (0.7 to 1.5, a scale of `feed_captions.size_px`), `hero` (`look` `color`, `bigger` or `bigger_bold`; `scale` 1.3 to 2.8; `pick` `accent` or `page`), `words` (1 to 3, never more than `feed_captions.words_per_page`) and `motion` (`reveal`, `quiet`, `soft`). `style()` hands it back as `feed`.
 
 A style whose `owner` is another DNA's id is refused. After a style is laid over a profile, every key outside `set` and `look` is checked to equal the brand's own profile, so a style cannot move the brand's identity. When nobody picks a style, the caller lays `captions.default_style` itself, through `style()`; `captions_profile` on its own is the brand's own preset. `check` reads every file in `Brand/styles/` and names a broken one (`styles/quiet.json: set.hero_base: ...`).
@@ -120,7 +120,7 @@ A style whose `owner` is another DNA's id is refused. After a style is laid over
 
 ## The wizard loop
 
-1. **Look.** `python3 engine/dna.py scan <their brand folder>` shows what a folder proposes: the accent, ink and base from the hex colours in its `.html`, `.css`, `.md`, `.json` and `.txt` files (or from a logo `.png`, when Pillow is installed and no colour is written anywhere), the best-weight font, the logos, and the colour for text on the accent (white on a deep accent, else the ink when it reads at 4.5:1, else black). The folder is never written to.
+1. **Look.** `python3 engine/dna.py scan <their brand folder>` shows what a folder proposes: the accent, ink and base from the hex colors in its `.html`, `.css`, `.md`, `.json` and `.txt` files (or from a logo `.png`, when Pillow is installed and no color is written anywhere), the best-weight font, the logos, and the color for text on the accent (white on a deep accent, else the ink when it reads at 4.5:1, else black). The folder is never written to.
 2. **Start.** `python3 engine/dna.py init Brand --name "Acme Roofing" [--from <folder>]` writes `dna.json`, copies the fonts and logos into `assets/`, copies the starter styles into `styles/`, writes `DNA.md`, runs the check and prints what is still to do. With no font found it writes `TODO` in the font fields. It never overwrites a `DNA.md` or a style that is already there, and a failed step removes what the call made.
    **Add the look later.** Run `init` again on the same folder with `--accent`, `--ink`, `--font`, `--emblem`, `--lockup`, `--handle`, `--site` or `--caps`: it changes only what it is given. A new ink also works out `colors.bg`, `colors.card` and `surface.background` again, a new ink or accent works out `colors.on_accent` again, and `people`, the styles and `DNA.md` are left alone. With no option it changes nothing and prints what is still to do. The id never changes.
 3. **Fill.** `python3 engine/dna.py todo Brand` lists the open items, one per line. Ask for each, write the answer into `dna.json` (`dna.load`, change the dict, `dna.save`) or replace the `TODO` line of `DNA.md` with a few plain sentences.
@@ -130,7 +130,7 @@ A style whose `owner` is another DNA's id is refused. After a style is laid over
 |---|---|
 | name, handle, who is on camera | `name`, `handle`, `people`, `DNA.md` |
 | their brand folder | `scan`, then `init` |
-| colours (contrast-checked text on the accent) | `colors`, `surface` |
+| colors (contrast-checked text on the accent) | `colors`, `surface` |
 | font and capitals | `fonts`, `type` |
 | logo files | `logo` |
 | caption look | `captions`, `default_style`, `styles/` |
@@ -171,19 +171,19 @@ All seven are required.
 
 | Field | Type | Default | Read by | What it does |
 |---|---|---|---|---|
-| `colors.ink` | hex colour | `required` | render, footage | The brand's dark colour: dark text, and the floor of a dark brand. |
-| `colors.base` | hex colour | `required` | captions, render | The brand's light colour: every caption glyph that is not the accent. |
-| `colors.accent` | hex colour | `required` | captions, render, footage | The one accent: the hero word, chips, the glow, bars. |
-| `colors.on_accent` | hex colour | `required` | captions, render | The colour of text that sits on the accent. |
-| `colors.negative` | hex colour | `required` | captions, render | The bad-news colour: the box on a negative word, the strike line. |
-| `colors.bg` | hex colour | `required` | render | The floor colour behind cards and pages. |
-| `colors.card` | hex colour | `required` | render | The card colour on that floor. |
+| `colors.ink` | hex color | `required` | render, footage | The brand's dark color: dark text, and the floor of a dark brand. |
+| `colors.base` | hex color | `required` | captions, render | The brand's light color: every caption glyph that is not the accent. |
+| `colors.accent` | hex color | `required` | captions, render, footage | The one accent: the hero word, chips, the glow, bars. |
+| `colors.on_accent` | hex color | `required` | captions, render | The color of text that sits on the accent. |
+| `colors.negative` | hex color | `required` | captions, render | The bad-news color: the box on a negative word, the strike line. |
+| `colors.bg` | hex color | `required` | render | The floor color behind cards and pages. |
+| `colors.card` | hex color | `required` | render | The card color on that floor. |
 
 ### surface
 
 | Field | Type | Default | Read by | What it does |
 |---|---|---|---|---|
-| `surface.background` | string | `"rgba(28,31,38,0.94)"` | render | The card fill over footage, as a CSS colour. It may be see-through. |
+| `surface.background` | string | `"rgba(28,31,38,0.94)"` | render | The card fill over footage, as a CSS color. It may be see-through. |
 | `surface.border` | string | `"1px solid rgba(255,255,255,0.08)"` | render | The card border, as a CSS border value. |
 
 ### fonts
@@ -227,8 +227,8 @@ Every field of the caption planner's preset, under the same names. A style can s
 | `captions.hero_max` | integer 50 to 800 | `250` | captions | The largest hero glyph size, in px. |
 | `captions.row_px` | 2 integers, 20 to 400 | `[112, 132]` | captions | Smallest and largest row height of a cluster's non-hero rows, in px. |
 | `captions.chin_gap` | integer 0 to 600 | `90` | captions | Clearance kept below the chin before chest text starts, in px. |
-| `captions.chip` | boolean | `false` | captions | Draw the accent as a skewed solid chip with base-coloured text, instead of accent-coloured text. |
-| `captions.hero_base` | hex colour or null | `null` | captions | Colour of hero glyphs when it must differ from the running words. Null: the base colour. |
+| `captions.chip` | boolean | `false` | captions | Draw the accent as a skewed solid chip with base-colored text, instead of accent-colored text. |
+| `captions.hero_base` | hex color or null | `null` | captions | Color of hero glyphs when it must differ from the running words. Null: the base color. |
 | `captions.hero_shadow` | string | `"0 3px 18px rgba(0,0,0,0.45), 0 0 2px rgba(0,0,0,0.5)"` | captions | Text shadow on hero and lockup glyphs, as a CSS value. |
 | `captions.hero_stroke` | {width 0 to 40, color hex}, or null | `null` | captions | Outline on hero glyphs, {width, color}, or null for none. |
 | `captions.text_opacity` | number 0 to 1 | `1.0` | captions | Opacity of every text mode. Chips stay solid. |
@@ -239,19 +239,21 @@ Every field of the caption planner's preset, under the same names. A style can s
 | `captions.soft_build` | boolean | `false` | captions | Draw captions as the soft build instead of clusters. The soft-build style sets it. |
 | `captions.default_style` | style id, or null | `"clean-clusters"` | captions, setup | The style a video gets when nobody picks one: an id from Brand/styles/ or the starters. Null: the brand's own preset. |
 | `captions.pace_gate` | one of off, report, enforce | `"report"` | captions | The pacing check on a finished cut. off: not run. report: run, and write the numbers in the notes without blocking (the default). enforce: a cut that fails is held back. |
-| `captions.hero_glow` | boolean | `true` | captions | Master switch for the glow on accent-coloured hero rows. |
-| `captions.hero_tint` | hex colour or null | `null` | captions | Near colour of the glow gradient. Null: the accent mixed 55% toward white. |
+| `captions.devices` | one of on, off | `"off"` | captions | Whether the caption chain proposes layout events (a call-to-action wash, a page, a frame of pills) for the person to accept at the gate. Off by default: captions only. |
+| `captions.master_audio` | one of off, loudnorm | `"off"` | captions | off: the caption chain leaves the cut's mix as it came and only reports its loudness. loudnorm: it normalizes the mix to -16 LUFS, true peak -2 dBTP, and the loudness gate fails outside -16 +/- 1 LUFS. |
+| `captions.hero_glow` | boolean | `true` | captions | Master switch for the glow on accent-colored hero rows. |
+| `captions.hero_tint` | hex color or null | `null` | captions | Near color of the glow gradient. Null: the accent mixed 55% toward white. |
 | `captions.glow_px` | integer 0 to 80 | `12` | captions | Near radius of the glow, in px. |
-| `captions.chip_neg` | hex colour or null | `null` | captions | Colour of the box on a negative word and of the strike line. Null: colors.negative. |
+| `captions.chip_neg` | hex color or null | `null` | captions | Color of the box on a negative word and of the strike line. Null: colors.negative. |
 | `captions.neg_words` | list of strings | `[]` | captions | Negative words for this brand, added to the planner's built-in set. |
 | `captions.count_up` | boolean | `true` | captions | Numerals from 10 to 99999 (never a bare year) count up when they land. |
 | `captions.places` | list of strings | `[]` | captions | Place names (several words allowed) that get the pin and the letter-spaced hero. Empty: none ever. |
-| `captions.cta_wash` | hex colour or null | `null` | captions | Wash colour behind a call-to-action event. Null: the accent. |
-| `captions.page_bg` | hex colour or null | `null` | captions | Fill of a page event. Null: the accent. |
-| `captions.page_ink` | hex colour or null | `null` | captions | Text colour on a page event. Null: black or the base colour, by the fill's brightness. |
+| `captions.cta_wash` | hex color or null | `null` | captions | Wash color behind a call-to-action event. Null: the accent. |
+| `captions.page_bg` | hex color or null | `null` | captions | Fill of a page event. Null: the accent. |
+| `captions.page_ink` | hex color or null | `null` | captions | Text color on a page event. Null: black or the base color, by the fill's brightness. |
 | `captions.display_weight` | integer 100 to 900 | `800` | captions | Weight of page-event text, 100 to 900. |
-| `captions.pill_bg` | hex colour or null | `null` | captions | Fill of a frame event's pills. Null: the accent. |
-| `captions.pill_ink` | hex colour or null | `null` | captions | Icon and text colour on the pills. Null: by the fill's brightness. |
+| `captions.pill_bg` | hex color or null | `null` | captions | Fill of a frame event's pills. Null: the accent. |
+| `captions.pill_ink` | hex color or null | `null` | captions | Icon and text color on the pills. Null: by the fill's brightness. |
 | `captions.icon_words` | list of strings | `[]` | captions | word:icon pairs that put a line icon before a hero row. Added to the planner's own neutral set. |
 | `captions.pill_icons` | list of strings | `[]` | captions | Ordered rows word,word:icon for the icons on frame pills. The first row with a word in the pill's text wins. |
 | `captions.feel` | string | `""` | setup | Notes only: the brand's voice in a line. |
@@ -276,7 +278,7 @@ One hook look in one place on every video.
 | Field | Type | Default | Read by | What it does |
 |---|---|---|---|---|
 | `hook.on` | boolean | `true` | render, edit | Put a text hook on videos at all. |
-| `hook.look` | one of card, accent, ink, bigtype, bar, mono | `"card"` | render | How the hook is drawn: card, accent, ink, bigtype, bar, or mono (big type whose key words flip to the negative colour while the picture drops to black and white, in the mono face when there is one). One look in one place on every video. |
+| `hook.look` | one of card, accent, ink, bigtype, bar, mono | `"card"` | render | How the hook is drawn: card, accent, ink, bigtype, bar, or mono (big type whose key words flip to the negative color while the picture drops to black and white, in the mono face when there is one). One look in one place on every video. |
 | `hook.top_px` | integer 220 to 1600 | `300` | render, edit | Where the hook sits, in px from the top of the frame. At least 220, because the platform's own header covers the top 220 px. |
 | `hook.size_px` | integer 40 to 120 or null | `null` | render | Hook text size in px. Null: sized to fit. |
 | `hook.font` | one of display, running | `"display"` | render | The face the hook card draws in: display, or running (needs fonts.running). |
@@ -364,11 +366,18 @@ The levels are measured on the finished video, not guessed.
 | `words.spelling` | object: heard, written | `{}` | captions, edit | Fixes for names the transcriber gets wrong: heard (lowercase, several words allowed) to written. |
 | `words.banned` | list of strings | `[]` | captions | Words and phrases no caption may show. |
 
+### transcribe
+
+| field | type | default | read by | what it is |
+|---|---|---|---|---|
+| `transcribe.engine` | one of local, deepgram | `"local"` | captions, edit | Which transcriber times the words: local (whisper.cpp and WhisperX on this Mac, no key) or deepgram (needs DEEPGRAM_API_KEY in ~/.cutroom/keys.env; falls back to local without it). |
+| `transcribe.language` | language code, auto, or null | `null` | captions, edit | The spoken language for the transcriber (en, es, ...), auto to let it decide, or null for config.json's whisper_language. |
+
 ### grade
 
 | Field | Type | Default | Read by | What it does |
 |---|---|---|---|---|
-| `grade.enabled` | boolean | `false` | footage, edit | Apply the brand's colour grade. |
+| `grade.enabled` | boolean | `false` | footage, edit | Apply the brand's color grade. |
 | `grade.lut` | path under assets/ or null | `null` | footage, edit | A LUT file under assets/, or null for balance only. |
 
 ### output
@@ -439,5 +448,5 @@ Filled from studies; null until then.
 
 | Field | Type | Default | Read by | What it does |
 |---|---|---|---|---|
-| `notes` | list of strings | `[]` | setup | Free notes: decisions, colours found and not used. |
+| `notes` | list of strings | `[]` | setup | Free notes: decisions, colors found and not used. |
 

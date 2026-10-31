@@ -16,9 +16,9 @@ TODO: the voice in two or three sentences.
 
 ## The look
 
-The floor colour, the card colour, the text colour and the one accent; where the accent may and may not go; the typeface and its case.
+The floor color, the card color, the text color and the one accent; where the accent may and may not go; the typeface and its case.
 
-TODO: the colours, where the accent goes, the typeface.
+TODO: the colors, where the accent goes, the typeface.
 
 ## How much motion
 

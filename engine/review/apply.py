@@ -148,7 +148,7 @@ def align_offset(src, vindex: int, part, a: float):
     return None
 
 
-def grey(path, t: float, stream: str) -> bytes:
+def gray(path, t: float, stream: str) -> bytes:
     r = common.run(["ffmpeg", "-nostdin", "-v", "error", "-ss", f"{max(0.0, t):.4f}", "-i", str(path), "-map", stream, "-frames:v", "1",
                     "-vf", "scale=32:32,format=gray", "-f", "rawvideo", "-"], check=False, text=False)
     return r.stdout if isinstance(r.stdout, bytes) else b""
@@ -178,10 +178,10 @@ def verify_cut(src, vindex: int, part, a: float, b: float, offset: float, fps: f
     worst = 0.0
     for t in (a + min(0.3, span * 0.25), a + span * 0.5, b - min(0.25, span * 0.1)):
         t += step / 2
-        ref = grey(src, t, f"0:{vindex}")
+        ref = gray(src, t, f"0:{vindex}")
         best = 255.0
         for k in (0, -1, 1):
-            best = min(best, gap(ref, grey(part, t + offset + k * step, "0:v:0")))
+            best = min(best, gap(ref, gray(part, t + offset + k * step, "0:v:0")))
             if best <= FRAME_GAP:
                 break
         worst = max(worst, best)

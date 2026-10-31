@@ -5,7 +5,7 @@ Draws one caption style as a still, so a style can be looked at before a take is
 cluster_plan: the code a take runs) on one sample phrase in your look with the style laid over it, and the real composition (CaptionsDynamic, through
 `npx remotion still`) draws that plan over a backdrop:
 
-  without --clip   a stand-in speaker: a grey head and shoulders on #1a1a1a, drawn here (and the same bust as the person matte when the style puts the
+  without --clip   a stand-in speaker: a gray head and shoulders on #1a1a1a, drawn here (and the same bust as the person matte when the style puts the
                    words behind the head). No footage and no key are needed.
   with --clip      a frame of your own video: one face track on that frame gives the planner its face box (so the words sit where they would in a take), and
                    the frame is the backdrop (the person matte of a behind-the-head style is made from it with Apple Vision).
@@ -125,7 +125,7 @@ def still_frame(plan):
 
 
 def bust(size, scale=2):
-    """-> (the picture, the person alone as RGBA): a head, neck and shoulders in the planner's own measures (crown 0.8 face heights above the face centre, chin 0.5 below),
+    """-> (the picture, the person alone as RGBA): a head, neck and shoulders in the planner's own measures (crown 0.8 face heights above the face center, chin 0.5 below),
     drawn at `scale` times and brought down for a smooth edge. The RGBA is the person matte for a style that puts words behind the head"""
     from PIL import Image, ImageDraw
     w, h = size

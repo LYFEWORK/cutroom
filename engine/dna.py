@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-"""dna.py: the one reader of the user's DNA: Brand/dna.json (the values) and Brand/DNA.md (the judgment). Stdlib only (Pillow is optional, for the colours of a logo).
+"""dna.py: the one reader of the user's DNA: Brand/dna.json (the values) and Brand/DNA.md (the judgment). Stdlib only (Pillow is optional, for the colors of a logo).
 
     python3 engine/dna.py check [folder]     schema, files, TODO lines: one plain line per problem and exit 2, or "ok <id>"
     python3 engine/dna.py show|theme|styles|todo [folder]      captions [folder] [--style id] [--prefix p]
-    python3 engine/dna.py scan <folder>      what a brand folder proposes (colours, font, logos); read only
+    python3 engine/dna.py scan <folder>      what a brand folder proposes (colors, font, logos); read only
     python3 engine/dna.py init <folder> [--name "<Name>"] [--from <folder>] [--accent #hex] [--ink #hex] [--font f] [--emblem f] [--lockup f]
                                              a new DNA; run again, it changes only the options given
 
 In code:  sys.path.insert(0, "<repo>/engine"); import dna; D = dna.load_or_exit(); bd = dna.brand_folder()
   load / load_or_exit / validate / save      read (omitted optional keys filled from templates/dna.json), read and check (exit 2 with one plain line), the problem list, write back
   captions_profile / theme / style           the flat dict the caption chain reads, the one the renderer takes as its theme prop, and a profile with a caption style laid over it
-  scan / palette_from_image / init           the wizard's tools: what a brand folder proposes, the colours of a logo, a fresh DNA
+  scan / palette_from_image / init           the wizard's tools: what a brand folder proposes, the colors of a logo, a fresh DNA
   resolve / folders / public_prefix ...      paths: assets, the workspace folders, the renderer's public folder name (public_prefix(dna) is "brand-<id>")
 engine/dna_README.md has every function, every field (type, default, which module reads it), both views' keys and the caption style rules.
 """
@@ -42,7 +42,7 @@ LOCKUP_HINT = re.compile(r"lockup|wordmark|logo", re.I)
 WEIGHT_PREF = ["extrabold", "800", "black", "bold", "700", "semibold", "600", "medium", "500", "regular", "400"]
 HEX = re.compile(r"#([0-9a-fA-F]{6})\b")
 DARK_INK = 0.2   # an ink under this luma() is a dark brand: its cards can sit on it
-# what a style may set: layout, treatment, motion, tier and soft build in `set`; colour and font keys in `look` (look key -> the profile key it lays over)
+# what a style may set: layout, treatment, motion, tier and soft build in `set`; color and font keys in `look` (look key -> the profile key it lays over)
 STYLE_SET = ("case", "zone", "width", "top_y0", "hero_max", "row_px", "chin_gap", "chip", "text_opacity", "text_soften", "hero_glow", "glow_px",
              "whip_frames", "whip_amount", "count_up", "caption_tier_max", "soft_build")
 STYLE_LOOK = {"accent": "accent", "text": "base", "on_accent": "on_accent", "hero_base": "hero_base", "hero_tint": "hero_tint", "hero_shadow": "hero_shadow",
@@ -376,7 +376,7 @@ def music_dir(dna, brand_dir):
 
 
 def grade_profile(dna, brand_dir):
-    """{enabled, lut}: the brand's colour grade; lut is an absolute path or None (None grades by balance only)"""
+    """{enabled, lut}: the brand's color grade; lut is an absolute path or None (None grades by balance only)"""
     g = dna["grade"]
     return {"enabled": bool(g["enabled"]), "lut": resolve(dna, g["lut"], brand_dir) if g["lut"] else None}
 
@@ -475,7 +475,7 @@ def _font_keys(dna, role, brand_dir, prefix):
 
 
 def captions_profile(dna, brand_dir, prefix=None):
-    """the flat dict the caption chain reads. Every field of the captions section keeps its name; the colour, font, word and switch keys that live elsewhere in the DNA are
+    """the flat dict the caption chain reads. Every field of the captions section keeps its name; the color, font, word and switch keys that live elsewhere in the DNA are
     added (accent, base, on_accent, the font keys, word_font, spelling, do_not_say, auto_punches); chip_neg falls back to colors.negative and text_hook is off when hook.on is"""
     c, col, f = dna["captions"], dna["colors"], dna["fonts"]
     out = {"id": dna["id"], "dna_file": os.path.abspath(Path(brand_dir) / "dna.json"), "brand": dna["name"], "handle": dna["handle"],
@@ -532,7 +532,7 @@ def _style_schema():
 
 
 def _style_file_problems(path, d=None):
-    """every plain-language problem of one style file ([] = fine). `set` takes layout, treatment, motion, tier and soft_build fields; colours, the display weight and the font
+    """every plain-language problem of one style file ([] = fine). `set` takes layout, treatment, motion, tier and soft_build fields; colors, the display weight and the font
     slot go in `look`; a word list or anything else is the brand's. d (the DNA) adds the rules that need it"""
     try:
         st = _read(path)
@@ -540,7 +540,7 @@ def _style_file_problems(path, d=None):
         return [str(e)]
     out, cap = [], _schema()["properties"]["captions"]["properties"]
     for k in [k for k in st["set"] if k not in STYLE_SET] if isinstance(st.get("set"), dict) else []:
-        out.append(f"set.{k}: " + ("a colour, the display weight and the font go in look, not in set" if k in STYLE_LOOK
+        out.append(f"set.{k}: " + ("a color, the display weight and the font go in look, not in set" if k in STYLE_LOOK
                                    else "that field is the brand's: a style may not set it" if k in cap else "not a known field"))
         del st["set"][k]
     _walk(st, _style_schema(), "", _schema(), out)
@@ -590,7 +590,7 @@ def _load_style(sid, brand_dir, d=None):
 
 
 def style(dna, style_id, brand_dir, prefix=None):
-    """captions_profile with a style laid over it: its `set` over the captions section (the tier only ever lowers), its `look` over the profile's colour and font keys
+    """captions_profile with a style laid over it: its `set` over the captions section (the tier only ever lowers), its `look` over the profile's color and font keys
     (look.text is `base`; look.font "running" points the font keys at the running face). Its `feed` block rides along as "feed" (words capped at feed_captions.words_per_page)"""
     st = _load_style(style_id, brand_dir, dna)
     if st.get("owner") not in (None, dna["id"]):
@@ -615,7 +615,7 @@ def style(dna, style_id, brand_dir, prefix=None):
     return {**prof, "style": style_id, "feed": feed}
 
 
-# ------------------------------------------------------------------ colour maths and the folder scan
+# ------------------------------------------------------------------ color maths and the folder scan
 
 def _rgb(h):
     return [int(h[i:i + 2], 16) for i in (1, 3, 5)]
@@ -647,7 +647,7 @@ def contrast(a, b):
 
 
 def tone_at(floor, toward, ratio, start=None):
-    """the colour on the line from `start` (default: the floor) to `toward` that reads `ratio`:1 on the floor (`toward` itself when even it falls short);
+    """the color on the line from `start` (default: the floor) to `toward` that reads `ratio`:1 on the floor (`toward` itself when even it falls short);
     returns (hex, share of the way to `toward`)"""
     start = start or floor
     if contrast(toward, floor) <= ratio:
@@ -663,7 +663,7 @@ def tone_at(floor, toward, ratio, start=None):
 
 
 def on_accent(accent, ink):
-    """the colour of text on the accent: white on a deep accent, else the ink when it reads there (4.5:1), else black"""
+    """the color of text on the accent: white on a deep accent, else the ink when it reads there (4.5:1), else black"""
     if luma(accent) <= 0.5:
         return "#FFFFFF"
     return ink if ink and contrast(ink, accent) >= 4.5 else "#000000"
@@ -679,8 +679,8 @@ def norm_hex(v, what):
 
 
 def _discover(folder):
-    """read-only walk: fonts, logo candidates, hex colour counts, and the font files that cannot be used"""
-    fonts, logos, colours, unusable = [], [], Counter(), []
+    """read-only walk: fonts, logo candidates, hex color counts, and the font files that cannot be used"""
+    fonts, logos, colors, unusable = [], [], Counter(), []
     for dp, dns, fns in os.walk(folder):
         dns[:] = [d for d in dns if d not in SKIP_DIRS and not d.startswith(".")]
         for fn in sorted(fns):
@@ -698,10 +698,10 @@ def _discover(folder):
             elif ext in TEXT_EXT and size < 2_000_000:
                 try:
                     with open(p, errors="ignore") as f:
-                        colours.update("#" + x.upper() for x in HEX.findall(f.read()))
+                        colors.update("#" + x.upper() for x in HEX.findall(f.read()))
                 except OSError:
                     pass
-    return fonts, logos, colours, unusable
+    return fonts, logos, colors, unusable
 
 
 def pick_font(fonts):
@@ -730,11 +730,11 @@ def copy_into(src, dst_dir):
 
 
 def palette_from_image(path, k=5):
-    """([{hex, share}], note): k-means over a small copy of a logo (transparent pixels left out), the biggest colour first. Pillow is optional: without it, ([], why)"""
+    """([{hex, share}], note): k-means over a small copy of a logo (transparent pixels left out), the biggest color first. Pillow is optional: without it, ([], why)"""
     try:
         from PIL import Image
     except ImportError:
-        return [], "Pillow is not installed, so the colours of the logo were not read (pip install pillow)"
+        return [], "Pillow is not installed, so the colors of the logo were not read (pip install pillow)"
     name = os.path.basename(path)
     try:
         im = Image.open(path).convert("RGBA")
@@ -769,10 +769,10 @@ def scan(folder):
     if unusable:
         notes.append(f"heads up: the folder has font files that cannot be used ({', '.join(sorted(os.path.basename(x) for x in unusable))}): a font is a .ttf, .otf, .woff or .woff2 file. Convert them, or pass one with --font")
     png = next((x for x in logos if x.lower().endswith(".png")), None)
-    if not counts and png:   # no hex colours written anywhere: read the logo's own
+    if not counts and png:   # no hex colors written anywhere: read the logo's own
         pal, why = palette_from_image(png)
         counts.update({c["hex"]: max(1, round(c["share"] * 1000)) for c in pal})
-        notes.append(f"colours read from the logo {os.path.basename(png)}" if pal else why)
+        notes.append(f"colors read from the logo {os.path.basename(png)}" if pal else why)
     ranked = [h for h, _ in counts.most_common()]
     accent = next((h for h in ranked if sat(h) > 0.45 and 0.12 < luma(h) < 0.92), None)
     ink = next((h for h in ranked if luma(h) < 0.12), None)
@@ -782,12 +782,12 @@ def scan(folder):
             p[k] = v
     if accent:
         p["on_accent"] = on_accent(accent, ink)
-        notes.append(f"colors.accent proposed {accent}: the most frequent strong colour in the folder; confirm against the guide")
+        notes.append(f"colors.accent proposed {accent}: the most frequent strong color in the folder; confirm against the guide")
     if ink:
-        notes.append(f"colors.ink proposed {ink}: the most frequent dark colour in the folder; confirm")
+        notes.append(f"colors.ink proposed {ink}: the most frequent dark color in the folder; confirm")
     rest = [(h, n) for h, n in counts.most_common(14) if h not in {accent, ink, base}]
     if rest:
-        notes.append("other colours found (count): " + ", ".join(f"{h} x{n}" for h, n in rest))
+        notes.append("other colors found (count): " + ", ".join(f"{h} x{n}" for h, n in rest))
     if fonts:
         p["font"] = pick_font(fonts)
         p["fonts"] = [x for x in fonts if x != p["font"]]
@@ -819,7 +819,7 @@ def _status(bd, notes=()):
 def init(brand_dir, name=None, *, brand_id=None, handle="", site="", accent=None, ink=None, base=None, on_accent=None, font=None, fonts=(), emblem=None, lockup=None,
          lockup_dark=None, logos=(), caps=False, notes=()):
     """write a new DNA into brand_dir: dna.json from the template with the proposal applied, the fonts and logos copied into assets/, the starter styles in styles/, DNA.md from
-    the template. Prints what is still TODO and returns those lines. Run again on a folder that has a dna.json, it changes only what it is given (colours, font, logos, handle,
+    the template. Prints what is still TODO and returns those lines. Run again on a folder that has a dna.json, it changes only what it is given (colors, font, logos, handle,
     site, caps, name): bg, card and on_accent are worked out again from a new ink or accent, and people, styles and DNA.md are left alone. A failed step leaves nothing behind"""
     bd, name = Path(brand_dir).expanduser().resolve(), (name or "").strip()
     existing = (bd / "dna.json").exists()

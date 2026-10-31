@@ -1,6 +1,6 @@
 """spec_adapter.py turns the room check's tier.json, the take's look.json and the operator's gate.json into the spec.json the planner reads. These tests run it against the
 two fixture looks: the tier and zone rules, what rides into the spec, the width factors measured on the look's own font files, the gate's overrides, the command line, and
-the planner honouring the two flags the adapter emits."""
+the planner honoring the two flags the adapter emits."""
 import json
 import os
 import subprocess
@@ -321,8 +321,8 @@ def test_behind_is_omitted_when_not_given():
     assert "behind" not in spec
 
 
-def test_behind_still_passed_through_on_minimal_tier_since_cluster_plan_honours_no_behind():
-    # spec_adapter's job is to emit the flag; cluster_plan.py (see test_cluster_plan_honours_
+def test_behind_still_passed_through_on_minimal_tier_since_cluster_plan_honors_no_behind():
+    # spec_adapter's job is to emit the flag; cluster_plan.py (see test_cluster_plan_honors_
     # no_behind_and_case below) is the one that actually skips the list when no_behind is set.
     behind = [{"match": "Hi", "rows": [["Hi", 300, "#FFFFFF", 0]], "top": 200, "hold": 1.0}]
     spec = spec_adapter.build(tier_doc("MINIMAL"), brand(zone="top"), behind=behind)
@@ -394,7 +394,7 @@ def test_main_stops_with_the_usage_line_when_an_argument_is_missing(tmp_path):
     assert r.returncode == 2 and r.stderr.startswith("STOP: usage: spec_adapter.py <tier.json> <look.json>") and "Traceback" not in r.stderr
 
 
-# --- integration: cluster_plan.py actually honours the two flags spec_adapter.py emits -----------
+# --- integration: cluster_plan.py actually honors the two flags spec_adapter.py emits -----------
 
 def _words(*texts, start=0.0, step=0.5, dur=0.4):
     out = []
@@ -410,7 +410,7 @@ def _track(cx=540, cy=1050, w=400, h=400):
     return {"W": 1080, "H": 1920, "samples": {"0": m}, "median": m}
 
 
-def test_cluster_plan_honours_no_behind_and_case():
+def test_cluster_plan_honors_no_behind_and_case():
     import cluster_plan
     words = _words("Acme", "Corp", "makes", "signs", "fast")
     behind = [{"match": "Acme Corp", "rows": [["Acme", 380, "#FFFFFF", -120], ["Corp", 340, "accent", 90]],
@@ -431,7 +431,7 @@ def test_cluster_plan_honours_no_behind_and_case():
     assert rendered and all(t == t.upper() for t in rendered)
 
 
-def test_cluster_plan_title_case_capitalises_first_letter_only():
+def test_cluster_plan_title_case_capitalizes_first_letter_only():
     import cluster_plan
     words = _words("we", "build", "fast", "signs", "here")
     spec = spec_adapter.build(tier_doc("FULL"), brand(zone="chest", case="title"))
@@ -439,5 +439,5 @@ def test_cluster_plan_title_case_capitalises_first_letter_only():
     rendered = [r["text"] for e in plan["events"] for r in e["words"] if r["text"]]
     assert rendered   # non-empty
     for t in rendered:
-        assert t[:1] == t[:1].upper()          # first letter capitalised
+        assert t[:1] == t[:1].upper()          # first letter capitalized
         assert t[1:] == t[1:].lower()          # rest of the string untouched (lowercase as transcribed)

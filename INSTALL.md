@@ -83,7 +83,7 @@ Skills load when a session starts. Tell the user to start a new Claude Code sess
 /cutroom-setup
 ```
 
-The wizard asks where the footage should live, who they are, their colours and fonts, their reference videos, and builds their caption styles, formats and graphics with them. It takes 20 to 40 minutes with the references. Everything it writes lands in their workspace under `Brand/`, never in this repo.
+The wizard asks where the footage should live, who they are, their colors and fonts, their reference videos, and builds their caption styles, formats and graphics with them. It takes 20 to 40 minutes with the references. Everything it writes lands in their workspace under `Brand/`, never in this repo.
 
 ## If something fails
 

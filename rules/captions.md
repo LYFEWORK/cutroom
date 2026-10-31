@@ -10,8 +10,8 @@ Read before planning, building or checking captions or any text laid over a vide
 ## The soft build
 
 - **CAP-03** Captions read one phrase at a time as one block: a small lead-in, a big hero word, a small tail. They sit in one home under or beside the face, never split above and below the face and never scattered around the frame. (judgment)
-- **CAP-04** The default is the soft build. A thought is a lead-in (2 to 6 words, 54 to 56 px), a payoff (1 to 5 words, 96 to 104 px, a one-word hero up to 150 px) and an optional tail (2 to 5 words at lead-in size). It is laid out once, so nothing moves or re-centres as words fill in. The lead-in dims to 72% when the payoff starts. Sizes are defaults tuned to one typeface: retune them to your caption style, never under the floors in CAP-07.
-- **CAP-05** Each word eases in over about 0.34 s: opacity, blur from 9 to 0 px, a 7 px rise, and colour settling from your accent to the text colour. No scale, overshoot or bounce.
+- **CAP-04** The default is the soft build. A thought is a lead-in (2 to 6 words, 54 to 56 px), a payoff (1 to 5 words, 96 to 104 px, a one-word hero up to 150 px) and an optional tail (2 to 5 words at lead-in size). It is laid out once, so nothing moves or re-centers as words fill in. The lead-in dims to 72% when the payoff starts. Sizes are defaults tuned to one typeface: retune them to your caption style, never under the floors in CAP-07.
+- **CAP-05** Each word eases in over about 0.34 s: opacity, blur from 9 to 0 px, a 7 px rise, and color settling from your accent to the text color. No scale, overshoot or bounce.
 - **CAP-06** Reading time: a thought stays 1.0 s or more. Its payoff's first word is fully opaque 0.4 s or more before it leaves, and it leaves 1.0 s or less after its last word. A payoff word stays readable for about a second, never an empty highlight bar first (the bar opens 0.04 s before the word arrives).
 
 ## Size and place
@@ -20,10 +20,10 @@ Read before planning, building or checking captions or any text laid over a vide
 - **CAP-08** The safe text box on a 1080 x 1920 frame is x 65 to 940, y 270 to 1420. Captions sit at chest height under the face (about y 1190 to 1300), never over eyes, nose or mouth (face box grown 6 to 12%). They sit above the crown only under a hook, behind-the-speaker type or a title lockup.
 - **CAP-09** A room check per clip picks the caption tier. Full (420 px or more above the crown) allows type behind the head. Reduced (260 px or more under the chin, or 300 above) allows slams and running words. Minimal (anything tighter) is small text in the lowest safe band. The tier is shown with its reason and can be overridden with a one-line reason.
 
-## Style and colour
+## Style and color
 
 - **CAP-10** Pick one letter case for your captions (upper, mixed or title) and never mix them. One type family, no emoji. (judgment)
-- **CAP-11** Colour has a meaning. Base colour for setup words. Your accent only on the key or payoff word. One negative colour for the bad-news phrase (2 to 4 words: a loss, a mistake or a refusal, never the fix or the win). Never accent and negative colour in one phrase. (judgment)
+- **CAP-11** Color has a meaning. Base color for setup words. Your accent only on the key or payoff word. One negative color for the bad-news phrase (2 to 4 words: a loss, a mistake or a refusal, never the fix or the win). Never accent and negative color in one phrase. (judgment)
 - **CAP-12** Use the accent about once per 4 to 6 s of speech, at most one hero moment per 15 s, and one highlight bar per video on the strongest payoff. (judgment)
 - **CAP-13** No boxes, backgrounds, glow, gradient fills or outlines in the default style, apart from the one highlight bar in CAP-12. Use one soft shadow for legibility, and check legibility over bright backgrounds: a deeper shadow first, then the next zone down, then flag it for review. (judgment)
 - **CAP-14** Split by sentence ends first, then pauses, then clause words. Never split inside a name, number or unit. A lone function word (`into`, `of that,`) never stands alone, and a payoff is never only function words. (judgment)

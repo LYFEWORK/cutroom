@@ -8,10 +8,10 @@
 #
 # Env: AUDIO=skip     the cut's own audio is the master (test only)
 #      JOINTS=warn    an exhausted clipped-word ladder records `waived` in joints.json and goes on, instead of stopping
-#      REFRAME=on     a landscape source is cropped to a face-centred 9:16 in prep
+#      REFRAME=on     a landscape source is cropped to a face-centerd 9:16 in prep
 #      KEEP_LANDSCAPE=on   a landscape source gets a 1920x1080 mezzanine in prep
 #      FACELESS=on    nobody is on camera: no face stages, and the QC face rule is off
-#      HOOK_FIRST=N   sentence N goes first in the cut, labelled hook (off by default: the cut keeps the order the speaker said things in)
+#      HOOK_FIRST=N   sentence N goes first in the cut, labeled hook (off by default: the cut keeps the order the speaker said things in)
 # Settings (the Whisper model, the word-timing python, the language) come from ~/.cutroom/config.json (CUTROOM_HOME moves it).
 #
 # Resume: re-running the same name continues at the first missing artifact. A changed source moves the stale artifacts to <name>/stale-<time>/.

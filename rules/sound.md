@@ -4,8 +4,8 @@ Read before cleaning a voice, choosing or mixing music, placing any sound effect
 
 ## Loudness and the voice
 
-- **SND-01** The final measures -16 LUFS integrated (plus or minus 1). The true-peak target is -2.0 dBTP, and anything above -1.5 dBTP fails. Use two-pass loudness normalisation with the limiter oversampled 4x before the AAC encode. Export AAC at 256 kbps and 48 kHz, and trim loudness after the final mix.
-- **SND-02** Voice chain on every talking head: high-pass near 80 Hz, denoise, about -2 dB at 250 Hz, +1.5 dB at 3.2 kHz, de-ess, gentle compression (about 2.5:1), then loudness normalisation. Voice isolation takes machines and clatter down, so pick takes away from people talking.
+- **SND-01** The final measures -16 LUFS integrated (plus or minus 1). The true-peak target is -2.0 dBTP, and anything above -1.5 dBTP fails. Use two-pass loudness normalization with the limiter oversampled 4x before the AAC encode. Export AAC at 256 kbps and 48 kHz, and trim loudness after the final mix.
+- **SND-02** Voice chain on every talking head: high-pass near 80 Hz, denoise, about -2 dB at 250 Hz, +1.5 dB at 3.2 kHz, de-ess, gentle compression (about 2.5:1), then loudness normalization. Voice isolation takes machines and clatter down, so pick takes away from people talking.
 - **SND-03** Static (crackle, hiss) is measured and cleaned on the voice before anything is shown.
 
 ## Music
@@ -20,10 +20,10 @@ Read before cleaning a voice, choosing or mixing music, placing any sound effect
 ## Sound effects
 
 - **SND-10** Effects are a budget, not a sound on every move: about 12 a minute (16 on graphic-led formats, with a floor of 3 under 15 s), never two within 1.0 s. When the budget forces a choice, spend in this order: hard punch-in cuts, full-screen entrances and big type, a graphic arriving (one per card, not per row), what lands on a graphic, then rows and labels. Never use the same sample twice in a row. Stay silent for plain jump cuts, captions, emphasis zooms, exits and the return from b-roll.
-- **SND-11** Effects are extremely subtle and always heard. They sit 12 to 16 dB under the speaking level, with the loud part in a pause between words and never on a word. A sharp sound never lands in the 60 ms after a word, because the transcript hears it as part of the word. Place effects off-centre and alternate sides so the voice keeps the middle.
+- **SND-11** Effects are extremely subtle and always heard. They sit 12 to 16 dB under the speaking level, with the loud part in a pause between words and never on a word. A sharp sound never lands in the 60 ms after a word, because the transcript hears it as part of the word. Place effects off-center and alternate sides so the voice keeps the middle.
 - **SND-12** Sound effects in an edit are clicks, ticks and blinks that land with their graphic. Reveal, swell, aha and transition sounds (whooshes, risers) read cheap. (judgment)
 - **SND-14** An effect lands only where the eye also sees something happen, such as a card arriving or a value ticking. No effect plays in the first 0.5 s or the last 0.3 s of a video. (judgment)
 
-## Licences
+## Licenses
 
-- **SND-15** Keep each licensed track's licence ID and the piece it was picked for. Download only while your licence is active, and never put a preview file in a final. (judgment)
+- **SND-15** Keep each licensed track's license ID and the piece it was picked for. Download only while your license is active, and never put a preview file in a final. (judgment)

@@ -19,9 +19,9 @@
 # is ever written inside the repo, two takes with the same name never collide, and a failed 4K render leaves no
 # gigabytes behind. The source video, the matte and the font files are real COPIES (Remotion's bundler does not follow a symlinked file).
 #
-# Colour: the render is asked for bt709 (--color-space=bt709) with PNG frames (--image-format=png). Remotion then converts
+# Color: the render is asked for bt709 (--color-space=bt709) with PNG frames (--image-format=png). Remotion then converts
 # the pixels to limited-range bt709 (zscale) and its encoder writes the matrix and range tags itself. What the encoder
-# leaves unlabelled is the primaries and transfer fields (ffprobe: "unknown"), so the remux below fills exactly those
+# leaves unlabeled is the primaries and transfer fields (ffprobe: "unknown"), so the remux below fills exactly those
 # two with h264_metadata, still a stream copy (-c:v copy), no second encode. reel_qc.py's G9 checks all five tags AND
 # compares the reel's pixels with the mezzanine's, so a label that hides a wrong picture cannot pass.
 #
@@ -29,7 +29,7 @@
 # audio.wav is remuxed on top with -c:a aac.
 #
 # Env:
-#   MASTER_AUDIO=loudnorm   normalise the remuxed audio to -16 LUFS, true peak -2 dBTP (QC's limit is -1.5), LRA 8; two-pass loudnorm, measured then linear.
+#   MASTER_AUDIO=loudnorm   normalize the remuxed audio to -16 LUFS, true peak -2 dBTP (QC's limit is -1.5), LRA 8; two-pass loudnorm, measured then linear.
 #                           Default off: the clip arrives already mixed. run_captions.sh exports your look's master_audio.
 #   CUTROOM_REMOTION_DIR    the Remotion project to render in (default: remotion/ in the repo). It must register a composition called Captions
 #                           (remotion/captions/register.ts exports its config) and have its node_modules installed.

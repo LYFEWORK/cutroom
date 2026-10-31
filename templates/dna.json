@@ -34,6 +34,8 @@
     "soft_build": false,
     "default_style": "clean-clusters",
     "pace_gate": "report",
+    "devices": "off",
+    "master_audio": "off",
     "hero_glow": true,
     "hero_tint": null,
     "glow_px": 12,
@@ -89,6 +91,7 @@
     "profanity": "spoken"
   },
   "words": {"spelling": {}, "banned": []},
+  "transcribe": {"engine": "local", "language": null},
   "grade": {"enabled": false, "lut": null},
   "output": {"aspect": "9:16", "size": [1080, 1920], "fps": 30, "crf": 17, "also": []},
   "delivery": {"end_card": {"on": false, "line": "", "handle": ""}, "transcript": true, "caption_file": true},

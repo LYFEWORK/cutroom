@@ -1,4 +1,4 @@
-"""colortag_check.py is the G9 colour gate. It guards a trap that has shipped before: a chain of ffmpeg passes produced yuvj420p + bt470bg and a platform's
+"""colortag_check.py is the G9 color gate. It guards a trap that has shipped before: a chain of ffmpeg passes produced yuvj420p + bt470bg and a platform's
 uploader silently rejected the file. Every fixture here is a real 1-frame ffmpeg render with the tags under test explicitly stamped, not a mocked ffprobe response:
 the thing this gate protects against is exactly ffmpeg and ffprobe disagreeing with what a person expects those tags to mean."""
 import os
@@ -100,9 +100,9 @@ def test_check_reports_all_bad_tags_together(bad_range):
 
 
 def test_check_fails_when_primaries_or_transfer_are_not_bt709(tmp_path):
-    """A renderer used to write bt709 on the matrix alone; a file whose primaries or transfer are unlabelled or
+    """A renderer used to write bt709 on the matrix alone; a file whose primaries or transfer are unlabeled or
     something else is not a bt709 file, whatever its range and matrix say."""
-    p = tmp_path / "unlabelled.mp4"
+    p = tmp_path / "unlabeled.mp4"
     _render(p, ["-pix_fmt", "yuv420p", "-color_range", "tv", "-colorspace", "bt709"])   # frames carry no primaries / transfer
     r = colortag_check.check(str(p))
     assert r["pass"] is False

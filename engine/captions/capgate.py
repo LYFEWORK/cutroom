@@ -57,7 +57,7 @@ renders a "## Thoughts" section after the hero list, one `- <first word's start>
 line a thought (the soft event's own `line`: the words exactly as spoken, ` [bar]` on the bar's line),
 then a CHECK line for a thought too quick to read in time (the event's short), for each device a soft row
 could not keep (its `dropped`), for each red word a person or your look named that its thought draws in
-its line's own colour (the event's red_off), for a last word a layout event's edge cuts off before it is
+its line's own color (the event's red_off), for a last word a layout event's edge cuts off before it is
 drawn (the event's last_unread) and for each thought legible.py flagged, then an `auto:` comment that
 records the lines as built. `apply` hands the lines on (device_overrides.thoughts, for cluster_plan.py's
 soft_events) only when a person edited them: an untouched section leaves the split to the planner, so a
@@ -404,16 +404,16 @@ def _short_checks(e):
 
 
 def _red_checks(e):
-    """[(seconds, CHECK line)] for each red word a person or your look named that a soft thought draws in its line's own colour, your look's text colour (the
+    """[(seconds, CHECK line)] for each red word a person or your look named that a soft thought draws in its line's own color, your look's text color (the
     event's red_off: its payoff does not hold the word, and red is drawn only on a payoff), the word as spoken at its own time. The planner leaves the
     built-in red words out: they were only ever drawn on a cluster's hero row."""
-    return [(r["at"], f'CHECK {r["at"]:.2f}s "{r["text"]}" draws in the line\'s own colour: red is drawn only on a payoff, and its thought\'s payoff does '
+    return [(r["at"], f'CHECK {r["at"]:.2f}s "{r["text"]}" draws in the line\'s own color: red is drawn only on a payoff, and its thought\'s payoff does '
                       "not hold it; regroup its line, or let it stand") for r in e.get("red_off") or ()]
 
 
 def _soft_checks(plan):
     """Every CHECK line a soft build plan raises, in time order: a thought too quick to read, what its rows could not keep, a named red word drawn in its
-    line's own colour, a last word its thought leaves before it is drawn, and the thoughts legible.py flagged."""
+    line's own color, a last word its thought leaves before it is drawn, and the thoughts legible.py flagged."""
     events = _soft_events(plan)
     return [line for _, line in sorted([c for e in events for c in _short_checks(e) + _dropped_checks(e) + _red_checks(e) + _last_word_checks(e)]
                                       + _legibility_checks(plan), key=lambda c: c[0])]

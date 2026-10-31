@@ -1,10 +1,10 @@
 """reel_qc.py: the never-see gates on a finished caption reel.
 
 The caption chain takes an already-cut, already-mixed video and burns in captions: there is no EDL, no pieces, no splice joints, and output time equals source time.
-So G-FACE is a whole-reel face-presence check over the spoken span, G2 samples the one continuous reel, and G8 and G9 check the audio origin and the colour tags.
-G-ACCENT checks that the look's accent colour came through the conform unchanged, and G10 (the pace gate) runs as the look says: off, report or enforce.
+So G-FACE is a whole-reel face-presence check over the spoken span, G2 samples the one continuous reel, and G8 and G9 check the audio origin and the color tags.
+G-ACCENT checks that the look's accent color came through the conform unchanged, and G10 (the pace gate) runs as the look says: off, report or enforce.
 
-The heavy paths (decode, freezedetect, loudnorm, cross-correlation, ffprobe colour tags) are exercised once end to end on short lavfi takes in the CLI section; the
+The heavy paths (decode, freezedetect, loudnorm, cross-correlation, ffprobe color tags) are exercised once end to end on short lavfi takes in the CLI section; the
 sections above it are pure and instant.
 """
 import json
@@ -175,7 +175,7 @@ def test_g4_fails_one_frame_of_ink_outside_the_safe_box():
 
 
 def test_g4_fails_ink_across_the_face():
-    d = blank(); d[195:205, 110:130] = 255                 # canvas ~ (540, 900): dead centre of the face
+    d = blank(); d[195:205, 110:130] = 255                 # canvas ~ (540, 900): dead center of the face
     c = reel_qc.ink_counts(d, FACE, reel_qc.crown_y(FACE))
     assert c["on_face"] > 0
     g = reel_qc.g4_captions([{"n": 0, "t": 0.0, **c}], [], 30)
@@ -384,7 +384,7 @@ def test_plain_renders_a_one_sentence_explanation_for_every_gate():
     cases = [
         ("G-FACE", {"why": "face", "fraction": 0.5, "threshold": 0.9}),
         ("G-WORDS", {"why": "banned", "word": "cheap", "t": 2.4}),
-        ("G-ACCENT", {"why": "accent_colour", "colour": "#FFD60A", "source": [255.0, 214.0, 10.0], "mezzanine": [234.0, 228.0, 11.0], "shift": 21.0}),
+        ("G-ACCENT", {"why": "accent_color", "color": "#FFD60A", "source": [255.0, 214.0, 10.0], "mezzanine": [234.0, 228.0, 11.0], "shift": 21.0}),
         ("G2", {"why": "freeze", "at": 12.0, "s": 1.1}),
         ("G2", {"why": "lag", "at": 5.0, "lag_s": 0.09}),
         ("G4", {"why": "face", "t": 3.0}),
@@ -508,7 +508,7 @@ def test_audio_lag_sees_audio_that_is_not_the_takes_audio(tmp_path):
     assert reel_qc.g2_picture_sound([], [], lags)["pass"] is False
 
 
-# --- the gate list: G-ACCENT is in it, the colour grade is not ----------------------------------------------
+# --- the gate list: G-ACCENT is in it, the color grade is not ----------------------------------------------
 
 def test_the_gate_list_holds_g_accent_and_no_grade_gate():
     assert reel_qc.GATE_ORDER == ("G-FACE", "G2", "G4", "G5", "G-WORDS", "G-ACCENT", "G6", "G7", "G8", "G9", "G10")
@@ -526,9 +526,9 @@ BT709_TAGS = ["-color_range", "tv", "-colorspace", "bt709", "-color_primaries", 
 
 
 def _flat_vf(box):
-    """a flat box drawn on the picture, with the colour conversion to BT.709 limited range made explicitly, so the colour is coded the way a player decodes it"""
-    x, y, w, h, colour = box
-    return (f"drawbox=x={x}:y={y}:w={w}:h={h}:color={colour}:t=fill,"
+    """a flat box drawn on the picture, with the color conversion to BT.709 limited range made explicitly, so the color is coded the way a player decodes it"""
+    x, y, w, h, color = box
+    return (f"drawbox=x={x}:y={y}:w={w}:h={h}:color={color}:t=fill,"
             "scale=out_color_matrix=bt709:out_range=limited:flags=accurate_rnd+full_chroma_int,format=yuv420p")
 
 
@@ -536,7 +536,7 @@ def _take(tmp, name, box, no_audio_on_reel=False, audio_delay_ms=0, seconds=2, w
     """A minimal take-dir the CLI can read: a `seconds` long 270x480 mezzanine (real bt709/tv/yuv420p tags, a moving picture over pink noise so freezedetect
     and cross-correlation both have something real to measure) and a 'reel' that is the SAME picture with one white box drawn on it (the box IS the caption ink
     the sweep has to find), remuxed with the SAME audio.wav this take extracted (output time == source time: no cutting, no retiming). The one caption says
-    `word` the whole time. `mez_box` and `source_box` (x, y, w, h, 0xRRGGBB) draw a flat colour into the mezzanine and into a source.mp4 beside it, for the
+    `word` the whole time. `mez_box` and `source_box` (x, y, w, h, 0xRRGGBB) draw a flat color into the mezzanine and into a source.mp4 beside it, for the
     accent gate."""
     t = os.path.join(tmp, name); os.makedirs(t, exist_ok=True)
     mez = os.path.join(t, "mez.mp4")
@@ -676,14 +676,14 @@ def test_cli_stops_with_one_line_when_words_json_is_missing(tmp_path):
     assert r.stderr.strip().startswith("STOP:") and "words.json" in r.stderr and "Traceback" not in r.stderr
 
 
-# --- G-ACCENT: the look's accent colour through the picture path ----------------------------------------------
+# --- G-ACCENT: the look's accent color through the picture path ----------------------------------------------
 
 ACCENT = cap_helpers.profile("varsans")["accent"]       # the fixture look's accent: #FFD60A
 ACCENT_RGB = tuple(int(ACCENT.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4))
 
 
 def _flat_clip(path, rgb, matrix="bt709", rng="tv", space="bt709"):
-    """a 2 s flat-colour clip coded with the given matrix and range, tagged to match"""
+    """a 2 s flat-color clip coded with the given matrix and range, tagged to match"""
     pix = "yuvj420p" if rng == "pc" else "yuv420p"
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", "color=c=0x%02X%02X%02X:s=216x384:r=30:d=2,format=rgb24" % rgb,
                     "-vf", f"scale=out_color_matrix={matrix}:out_range={'full' if rng == 'pc' else 'limited'}:flags=accurate_rnd+full_chroma_int,format={pix}",
@@ -698,21 +698,21 @@ def _drift(delta, accent=ACCENT):
     """an accent_drift record: the accent's own pixels in the source, and the same pixels `delta` levels away in the mezzanine"""
     src = [float(c) for c in ACCENT_RGB]
     mez = [round(c + d, 1) for c, d in zip(src, delta)]
-    return {"colour": accent, "pixels": 5000, "source": src, "mezzanine": mez, "shift": round(max(abs(d) for d in delta), 1)}
+    return {"color": accent, "pixels": 5000, "source": src, "mezzanine": mez, "shift": round(max(abs(d) for d in delta), 1)}
 
 
 def test_the_accent_check_reads_the_pictures_and_ignores_how_each_file_is_coded(tmp_path):
     src, same, moved = (str(tmp_path / n) for n in ("src.mp4", "same.mp4", "moved.mp4"))
     _flat_clip(src, ACCENT_RGB, "bt601", "pc", "bt470bg")              # the source: a BT.601 full-range export
-    _flat_clip(same, ACCENT_RGB)                                       # the mezzanine: the same colour, BT.709 limited
-    _flat_clip(moved, _shifted(ACCENT_RGB, (-21, 14, 1)))              # a white balance cast on an accent-coloured end card: -21 red, +14 green
+    _flat_clip(same, ACCENT_RGB)                                       # the mezzanine: the same color, BT.709 limited
+    _flat_clip(moved, _shifted(ACCENT_RGB, (-21, 14, 1)))              # a white balance cast on an accent-colored end card: -21 red, +14 green
     ok = reel_qc.accent_drift(src, same, ACCENT)
-    assert ok and ok["shift"] <= 1.5 and ok["colour"] == ACCENT.upper() and ok["pixels"] > reel_qc.ACCENT_MIN_PX
+    assert ok and ok["shift"] <= 1.5 and ok["color"] == ACCENT.upper() and ok["pixels"] > reel_qc.ACCENT_MIN_PX
     bad = reel_qc.accent_drift(src, moved, ACCENT)
     assert bad and bad["shift"] > 15
-    grey = str(tmp_path / "grey.mp4")
-    _flat_clip(grey, (120, 120, 120))
-    assert reel_qc.accent_drift(grey, grey, ACCENT) is None            # the accent is not on screen: nothing to compare
+    gray = str(tmp_path / "gray.mp4")
+    _flat_clip(gray, (120, 120, 120))
+    assert reel_qc.accent_drift(gray, gray, ACCENT) is None            # the accent is not on screen: nothing to compare
 
 
 def test_the_accent_check_works_on_the_other_fixture_look_too(tmp_path):
@@ -722,7 +722,7 @@ def test_the_accent_check_works_on_the_other_fixture_look_too(tmp_path):
     _flat_clip(src, rgb, "bt601", "pc", "bt470bg")
     _flat_clip(same, rgb)
     ok = reel_qc.accent_drift(src, same, accent)
-    assert ok and ok["shift"] <= 1.5 and ok["colour"] == accent.upper()
+    assert ok and ok["shift"] <= 1.5 and ok["color"] == accent.upper()
     assert reel_qc.accent_drift(src, same, ACCENT) is None             # the first look's yellow is not on this look's screen
 
 
@@ -734,13 +734,13 @@ def test_the_drift_limit_is_two_levels():
 def test_a_moved_accent_fails_g_accent_and_a_kept_one_passes():
     fine = _drift((-0.5, 0.2, 0.5))
     g = reel_qc.g_accent(fine)
-    assert g["pass"] is True and g["skipped"] is False and g["detail"] == [] and g["accent_colour"] == fine
-    assert f"accent colour {ACCENT} within 0.5 levels of the source" in g["numbers"]
+    assert g["pass"] is True and g["skipped"] is False and g["detail"] == [] and g["accent_color"] == fine
+    assert f"accent color {ACCENT} within 0.5 levels of the source" in g["numbers"]
     moved = _drift((-20.8, 13.8, 1.4))
     g = reel_qc.g_accent(moved)
-    assert g["pass"] is False and g["skipped"] is False and g["accent_colour"] == moved
-    assert g["detail"] == [{"why": "accent_colour", "colour": ACCENT, "source": moved["source"], "mezzanine": moved["mezzanine"], "shift": 20.8}]
-    assert f"accent colour {ACCENT} moved 20.8 levels (limit 2)" in g["numbers"]
+    assert g["pass"] is False and g["skipped"] is False and g["accent_color"] == moved
+    assert g["detail"] == [{"why": "accent_color", "color": ACCENT, "source": moved["source"], "mezzanine": moved["mezzanine"], "shift": 20.8}]
+    assert f"accent color {ACCENT} moved 20.8 levels (limit 2)" in g["numbers"]
     assert reel_qc.line("G-ACCENT", g).startswith("G-ACCENT FAIL ") and reel_qc.line("G-ACCENT", reel_qc.g_accent(fine)).startswith("G-ACCENT PASS ")
 
 
@@ -774,16 +774,16 @@ def test_a_moved_accent_fails_the_verdict_and_a_skipped_one_does_not():
     assert reel_qc.verdict_of(others | {"G-ACCENT": reel_qc.g_accent(_drift((0.5, 0.0, 0.0)))}) == "PASS"
 
 
-def test_cli_g_accent_reads_the_looks_accent_against_the_source_and_fails_a_moved_colour(tmp_path):
-    """look.json's accent is compared where the source shows it as flat colour: a mezzanine that kept it passes, one that moved it fails with one plain line."""
+def test_cli_g_accent_reads_the_looks_accent_against_the_source_and_fails_a_moved_color(tmp_path):
+    """look.json's accent is compared where the source shows it as flat color: a mezzanine that kept it passes, one that moved it fails with one plain line."""
     box = (10, 20, 120, 120)
     t = _take(str(tmp_path), "a1", CAPTION_BOX, mez_box=(*box, "0x%02X%02X%02X" % ACCENT_RGB), source_box=(*box, "0x%02X%02X%02X" % ACCENT_RGB))
     _look(t)
     r = _cli(t, "a1")
     g = _card(t)["gates"]["G-ACCENT"]
     assert r.returncode == 0, r.stdout + r.stderr
-    assert g["pass"] is True and g["skipped"] is False and g["accent_colour"]["colour"] == ACCENT.upper() and g["accent_colour"]["shift"] <= reel_qc.ACCENT_DRIFT_MAX
-    assert g["accent_colour"]["pixels"] > reel_qc.ACCENT_MIN_PX and "G-ACCENT PASS " in r.stdout
+    assert g["pass"] is True and g["skipped"] is False and g["accent_color"]["color"] == ACCENT.upper() and g["accent_color"]["shift"] <= reel_qc.ACCENT_DRIFT_MAX
+    assert g["accent_color"]["pixels"] > reel_qc.ACCENT_MIN_PX and "G-ACCENT PASS " in r.stdout
 
     moved = "0x%02X%02X%02X" % _shifted(ACCENT_RGB, (-21, 14, 1))
     t = _take(str(tmp_path), "a2", CAPTION_BOX, mez_box=(*box, moved), source_box=(*box, "0x%02X%02X%02X" % ACCENT_RGB))
@@ -792,14 +792,14 @@ def test_cli_g_accent_reads_the_looks_accent_against_the_source_and_fails_a_move
     card = _card(t)
     assert r.returncode == 1 and card["verdict"] == "FAIL" and card["gates"]["G-ACCENT"]["pass"] is False
     assert [k for k, v in card["gates"].items() if v["pass"] is False] == ["G-ACCENT"]          # nothing else in this take is wrong
-    assert card["gates"]["G-ACCENT"]["accent_colour"]["shift"] > 15
+    assert card["gates"]["G-ACCENT"]["accent_color"]["shift"] > 15
     assert any(line.startswith("G-ACCENT FAIL") for line in r.stdout.splitlines())
-    assert any(line.strip().startswith(f"G-ACCENT: your accent colour {ACCENT.upper()} came back different from the source") for line in r.stdout.splitlines()), r.stdout
+    assert any(line.strip().startswith(f"G-ACCENT: your accent color {ACCENT.upper()} came back different from the source") for line in r.stdout.splitlines()), r.stdout
 
 
 def test_cli_g_accent_skips_without_a_look_accent_a_source_or_with_an_hdr_source(tmp_path):
     """The same moved take that fails above is a visible SKIP when the look has no accent, when there is no source to compare, and when the source was HDR
-    (the conversion moves colours on purpose)."""
+    (the conversion moves colors on purpose)."""
     box = (10, 20, 120, 120)
     t = _take(str(tmp_path), "a3", CAPTION_BOX, mez_box=(*box, "0x%02X%02X%02X" % _shifted(ACCENT_RGB, (-21, 14, 1))),
               source_box=(*box, "0x%02X%02X%02X" % ACCENT_RGB))
@@ -1011,7 +1011,7 @@ def test_a_punch_with_no_scale_uses_the_cadence_scale():
 # --- G9 compares pixels, not just labels --------------------------------------------------------------
 
 def _encode(src_filter, out, retag=False):
-    """A 1 s colour-rich clip. src_filter shapes the pixels; retag stamps tv/bt709 labels over whatever the stream holds
+    """A 1 s color-rich clip. src_filter shapes the pixels; retag stamps tv/bt709 labels over whatever the stream holds
     (what an old render step used to do)."""
     cmd = ["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=270x480:rate=30:duration=1",
            "-vf", src_filter, "-c:v", "libx264", "-preset", "ultrafast", "-crf", "12"]
@@ -1031,9 +1031,9 @@ def test_g9_passes_a_reel_whose_pixels_and_labels_are_both_bt709(tmp_path):
     assert g["pass"] is True and "pixels vs mezzanine" in g["numbers"]
 
 
-def test_g9_fails_full_range_bt601_pixels_relabelled_as_limited_bt709(tmp_path):
+def test_g9_fails_full_range_bt601_pixels_relabeled_as_limited_bt709(tmp_path):
     """The bug an old render step used to hide: the renderer's default output is full-range BT.601, and a bitstream retag made every
-    tag read bt709/tv. The labels pass colortag_check; only the pixel comparison sees the shifted colours."""
+    tag read bt709/tv. The labels pass colortag_check; only the pixel comparison sees the shifted colors."""
     mez = _encode(BT709, str(tmp_path / "mez.mp4"))
     reel = _encode("scale=out_range=pc:out_color_matrix=bt601,format=yuvj420p", str(tmp_path / "reel.mp4"), retag=True)
     import colortag_check
@@ -1041,7 +1041,7 @@ def test_g9_fails_full_range_bt601_pixels_relabelled_as_limited_bt709(tmp_path):
     g = reel_qc.g9_color(reel, mez, [0.2, 0.5, 0.8])
     assert g["pass"] is False
     d = [x for x in g["detail"] if x["why"] == "pixels"][0]
-    assert max(d["drift"]) > reel_qc.COLOR_PIXEL_TOL and "colour conversion is wrong" in d["plain"]
+    assert max(d["drift"]) > reel_qc.COLOR_PIXEL_TOL and "color conversion is wrong" in d["plain"]
 
 
 def test_pixel_color_drift_is_none_without_a_comparable_frame(tmp_path):
@@ -1062,7 +1062,7 @@ def test_calm_times_avoid_punches_and_whips():
 PAGE_PLAN = {"events": [{"mode": "page", "text": "dry fit", "start": 7.52, "end": 9.0}], "punches": [], "whips": []}
 
 
-def test_busy_frames_cover_a_layout_event_so_the_colour_check_never_samples_inside_it():
+def test_busy_frames_cover_a_layout_event_so_the_color_check_never_samples_inside_it():
     busy = reel_qc.busy_frames(PAGE_PLAN)
     assert 226 in busy and 270 in busy and 200 not in busy
     for t in reel_qc.calm_times(14.0, PAGE_PLAN):

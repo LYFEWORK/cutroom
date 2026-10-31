@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""qc.py: the quality gates on a finished video, so a person never has to find a clipped word, a drifting voice or a wrong colour by watching.
+"""qc.py: the quality gates on a finished video, so a person never has to find a clipped word, a drifting voice or a wrong color by watching.
 
     qc.py <take folder> <name> [--faceless] [--video FILE] [--render-source FILE] [--reference FILE]
-    qc.py color <video.mp4> [<reference.mp4>]                the colour gate alone
+    qc.py color <video.mp4> [<reference.mp4>]                the color gate alone
     qc.py zones <final.mp4> <cut.mp4> [--profile organic|ads] [--every 0.5]     no overlay text under a platform's interface
 
 The first form reads a take folder as run_take.sh leaves it (`<root>/<name>/`, with `<root>/mez/<name>.mp4` and `<root>/wx/<name>.avskew.json`
@@ -24,7 +24,7 @@ Gates:
  G6 the visual read         HUMAN: this writes the strip (one frame a second) and the contact sheet (six frames with the safe box, the face box and
                             the crown line drawn on them) and records that a person still owes the read
  G7 loudness                -16 +/- 1 LUFS and a true peak of -1.5 dBTP at most
- COLOR                      yuv420p, limited range, BT.709 tags on the picture, and the picture's colours within 5 levels of the cut's own
+ COLOR                      yuv420p, limited range, BT.709 tags on the picture, and the picture's colors within 5 levels of the cut's own
  WORDS                      the finished file still says what the cut says: its own words (cut.words.json) against the cut's QC transcript
                             (ratio above 0.9), and the two durations within 0.2 s
 
@@ -323,7 +323,7 @@ def ink_counts(diff, face, crown, thresh=INK_DIFF, safe=SAFE, canvas=CANVAS):
 
 def above_crown_allowed(events, t, fps=FPS, crown=None):
     """The hook layers live above the head by design. So does a running WORD a caption planner sent up there when the chin sits too low for the
-    chest band: the planner writes such a word with its centre `y` above the crown, and the sweep would otherwise count that ink as a crown fail.
+    chest band: the planner writes such a word with its center `y` above the crown, and the sweep would otherwise count that ink as a crown fail.
     Accept a word event only when its planned y is above the crown measured at that frame: a word that merely drifted up is still a fail."""
     pad = 1.0 / fps
     for e in (events or []):
@@ -475,7 +475,7 @@ def ncc(a, b):
 
 
 def lag_and_strength(a, b, sr=16000, max_lag_s=0.5):
-    """(seconds `b` lags `a`, how well they match: the normalised correlation at that lag, 0 to 1), by FFT cross-correlation. Direct
+    """(seconds `b` lags `a`, how well they match: the normalized correlation at that lag, 0 to 1), by FFT cross-correlation. Direct
     correlation over a +/-0.5 s search on 2 s windows is ~1e8 multiplies per sample point; this is three transforms. (0.0, 0.0) when
     either side is silent or too short: nothing to measure is not a lag of zero."""
     n = min(len(a), len(b))
@@ -770,7 +770,7 @@ def recorded_freezes(skew):
     return c["freezes_over_min"] if isinstance(c, dict) and "freezes_over_min" in c else None
 
 
-# --- COLOR: the colour gate ---------------------------------------------------------------------------------------------------------
+# --- COLOR: the color gate ---------------------------------------------------------------------------------------------------------
 
 COLOR_WANT = {"pix_fmt": "yuv420p", "color_range": "tv", "color_space": "bt709", "color_primaries": "bt709", "color_transfer": "bt709"}
 PIXEL_TOL = 5.0      # levels (0-255) the per-channel median of a frame may differ from the reference
@@ -823,9 +823,9 @@ def pixel_drift(video, ref):
 
 def color_check(video, ref=None):
     """{"pass", "numbers", "bad"}. Tags: pix_fmt yuv420p, range tv, matrix, primaries and transfer all bt709 (a platform's uploader rejects anything
-    else, and a stream left untagged shifts every colour against the BT.709 mezzanine the cut was made from). Pixels (with a reference, normally the cut
-    the video was made from): the per-channel median of three decoded frames compared with the same frames of the reference. A stream relabelled
-    bt709 over full-range BT.601 pictures has perfect tags and shifted colours; only this comparison sees it. The median ignores caption ink and a
+    else, and a stream left untagged shifts every color against the BT.709 mezzanine the cut was made from). Pixels (with a reference, normally the cut
+    the video was made from): the per-channel median of three decoded frames compared with the same frames of the reference. A stream relabeled
+    bt709 over full-range BT.601 pictures has perfect tags and shifted colors; only this comparison sees it. The median ignores caption ink and a
     punch-in's crop."""
     got = color_tags(video)
     bad = [f"{k} is {v}, not {COLOR_WANT[k]}" for k, v in got.items() if v != COLOR_WANT[k]]
@@ -833,11 +833,11 @@ def color_check(video, ref=None):
     if ref:
         drift = pixel_drift(video, ref)
         if drift is None:
-            bad.append("no frame could be decoded to compare the picture's colours with the cut")
+            bad.append("no frame could be decoded to compare the picture's colors with the cut")
         else:
             numbers += f"; pixels vs the cut: median drift R{drift[0]:.1f} G{drift[1]:.1f} B{drift[2]:.1f} (limit {PIXEL_TOL:g})"
             if max(drift) > PIXEL_TOL:
-                bad.append(f"the picture's colours differ from the cut by up to {max(drift):.0f} levels (limit {PIXEL_TOL:g}): a colour conversion went wrong")
+                bad.append(f"the picture's colors differ from the cut by up to {max(drift):.0f} levels (limit {PIXEL_TOL:g}): a color conversion went wrong")
     return {"pass": not bad, "numbers": numbers, "bad": bad}
 
 
@@ -917,7 +917,7 @@ def _zone_frames(video, every, tmp, tag, scale):
 
 def zones_check(final, cut_, profile="organic", every=0.5, ours=None):
     """[(t, text, zone)] for every overlay line under a platform zone. Text that is also readable in the raw cut at that moment is footage, not an
-    overlay, and is dropped. `ours` (a set of normalised strings the caller drew): only lines that match something drawn can fail; without it,
+    overlay, and is dropped. `ours` (a set of normalized strings the caller drew): only lines that match something drawn can fail; without it,
     anything not readable in the raw cut counts. A line has to sit in a zone on two samples in a row: an entrance or exit passing through does not count."""
     if profile not in ZONES:
         stop(f"zones: profile {profile!r} is not one of {', '.join(ZONES)}")

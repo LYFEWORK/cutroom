@@ -2,7 +2,7 @@
 on synthetic audio: tones for voiced sound, band-limited noise for a fricative, low-passed noise for an outdoor room.
 
 The cases are the ones that clipped real words: an aligned end 0.36 s early, a drawn-out "I" the cutter took for a gap, an "um" the aligner
-labelled "that" that a span's end check pulled back in, and a row pinned by ear that turned off the joint listen on the row beside it, so "holes"
+labeled "that" that a span's end check pulled back in, and a row pinned by ear that turned off the joint listen on the row beside it, so "holes"
 ended on its l and read "hole".
 """
 import json, wave
@@ -162,7 +162,7 @@ def test_a_drawn_out_vowel_is_not_a_gap(tmp_path):
 
 
 def test_a_span_end_never_stretches_over_a_filler_the_aligner_called_a_word(tmp_path):
-    """A span ends at 1.30 s in the pause after 'that' (1.00 to 1.12 s). The aligner labelled 'that' over the pause and the 'um' after it
+    """A span ends at 1.30 s in the pause after 'that' (1.00 to 1.12 s). The aligner labeled 'that' over the pause and the 'um' after it
     (1.00 to 1.90 s), and the old end check stretched the span to the label's end, um and all"""
     y = room(2.6)
     tone(y, 0.40, 0.95, 0.2); tone(y, 1.00, 1.12, 0.1)

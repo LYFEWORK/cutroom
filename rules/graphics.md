@@ -36,7 +36,7 @@ Read before planning, building or checking any overlay, card, graphic, camera mo
 
 ## Variety and craft
 
-- **GFX-18** A reference means its look. When the user sends a video and says make this for a brand, build the same layout, mechanic and motion with that brand's colours, type, logo and product. Offer any reinterpretation as a one-line pitch beside it, never as the build. (judgment)
+- **GFX-18** A reference means its look. When the user sends a video and says make this for a brand, build the same layout, mechanic and motion with that brand's colors, type, logo and product. Offer any reinterpretation as a one-line pitch beside it, never as the build. (judgment)
 - **GFX-19** Videos in a batch never look the same twice. Each gets its own lead move and mix: pop-ups that shift through one thought at a time, AI clips of objects or places with the idea on a card, splits, slams. Use at most one list a video. The hook look and its spot stay constant (HOOK-11). (judgment)
 - **GFX-20** Text renders ultra sharp at full output resolution, and every check frame the user sees is at full resolution too.
 - **GFX-21** Boards pick themselves. Ranking gets a tier board with real logos, shares get a donut, numbers across options get bars, and a head-to-head gets a compare board. A speaker standing to one side gets the board in the open space beside them. (judgment)

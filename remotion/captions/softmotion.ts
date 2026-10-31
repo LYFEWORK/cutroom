@@ -5,7 +5,7 @@
  * Times are seconds on the clip's own clock (frame / fps). `at` and `payAt` are a word's spoken start, as the plan has it: the arrival begins
  * SOFT.arrive.early before it. `exitAt` is the second a thought begins to leave, which the plan has already put 0.04 s ahead of the next
  * thought's arrival.
- * Colours come in as #RRGGBB. settle and sweep answer in rgb(r, g, b), which is what a CSS gradient draws; mix and tints answer in #RRGGBB, which
+ * Colors come in as #RRGGBB. settle and sweep answer in rgb(r, g, b), which is what a CSS gradient draws; mix and tints answer in #RRGGBB, which
  * is what the plan keeps. A half rounds to the even number, as Python's round does, because softbuild/look.py makes the same tints and the two
  * must agree on every channel; Math.round would send a half up.
  * The numbers are the soft build's defaults (README, "The soft build").
@@ -22,7 +22,7 @@ export const SOFT = {
     rise: 7, // px under its place it starts (quint out)
     toBlack: 0.42, // deep: the accent this far toward black
     toWhite: 0.45, // light: the accent this far toward white
-    split: 0.42, // the settle runs deep to light over this share of its run, then light to the end colour over the rest
+    split: 0.42, // the settle runs deep to light over this share of its run, then light to the end color over the rest
     sweepRate: 1.45, // a column u across the word (0 its left edge, 1 its right) is at progress sweepRate * p - sweepLag * u
     sweepLag: 0.45,
   },
@@ -66,12 +66,12 @@ const HEX = /^#[0-9A-Fa-f]{6}$/;
 
 type Rgb = number[]; // red, green, blue: each 0 to 255
 
-function parse(colour: string): Rgb {
-  if (!HEX.test(colour))
+function parse(color: string): Rgb {
+  if (!HEX.test(color))
     throw new Error(
-      `softmotion: a colour is #RRGGBB, not ${JSON.stringify(colour)}`,
+      `softmotion: a color is #RRGGBB, not ${JSON.stringify(color)}`,
     );
-  return [1, 3, 5].map((i) => parseInt(colour.slice(i, i + 2), 16));
+  return [1, 3, 5].map((i) => parseInt(color.slice(i, i + 2), 16));
 }
 
 /** Python's round: a half goes to the even number, where Math.round sends it up. look.tints rounds this way, so these must too. */
@@ -82,7 +82,7 @@ function roundEven(x: number): number {
   return down % 2 === 0 ? down : down + 1;
 }
 
-/** Each channel c + (to - c) * t, rounded, with t held to 0..1 so the answer is always a colour. */
+/** Each channel c + (to - c) * t, rounded, with t held to 0..1 so the answer is always a color. */
 function blend(from: Rgb, to: Rgb, t: number): Rgb {
   const k = clamp01(t);
   return from.map((c, i) => roundEven(c + (to[i] - c) * k));
@@ -93,7 +93,7 @@ const hex = (c: Rgb): string =>
 
 const css = (c: Rgb): string => `rgb(${c[0]}, ${c[1]}, ${c[2]})`;
 
-/** The colour t of the way from a to b, as #RRGGBB in upper case. */
+/** The color t of the way from a to b, as #RRGGBB in upper case. */
 export function mix(a: string, b: string, t: number): string {
   return hex(blend(parse(a), parse(b), t));
 }
@@ -107,8 +107,8 @@ export function tints(accent: string): { deep: string; light: string } {
 }
 
 /**
- * The colour of a word at settle progress q (0 to 1), as rgb(r, g, b): the first 42% of q runs deep to light, the rest light to the end colour,
- * each segment eased with smooth. All three colours are checked whichever segment q is in.
+ * The color of a word at settle progress q (0 to 1), as rgb(r, g, b): the first 42% of q runs deep to light, the rest light to the end color,
+ * each segment eased with smooth. All three colors are checked whichever segment q is in.
  */
 export function settle(
   q: number,
@@ -128,11 +128,11 @@ export function settle(
   );
 }
 
-const COLUMNS = [0, 0.25, 0.5, 0.75, 1]; // where a sweep takes a colour: shares of the word's width
+const COLUMNS = [0, 0.25, 0.5, 0.75, 1]; // where a sweep takes a color: shares of the word's width
 
 /**
- * A word's colour across its width at arrival progress p: a CSS linear-gradient(90deg, ...) with a stop at each of the five columns, the
- * colour at column u being settle(1.45 p - 0.45 u), so the left side whitens first. A face padded out by `inset` em on each side passes the
+ * A word's color across its width at arrival progress p: a CSS linear-gradient(90deg, ...) with a stop at each of the five columns, the
+ * color at column u being settle(1.45 p - 0.45 u), so the left side whitens first. A face padded out by `inset` em on each side passes the
  * inset, and the stops sit at calc(inset + u * (100% - 2 * inset)), so u runs across the word and not across its padding.
  */
 export function sweep(

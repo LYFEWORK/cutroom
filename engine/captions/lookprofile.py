@@ -2,9 +2,9 @@
 """lookprofile.py [<out.look.json>] [--style <id>]
 
 The caption chain's one door to your DNA (Brand/dna.json, read only through engine/dna.py). Prints your look as JSON, or writes it to <out.look.json> and
-prints one summary line. The look is the flat profile dna.captions_profile() makes (colours, fonts and their files, layout numbers, device switches, word
+prints one summary line. The look is the flat profile dna.captions_profile() makes (colors, fonts and their files, layout numbers, device switches, word
 lists, the pacing settings), with the take's caption style laid over it when there is one (dna.style(): its `set` fields replace the look's layout and
-motion, its `look` block replaces colours and the font slot), plus what this chain adds:
+motion, its `look` block replaces colors and the font slot), plus what this chain adds:
 
   caption_style  the style's id, when the take has one (the DNA's own "style" key, renamed: every later stage records it under this name)
   font_sources   {the font src the plan names: the file on disk}, for every face the look can draw (display and running), so the renderer's staging
@@ -13,7 +13,7 @@ motion, its `look` block replaces colours and the font slot), plus what this cha
   devices        "on" or "off": whether layout-event proposals are made (a `devices` key in the captions section turns it on; off by default)
   master_audio   "off" or "loudnorm" (off by default)
 
-A DNA that does not load, or a look the engine cannot use (a colour that is not #RRGGBB, a font file that is missing), stops with one plain "STOP:" line and
+A DNA that does not load, or a look the engine cannot use (a color that is not #RRGGBB, a font file that is missing), stops with one plain "STOP:" line and
 exit 2.
 
   --style <id>   the style to lay over the look (Brand/styles, then templates/styles). Without it the profile is exactly what the DNA makes. run_captions.sh
@@ -44,7 +44,7 @@ DEFAULTS = {
 }
 PACE_GATES = ("off", "report", "enforce")
 HEX = re.compile(r"^#[0-9A-Fa-f]{6}$")
-COLOUR_KEYS = ("accent", "base", "on_accent")
+COLOR_KEYS = ("accent", "base", "on_accent")
 
 
 def _on(v):
@@ -62,10 +62,10 @@ def _sources(profile):
 
 
 def check_profile(profile):
-    """One plain EngineStop line for a look the engine cannot draw: a colour that is not #RRGGBB, a font with no file on disk, a pace gate it does not know."""
-    for k in COLOUR_KEYS:
+    """One plain EngineStop line for a look the engine cannot draw: a color that is not #RRGGBB, a font with no file on disk, a pace gate it does not know."""
+    for k in COLOR_KEYS:
         if not isinstance(profile.get(k), str) or not HEX.match(profile[k]):
-            raise EngineStop(f"look: {k} is {profile.get(k)!r}, which is not a colour like #FFD60A (fix it in your DNA)")
+            raise EngineStop(f"look: {k} is {profile.get(k)!r}, which is not a color like #FFD60A (fix it in your DNA)")
     for k in ("font_family", "font_faces", "font_abs", "font_files"):
         if not profile.get(k):
             raise EngineStop(f"look: the profile has no {k}: the DNA names no display font file")

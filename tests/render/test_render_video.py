@@ -90,14 +90,14 @@ def test_every_look_and_move_renders(tmp_path, cut_portrait, clip, media):
     assert proc.returncode == 0, proc.stdout + proc.stderr
     info = H.probe(out)
     assert (info["w"], info["h"], info["fps"]) == (1080, 1920, 30.0) and abs(info["dur"] - 6.0) <= 0.1
-    # the mono hook drops the picture to black and white from the turn: a patch of the picture that nothing is drawn over is in colour at
-    # 0.5 s and without colour at 1.6 s
-    def colour(t):
+    # the mono hook drops the picture to black and white from the turn: a patch of the picture that nothing is drawn over is in color at
+    # 0.5 s and without color at 1.6 s
+    def color(t):
         raw = subprocess.run(["ffmpeg", "-v", "error", "-ss", str(t), "-i", str(out), "-frames:v", "1", "-vf", "crop=230:400:850:700,scale=46:80:flags=area,format=rgb24", "-f", "rawvideo", "-"],
                              capture_output=True).stdout
         px = [raw[i : i + 3] for i in range(0, len(raw), 3)]
         return sum(max(p) - min(p) for p in px) / len(px)  # how far apart the channels are: 0 in black and white
-    assert colour(0.5) > 12 and colour(1.6) < 3 and colour(2.8) > 12
+    assert color(0.5) > 12 and color(1.6) < 3 and color(2.8) > 12
 
 
 def test_a_montage_renders_with_voice_music_and_effects(tmp_path, clip, music, click):

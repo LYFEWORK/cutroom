@@ -33,7 +33,7 @@ straight from <plan-dir>/spec.json -- not a CLI arg, same co-located-optional-fi
 capgate.py's own devices-propose.json lookup): `punch: false` skips step 3's AUTOMATIC gap-filling
 entirely (the quiet report still runs, against the un-punched timeline, so a human still sees
 where the gaps are); `punch_add` is a list of operator-requested times, inserted before step 3 and
-exempt from the 8-frames-from-cut/whip guard (an explicit ask is honoured, never silently
+exempt from the 8-frames-from-cut/whip guard (an explicit ask is honored, never silently
 dropped); `punch_off` is a list of times whose nearest surviving punch (within 1s) is removed
 after step 3.
 """
@@ -66,7 +66,7 @@ LAYOUT_MODES = ("cta", "page", "frame", "igpost")
 # ---------------------------------------------------------------------------------------------
 
 def detect_spikes(video_path, fps=FPS):
-    """30 fps, 96x170 grey frame-diff spike timeline. diff > max(6, 2.2x the 15-frame local
+    """30 fps, 96x170 gray frame-diff spike timeline. diff > max(6, 2.2x the 15-frame local
     baseline); one event per 6 frames (0.2s). Returns sorted spike times in seconds. Reused
     verbatim (same numbers, same shapes) by reel_qc.py's G10 on the rendered reel."""
     raw = subprocess.run(["ffmpeg", "-v", "error", "-i", video_path, "-vf", f"fps={fps},scale=96:170",
@@ -287,7 +287,7 @@ def run(mez_path, plan_path, track_path, out_path, cuts_path=None, max_gap=MAX_G
     if punch_on:
         punches, quiet = insert_punches(plan, cuts, track, max_gap=max_gap, extra_at=punch_add)
     else:
-        # punch: off -- no AUTOMATIC gap-filling, but an explicit punch_add is still honoured, and
+        # punch: off -- no AUTOMATIC gap-filling, but an explicit punch_add is still honored, and
         # the quiet report still runs (against the un-punched timeline) so a human still sees the
         # gaps even though nothing was inserted for them.
         end_t = (plan.get("durationInFrames") or 0) / FPS

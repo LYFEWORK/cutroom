@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""organize.py: turns per-clip catalogue records into the standard tree, files the originals, writes the manifest and the README.
+"""organize.py: turns per-clip catalog records into the standard tree, files the originals, writes the manifest and the README.
 
   python3 organize.py --job JOB.json plan [--allow-unverified]    print the move plan, write plan.json and a manifest preview (no moves)
   python3 organize.py --job JOB.json apply [--allow-unverified]   write plan.json, the manifest and README FIRST, then file the clips and their sidecars

@@ -139,7 +139,7 @@ def test_the_plan_carries_the_looks_font_files_and_no_font_folder_or_default_fam
     assert "fontsDir" not in plan and "measure" not in json.dumps(plan)
     var, _ = plan_for(seq("Custom", "clothing", "fast"), "varsans")
     assert var["font"]["family"] == "InterDyn" and "wordFont" not in var
-    # nothing of the other look, and no family or colour the engine made up, is in either plan
+    # nothing of the other look, and no family or color the engine made up, is in either plan
     assert not {"InterStaticDyn", "InterRunDyn"} & set(re.findall(r"\w+Dyn", json.dumps(var)))
     assert spec["accent"].lower() not in json.dumps(var).lower() and var["accent"] == cap_helpers.profile("varsans")["accent"]
 

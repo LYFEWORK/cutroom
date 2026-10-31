@@ -1,4 +1,4 @@
-"""reframe.py: the geometry and guards of the face-centred 9:16 crop, then the whole crop on a synthetic landscape clip with the Apple helper stubbed."""
+"""reframe.py: the geometry and guards of the face-centerd 9:16 crop, then the whole crop on a synthetic landscape clip with the Apple helper stubbed."""
 import json
 import os
 import shutil
@@ -34,7 +34,7 @@ def stops(capsys, fn, *args):
 # --- the pure geometry and guards ---------------------------------------------------------------------------------------------------
 
 def test_crop_geometry_centers_on_face():
-    # 4K source, face near the right-centre: crop width = round(2160*9/16) = 1215 -> even 1216, height = full source height, x centres the crop on face_cx.
+    # 4K source, face near the right-center: crop width = round(2160*9/16) = 1215 -> even 1216, height = full source height, x centers the crop on face_cx.
     geo = reframe.crop_geometry(3840, 2160, 1900)
     assert geo == {"w": 1216, "h": 2160, "x": 1292}
 

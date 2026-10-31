@@ -302,14 +302,14 @@ def test_a_plan_with_a_hook_and_no_face_says_so(tmp_path, small_cut, clip):
 
 
 # ---------------------------------------------------------------- sound: the pure parts
-def test_a_normalise_filter_is_a_gain_and_limits_only_when_the_peaks_would_pass():
+def test_a_normalize_filter_is_a_gain_and_limits_only_when_the_peaks_would_pass():
     import render
 
-    f = render.normalise_filter(-20.0, -8.0)
+    f = render.normalize_filter(-20.0, -8.0)
     assert f == "volume=4.000dB"  # -8 dBTP + 4 dB stays under -2
-    f = render.normalise_filter(-17.0, -1.0)
+    f = render.normalize_filter(-17.0, -1.0)
     assert f.startswith("volume=1.000dB,aresample=192000,alimiter=limit=") and f.endswith("aresample=48000")
-    assert "volume=2.000dB" in render.normalise_filter(-17.0, -9.0, bias=1.0)
+    assert "volume=2.000dB" in render.normalize_filter(-17.0, -9.0, bias=1.0)
 
 
 def test_an_effect_is_moved_into_a_pause_or_left_out():
@@ -354,9 +354,9 @@ def test_an_effect_lands_at_the_level_asked_against_the_speaker(tmp_path):
     click = np.zeros(sr // 5)
     click[:2000] = rng.normal(0, 0.5, 2000) * np.hanning(4000)[:2000]
     Y = np.zeros_like(voice)
-    ev = [{"clip": click, "at_s": 0.5, "db": -14.0, "centred": False, "family": "click"},
-          {"clip": click, "at_s": 2.0, "db": -14.0, "centred": False, "family": "click"},
-          {"clip": click, "at_s": 3.0, "db": -14.0, "centred": True, "family": "punch"}]
+    ev = [{"clip": click, "at_s": 0.5, "db": -14.0, "centerd": False, "family": "click"},
+          {"clip": click, "at_s": 2.0, "db": -14.0, "centerd": False, "family": "click"},
+          {"clip": click, "at_s": 3.0, "db": -14.0, "centerd": True, "family": "punch"}]
     assert render.place_sfx(Y, ev, vref_db) == 3
     for at in (0.5, 2.0, 3.0):
         a0 = int(at * sr)
@@ -367,9 +367,9 @@ def test_an_effect_lands_at_the_level_asked_against_the_speaker(tmp_path):
         assert 20 * np.log10(np.percentile(lv, 90)) == pytest.approx(vref_db - 14, abs=0.5)
     left, right = np.abs(Y[int(0.5 * sr) : int(0.7 * sr), 0]).max(), np.abs(Y[int(0.5 * sr) : int(0.7 * sr), 1]).max()
     left2, right2 = np.abs(Y[int(2.0 * sr) : int(2.2 * sr), 0]).max(), np.abs(Y[int(2.0 * sr) : int(2.2 * sr), 1]).max()
-    assert (left < right) != (left2 < right2)  # off-centre, and the sides swap
+    assert (left < right) != (left2 < right2)  # off-center, and the sides swap
     c = Y[int(3.0 * sr) : int(3.2 * sr)]
-    assert np.allclose(c[:, 0], c[:, 1])  # a centred sound is the same on both sides
+    assert np.allclose(c[:, 0], c[:, 1])  # a centerd sound is the same on both sides
 
 
 def test_an_effect_on_a_word_is_called_out(capsys):

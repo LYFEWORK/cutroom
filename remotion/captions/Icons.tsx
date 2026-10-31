@@ -2,17 +2,17 @@
  * Icons.tsx — the inline SVG glyph set the layout events need (README, Devices).
  *
  * WHY inline and not a font/library: the icons are stroked line marks at ONE size
- * (24 px pills, §2c; 30 px post chrome, §2d) and their stroke must take the event's `ink` colour,
+ * (24 px pills, §2c; 30 px post chrome, §2d) and their stroke must take the event's `ink` color,
  * which a webfont cannot do. No dependency is added — every mark is a 24-box path.
  *
  *  - Icon        — §2c pill icons (play|grid|search|phone|chat|calendar|dollar|check|pin|star)
  *                  and §2d post-chrome marks (heart|comment|share|bookmark). Stroked, fill none.
  *  - PinGlyph    — §1e word device: a FILLED teardrop-with-hole (evenodd), sized in `em` so it
  *                  scales with the row it sits in and sits on the baseline = the cap height.
- *  - LogoGlyph   — §2: a platform logo in the same leading slot, FILLED in the row's colour. The marks
+ *  - LogoGlyph   — §2: a platform logo in the same leading slot, FILLED in the row's color. The marks
  *                  are OPTIONAL (see LOGO_PATHS): a name with no entry draws no mark.
  *  - RowIcon     — §2: that slot in line-icon form — the Icon vocabulary sized in `em`, stroked in
- *                  the row's colour.
+ *                  the row's color.
  */
 import React from "react";
 
@@ -106,7 +106,7 @@ export const Icon: React.FC<{
 
 // §1e: teardrop with a hole punched through it (fillRule evenodd), 0.72em tall, accent fill,
 // 0.18em of air before the row. `display:inline-block` on the baseline puts its bottom on the
-// baseline, which is exactly "vertically centred on the cap height" for a 0.72em mark.
+// baseline, which is exactly "vertically centerd on the cap height" for a 0.72em mark.
 export const PinGlyph: React.FC<{
   color: string;
   em?: number;
@@ -151,7 +151,7 @@ export type LogoName =
 // marks themselves are other companies' trademarks, so they are OPTIONAL: delete any entry, or all of them, and nothing else changes. A row
 // whose name has no entry draws without a mark, and cluster_plan.py (which reads the names in this block, one `name:` a line, to know which
 // platform words it may tag) stops tagging that name, so no room is held for a mark that is not drawn. WHY inline paths and not an image: a
-// row mark takes the ROW's colour, and a CSS `filter` cannot retint a white glyph to an arbitrary hex (a hue-rotate chain only
+// row mark takes the ROW's color, and a CSS `filter` cannot retint a white glyph to an arbitrary hex (a hue-rotate chain only
 // approximates it) — an inline `<path fill={color}>` is exact.
 const LOGO_PATHS: Partial<Record<LogoName, string>> = {
   instagram:
@@ -173,8 +173,8 @@ const LOGO_PATHS: Partial<Record<LogoName, string>> = {
 };
 
 // Both marks sit on the row's CAP HEIGHT. PinGlyph's 0.72em is the cap-height stand-in (a
-// 0.72em box with its bottom on the baseline is centred on the caps), so a mark of any other height
-// is lowered by half the difference to land on that same centre.
+// 0.72em box with its bottom on the baseline is centerd on the caps), so a mark of any other height
+// is lowered by half the difference to land on that same center.
 const CAP_EM = 0.72;
 const capAlign = (em: number) => `${(-(em - CAP_EM) / 2).toFixed(4)}em`;
 
@@ -201,7 +201,7 @@ export const LogoGlyph: React.FC<{
     </svg>
   ) : null;
 
-// §2: the line icon in the same slot — the §2c vocabulary at 0.8em, stroked in the row's colour.
+// §2: the line icon in the same slot — the §2c vocabulary at 0.8em, stroked in the row's color.
 // Stroke stays 2/24 of the box so it matches a 24 px pill icon at 2 px.
 export const RowIcon: React.FC<{
   name: IconName;

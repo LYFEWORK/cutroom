@@ -7,7 +7,7 @@ Reads <scratch>/plan.json (written by organize.py), <scratch>/thumbs/<clip>.jpg 
 per blooper under its Interview/<line> or B-Roll/Bloopers folder, and the coverage strip counts takes per script line.
 One file, no network: thumbnails are base64 JPEGs, fonts are the system's, so it opens the same offline and on a phone. Links are relative and URL-encoded.
 Dark by default, light when the reader's system asks for it (prefers-color-scheme); both are checked to read at WCAG AA. job.brand = {accent, ink, font_display}
-changes the colours and the heading font, nothing else. A thumbnail is shown in the clip's own shape: vertical, horizontal or square.
+changes the colors and the heading font, nothing else. A thumbnail is shown in the clip's own shape: vertical, horizontal or square.
 """
 import argparse
 import base64
@@ -30,7 +30,7 @@ import job as jobmod  # noqa: E402
 from job import cut_id, load_job, read_csv, read_plan, resolve_brand  # noqa: E402
 
 
-# ---------------------------------------------------------------- colour
+# ---------------------------------------------------------------- color
 def _hex(c):
     c = c.strip().lstrip("#")
     if len(c) == 3:
@@ -69,7 +69,7 @@ def readable(color, ground, toward, ratio=4.5):
 
 
 def text_on(bg, prefer):
-    """the text colour for a filled badge: the first of prefer, white, black that reads on bg at 4.5:1, else whichever reads best"""
+    """the text color for a filled badge: the first of prefer, white, black that reads on bg at 4.5:1, else whichever reads best"""
     for c in list(prefer) + ["#ffffff", "#000000"]:
         if contrast(bg, c) >= 4.5:
             return c
@@ -77,11 +77,11 @@ def text_on(bg, prefer):
 
 
 def tokens(brand):
-    """the colours of both themes, derived from the brand's accent and ink. Every text colour is checked against the surface it sits on (4.5:1)."""
+    """the colors of both themes, derived from the brand's accent and ink. Every text color is checked against the surface it sits on (4.5:1)."""
     ink, acc = brand["ink"], brand["accent"]
     dark = {"ink": ink, "ink2": mix(ink, "#c8ced6", .055), "ink3": mix(ink, "#c8ced6", .12), "line": mix(ink, "#c8ced6", .22), "ink_top": mix(ink, "#c8ced6", .02),
             "txt": "#f2f4f6", "txt2": "#d6dbe0", "mut": "#a3acb6", "amber": "#ffb020", "blue": "#5ab0ff"}
-    for k in ("txt", "txt2", "mut"):   # a grey ink (the lightest the brand allows) brightens the text until it reads on the lightest surface
+    for k in ("txt", "txt2", "mut"):   # a gray ink (the lightest the brand allows) brightens the text until it reads on the lightest surface
         dark[k] = dark[k] if contrast(dark[k], dark["ink3"]) >= 4.5 else readable(dark[k], dark["ink3"], "#ffffff")
     dark["accent"] = acc
     dark["accent_text"] = readable(acc, dark["ink3"], "#ffffff")

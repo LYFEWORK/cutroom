@@ -1,12 +1,12 @@
 /**
  * softthought.tsx: the soft build's drawing of one thought (README, "The soft build"). A thought is a
- * lead-in, a payoff and an optional tail, laid out once and never re-centred. Every word is in its place from the start (one not yet arrived
+ * lead-in, a payoff and an optional tail, laid out once and never re-centerd. Every word is in its place from the start (one not yet arrived
  * is drawn at opacity 0) and arrives on its own spoken time, blurred, see-through and in the accent's deep tint, settling through its light
- * tint to its line's end colour (the brand's own text colour, the bar's ink on the bar, the red on a red payoff), left side first. The lead-in
- * steps back when the payoff starts to arrive, one payoff a reel opens a bar of the accent from its centre, and the whole thought leaves soft
+ * tint to its line's end color (the brand's own text color, the bar's ink on the bar, the red on a red payoff), left side first. The lead-in
+ * steps back when the payoff starts to arrive, one payoff a reel opens a bar of the accent from its center, and the whole thought leaves soft
  * from its exitAt. The motion and its numbers are softmotion.ts's.
  * Every renderer that draws the soft build carries this file byte for byte, as it carries softmotion.ts. It imports only react, remotion and
- * ./softmotion; what a host decides comes in through props: its display face, its accent and soft colours, when that face is loaded, how far a
+ * ./softmotion; what a host decides comes in through props: its display face, its accent and soft colors, when that face is loaded, how far a
  * spaced line spreads, how it draws a pin, a logo or an icon, and the frame its Sequence starts at when it mounts the thought in one. It also
  * holds the small helpers a host shares with it (SNAP, countText, and WHITE, which only the caption engine's cluster drawing still draws in),
  * so neither keeps a copy. A line is drawn in the case its words were planned in: a host's own text-transform never reaches it.
@@ -51,10 +51,10 @@ export const countText = (text: string, value: number) => {
 };
 
 /**
- * The colours a thought settles through: the accent's deep and light tints, the brand's own text colour (its colors.white) an ordinary line settles
+ * The colors a thought settles through: the accent's deep and light tints, the brand's own text color (its colors.white) an ordinary line settles
  * to, the ink a payoff on the bar settles to, and the negative red.
  */
-export type SoftColours = {
+export type SoftColors = {
   deep: string;
   light: string;
   text: string;
@@ -69,7 +69,7 @@ export type SoftRow = {
   role?: "lead" | "pay" | "tail";
   size?: number; // px
   weight?: number;
-  dx?: number; // px the line's centre sits from the frame's centre
+  dx?: number; // px the line's center sits from the frame's center
   bar?: boolean; // the one payoff a reel that opens the bar
   neg?: boolean; // a red payoff: it settles to the negative red
   count?: number; // the number its digit word counts up to while it arrives
@@ -88,10 +88,10 @@ export type SoftEvent<R extends SoftRow = SoftRow> = {
   shadow?: "soft" | "deep"; // "deep" over a bright picture (the planner's legibility pass): both shadow layers at DEEP times their opacity; absent is soft
   words: R[];
 };
-/** How a host draws a line's mark (the line's pin, else its logo, else its icon), in the colour and style the thought gives it. */
+/** How a host draws a line's mark (the line's pin, else its logo, else its icon), in the color and style the thought gives it. */
 export type SoftMark<R extends SoftRow = SoftRow> = (
   row: R,
-  colour: string,
+  color: string,
   style: React.CSSProperties,
 ) => React.ReactNode;
 
@@ -108,12 +108,12 @@ const drawn = <R extends SoftRow>(w: R): w is Drawn<R> =>
   w.weight !== undefined &&
   w.ats !== undefined &&
   w.ats.length === w.text.split(" ").length;
-// What stops a thought from being drawn, in one line, or null: nothing is drawn at a guessed size, weight, time or colour (a plan made before the soft
-// colours carried the brand's text colour has none), and a bar line carries no mark (the bar's box is its payoff's text alone, so the planner never
+// What stops a thought from being drawn, in one line, or null: nothing is drawn at a guessed size, weight, time or color (a plan made before the soft
+// colors carried the brand's text color has none), and a bar line carries no mark (the bar's box is its payoff's text alone, so the planner never
 // sends one).
-function unfinished(e: SoftEvent, c: SoftColours): string | null {
+function unfinished(e: SoftEvent, c: SoftColors): string | null {
   if (!c.text)
-    return "a soft thought needs the colour its lines settle to, the plan's soft text (the brand's colors.white): plan it again";
+    return "a soft thought needs the color its lines settle to, the plan's soft text (the brand's colors.white): plan it again";
   if (e.exitAt === undefined)
     return `a soft thought needs its exitAt, the second it starts to leave (the thought from ${e.start} s)`;
   const w = e.words.find((r) => !drawn(r));
@@ -130,7 +130,7 @@ function unfinished(e: SoftEvent, c: SoftColours): string | null {
 
 // One soft shadow under every glyph, the opacity of its two layers: a 9 px blur 6 px down and a 2.2 px blur 2 px down; lighter on the bar. A deep
 // shadow draws both layers at DEEP times their opacity, except on the bar: its payoff's ink sits on the flat accent, which the picture never
-// reaches, so a deeper shadow there only dulls the accent colour (a bar that should read #FC7007 came out (243, 108, 4), and the accent
+// reaches, so a deeper shadow there only dulls the accent color (a bar that should read #FC7007 came out (243, 108, 4), and the accent
 // check refused it).
 const SHADOW = { plain: [0.42, 0.22], bar: [0.22, 0.12] } as const;
 const DEEP = 1.5;
@@ -151,8 +151,8 @@ const spacing = (w: SoftRow, spread: number) =>
     : inCapitals(w.text)
       ? SOFT.track.caps
       : SOFT.track.pay) + (w.spaced ? spread : 0);
-// The colour a line's words settle to: the negative red on a red payoff, the bar's ink on the bar, the brand's own text colour anywhere else.
-const endColour = (w: SoftRow, c: SoftColours) =>
+// The color a line's words settle to: the negative red on a red payoff, the bar's ink on the bar, the brand's own text color anywhere else.
+const endColor = (w: SoftRow, c: SoftColors) =>
   w.neg ? c.neg : w.bar ? c.barInk : c.text;
 // A word's face: the sweep through background-clip: text over a transparent fill. That paints only inside the word's own box, and at a line
 // height of 1.0 descenders and accents reach outside it, as does a glyph wider than its own advance (the hook of a j), so the box is padded
@@ -160,7 +160,7 @@ const endColour = (w: SoftRow, c: SoftColours) =>
 // across the word itself.
 const softFace = (
   p: number,
-  c: SoftColours,
+  c: SoftColors,
   end: string,
 ): React.CSSProperties => ({
   backgroundImage: sweep(p, c.deep, c.light, end, PAD_X),
@@ -221,7 +221,7 @@ function useBarBox(
   }, [box, handle]);
   return box;
 }
-// The bar line's clip: the open part of the bar, grown from the bar's centre. It is inset(0 X% 0 X%) of the bar's own box with
+// The bar line's clip: the open part of the bar, grown from the bar's center. It is inset(0 X% 0 X%) of the bar's own box with
 // X = (1 - open) * 50, written against the line's box, which holds the bar.
 const barClip = (b: Box, open: number) => {
   const side = ((1 - open) * b.w) / 2;
@@ -232,7 +232,7 @@ export type SoftThoughtProps<R extends SoftRow> = {
   e: SoftEvent<R>;
   family: string; // the display face, as a CSS font-family
   accent: string; // #RRGGBB
-  colours: SoftColours;
+  colors: SoftColors;
   fontReady: Promise<void>; // settles once the display face is in document.fonts
   spread: number; // em a character a spaced line adds to its tracking
   mark?: SoftMark<R>; // draws a line's pin, logo or icon; without it no mark is drawn
@@ -243,7 +243,7 @@ export function SoftThought<R extends SoftRow>({
   e,
   family,
   accent,
-  colours,
+  colors,
   fontReady,
   spread,
   mark,
@@ -262,7 +262,7 @@ export function SoftThought<R extends SoftRow>({
     spread,
   );
   const exitAt = e.exitAt;
-  const why = unfinished(e, colours);
+  const why = unfinished(e, colors);
   if (exitAt === undefined || !rows.every(drawn) || why !== null) {
     cancelRender(new Error(why ?? "a soft thought cannot be drawn"));
     return null;
@@ -285,7 +285,7 @@ export function SoftThought<R extends SoftRow>({
         }}
       >
         {rows.map((w, i) => {
-          const end = endColour(w, colours);
+          const end = endColor(w, colors);
           const shade = shadow(
             w.bar ? SHADOW.bar : SHADOW.plain,
             e.shadow === "deep" && !w.bar ? DEEP : 1,
@@ -293,8 +293,8 @@ export function SoftThought<R extends SoftRow>({
           const texts = w.text.split(" ");
           const filterOf = (a: { blur: number }) =>
             `${a.blur > 0 ? `blur(${a.blur}px) ` : ""}${shade}`;
-          // a mark arrives with its line's first word: its opacity, its blur, and its colour, the word's at its left column settling to the
-          // mark's own end colour (a pin's is the accent, or the red on a red payoff; a logo's or an icon's is its line's). A bar line has none:
+          // a mark arrives with its line's first word: its opacity, its blur, and its color, the word's at its left column settling to the
+          // mark's own end color (a pin's is the accent, or the red on a red payoff; a logo's or an icon's is its line's). A bar line has none:
           // unfinished stopped the render on one that does.
           const first = arrive(now, w.ats[0]);
           const marked =
@@ -303,8 +303,8 @@ export function SoftThought<R extends SoftRow>({
                   w,
                   settle(
                     SOFT.arrive.sweepRate * first.p,
-                    colours.deep,
-                    colours.light,
+                    colors.deep,
+                    colors.light,
                     w.pin && !w.neg ? accent : end,
                   ),
                   { opacity: first.opacity, filter: filterOf(first) },
@@ -368,13 +368,13 @@ export function SoftThought<R extends SoftRow>({
                   transform: `translateY(${a.rise}px)`,
                   filter: filterOf(a),
                 };
-                const face = softFace(a.p, colours, end);
+                const face = softFace(a.p, colors, end);
                 return (
                   <React.Fragment key={k}>
                     {k > 0 ? " " : null}
                     {k === counting ? (
                       // a count keeps its landed width while it runs, so nothing after it moves: the running number is drawn over its own
-                      // final text, right aligned, and lands in its line's end colour
+                      // final text, right aligned, and lands in its line's end color
                       <span style={{ ...word, position: "relative" }}>
                         <span style={{ visibility: "hidden" }}>{t}</span>
                         <span
@@ -405,7 +405,7 @@ export function SoftThought<R extends SoftRow>({
                     top: "52%",
                     height: 6,
                     width: `${struck * 100}%`,
-                    background: colours.neg,
+                    background: colors.neg,
                     borderRadius: 3,
                     transform: "translateY(-50%)",
                   }}

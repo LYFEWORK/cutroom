@@ -49,7 +49,7 @@ def test_the_fields_the_task_names_are_all_in_the_schema():
     d = template()
     want = {"captions": "case zone width top_y0 hero_max row_px chin_gap chip hero_base hero_shadow hero_stroke text_opacity text_soften whip_frames whip_amount "
                         "caption_tier_max soft_build default_style hero_glow hero_tint glow_px chip_neg neg_words count_up places cta_wash page_bg page_ink "
-                        "display_weight pill_bg pill_ink icon_words pill_icons feel look_note text_hook pace_gate".split(),
+                        "display_weight pill_bg pill_ink icon_words pill_icons feel look_note text_hook pace_gate devices master_audio".split(),
             "feed_captions": ["words_per_page", "size_px", "stroke_px", "top_px"], "hook": ["on", "look", "top_px", "size_px", "font", "hold_s"],
             "motion": ["level", "transitions_allowed", "transitions_banned", "punches", "auto_punches", "smooth", "energy"],
             "music": ["on_talking_head", "on_montage", "feel", "alone_lufs", "under_speech_db", "alone_db", "ease_s", "library", "repeat_gap_videos", "banned_md5"],
@@ -57,11 +57,12 @@ def test_the_fields_the_task_names_are_all_in_the_schema():
     for sec, keys in want.items():
         assert set(d[sec]) == set(keys), sec
     assert d["captions"]["default_style"] == "clean-clusters" and d["captions"]["pace_gate"] == "report" and d["motion"]["auto_punches"] is False
+    assert d["captions"]["devices"] == "off" and d["captions"]["master_audio"] == "off" and d["transcribe"] == {"engine": "local", "language": None}
 
 
 def test_a_typo_is_a_failed_check(brand):
-    edit(brand, lambda d: (d["captions"].update(zoen="top"), d["hook"].update(lok="card"), d.update(colours={})))
-    assert sorted(check(brand)) == ["captions.zoen: not a known field", "colours: not a known field", "hook.lok: not a known field"]
+    edit(brand, lambda d: (d["captions"].update(zoen="top"), d["hook"].update(lok="card"), d.update(colorz={})))
+    assert sorted(check(brand)) == ["captions.zoen: not a known field", "colorz: not a known field", "hook.lok: not a known field"]
 
 
 def test_a_todo_anywhere_is_a_problem_and_the_todo_list_names_it(brand):
@@ -166,7 +167,7 @@ def test_values_that_break_the_schema_say_so_in_plain_words(brand, path, value, 
     assert any(p.startswith(part) for p in check(brand)), check(brand)
 
 
-def test_a_hex_colour_may_be_either_case_and_null_where_unset_is_allowed(brand):
+def test_a_hex_color_may_be_either_case_and_null_where_unset_is_allowed(brand):
     edit(brand, lambda d: (d["colors"].update(accent="#aabbcc"), d["captions"].update(hero_tint="#AABBCC", hero_stroke={"width": 2, "color": "#000000"})))
     assert check(brand) == []
     edit(brand, lambda d: d["colors"].update(accent=None))

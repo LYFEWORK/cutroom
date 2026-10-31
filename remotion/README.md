@@ -25,17 +25,17 @@ Times are seconds on the cut's clock. Positions are pixels in the output frame (
 |---|---|---|---|
 | `src` | string | `"cut.mp4"` | the cut, a file in the public folder. Its audio is played (Studio) and dropped by `render.py` (`--muted`). |
 | `theme` | Theme | required | the look (below). A theme with no `id` or no `colors.accent` is refused. |
-| `words` | `{text, start_s, end_s, accent?, neg?}[]` | `[]` | the spoken words. `accent` draws a word in the accent colour, `neg` in the negative colour with a glow. |
+| `words` | `{text, start_s, end_s, accent?, neg?}[]` | `[]` | the spoken words. `accent` draws a word in the accent color, `neg` in the negative color with a glow. |
 | `captions_mode` | `"feed"` / `"none"` / `"external"` | `"feed"` | `feed` draws the simple caption pages (up to the theme's `cap_words` words a page, 3 by default, at its `caption_top` and `caption_size`). `none` and `external` draw none (an external caption chain burns them later). |
 | `feed` | `{place?, size?, words?, motion?, hero?}` | `null` | look knobs for the pages. `place`: `chest` (theme default), `lower`, `top`. `size`: a scale on the caption size (0.7 to 1.5). `words`: words a page, never more than the theme's `cap_words`. `motion`: `reveal` (a quick pop), `quiet` (a fade), `soft` (a fade out of a little blur). `hero`: `{look: color / bigger / bigger_bold, scale: 1.3 to 2.8, pick: accent / page}`, how the key words look and which word a page uses. |
 | `zooms` | `{start_s, end_s, z, cx?, cy?, ease_s?}[]` | `[]` | eased emphasis zooms: `z` is the peak scale (1.12 is a gentle push), `cx, cy` the point it pushes toward (default the face), `ease_s` seconds in and out (default 0.4). A zoom moves the head, and a card placed above the head is fitted against the zoomed head. |
 | `inserts` | `Insert[]` | `[]` | b-roll, see below. |
-| `hook` | `{lines, end_s?, look?, top?, size?, turn_s?}` | `null` | the hook card, on screen fully formed from frame 0 and holding to `end_s` (default 4.5). `lines`: up to 3 strings, `*word*` is an accent word (`text` is one line instead). `look`: `card`, `accent`, `ink`, `bigtype`, `bar`, `mono` (default: the theme's `hook_look`). `top`, `size`: this hook's own spot and size (fractions of the frame, or px in a 1080 x 1920 frame). `turn_s` (the mono look): the second the key words turn to the negative colour and the picture drops to black and white until the hook leaves. |
+| `hook` | `{lines, end_s?, look?, top?, size?, turn_s?}` | `null` | the hook card, on screen fully formed from frame 0 and holding to `end_s` (default 4.5). `lines`: up to 3 strings, `*word*` is an accent word (`text` is one line instead). `look`: `card`, `accent`, `ink`, `bigtype`, `bar`, `mono` (default: the theme's `hook_look`). `top`, `size`: this hook's own spot and size (fractions of the frame, or px in a 1080 x 1920 frame). `turn_s` (the mono look): the second the key words turn to the negative color and the picture drops to black and white until the hook leaves. |
 | `face` | `{cx, cy, h?}` | `null` | the speaker's face box (forehead to chin) in output pixels. The crown is taken as `cy - 0.76 h`. |
 | `track` | `{"0": {cx, cy, h}, ...}` | `null` | the face box each second. Better than one `face`. |
 | `graphics` | `{component, start_s, end_s, props?, captions?}[]` | `[]` | your graphics, by id from `graphics/index.ts`. `captions: "hide"` leaves the caption pages out while it is up. |
 | `mark` | boolean or null | `null` | draw the brand mark under the platform's top band. `null`: the theme's `lockup_on`. |
-| `endCard` | `{at_s, line?, handle?}` | `null` | a full-frame card in the theme's colours from `at_s` to the end: the mark, the line in big type, the handle in the accent. `line` and `handle` default to the theme's `end_card`. |
+| `endCard` | `{at_s, line?, handle?}` | `null` | a full-frame card in the theme's colors from `at_s` to the end: the mark, the line in big type, the handle in the accent. `line` and `handle` default to the theme's `end_card`. |
 | `safe` | `{top, bottom, rail, railTop}` | `null` | platform UI to stay out of, as fractions of the frame (a partial object overrides the defaults below). |
 | `durationInFrames`, `fps`, `width`, `height` | number | 300, 30, 1080, 1920 | the render's length, rate and size. |
 
@@ -65,12 +65,12 @@ The design theme is the DNA's `theme` dict (`python3 engine/dna.py theme`). `app
 | `id`, `name` | required, `""` | the theme's id; the name is drawn next to an emblem when the mark has no lockup file |
 | `colors.accent` | required | key words, the accent hook looks, chips, glows |
 | `colors.ink` | `#0a0a0a` | type on a light card |
-| `colors.base` | `#ffffff` | the light colour: caption type, the light hook card |
+| `colors.base` | `#ffffff` | the light color: caption type, the light hook card |
 | `colors.on_accent` | the readable one of ink, base, white, black | type on the accent |
 | `colors.negative` | `#e5484d` | negative caption words and the mono hook's turn |
 | `colors.bg` | `colors.ink` | the end card's floor |
 | `colors.card` | `bg` lightened 7% | dark cards |
-| `surface` `{background, border}` | the card colour at 94%, a faint light border | the dark card surface (the `ink` hook, `TitleCard`) |
+| `surface` `{background, border}` | the card color at 94%, a faint light border | the dark card surface (the `ink` hook, `TitleCard`) |
 | `font_family`, `font_faces` `[{weight, src}]`, `font_fallback` | system sans | the display face. Faces are registered under `font_family` (a weight can be a range, `"100 900"`) and the page waits for them before it draws. `src` is a file in the public folder (`render.py` puts the theme's files there). |
 | `running_family`, `running_faces`, `mono_family`, `mono_faces` | none | a second and a mono face, same shape. The `mono` hook look draws in the mono face. |
 | `caps` | `false` | everything in capitals |
@@ -123,11 +123,11 @@ A graphic is a React component the plan asks for by id, with props, for a window
 
 What a graphic receives: `props` (the plan's), `start_s` and `end_s`, `t` (the composition's clock in seconds, the same on every frame of the graphic), and `layout` (positions and sizes: `layout.k`, `layout.safe`, `layout.hook`, `layout.caption`, `layout.lower`, `layout.pip`, `layout.mark`). The component sits in a `Sequence` for its window, so it mounts at `start_s` and goes at `end_s`; it draws its own entrance and exit (`appear(t, start_s, end_s)` from `theme.ts` is the long ease-out in and a short fade out).
 
-Helpers: from `theme.ts` the colours `C` (`accent`, `ink`, `base`, `onAccent`, `negative`, `bg`, `card`), `BRAND` (`fontFamily`, `caps`, `skew`, `smooth`), `SOLID` (the dark card surface), `appear`, `condense`, `leave`, `tint`, `negTint`, the easings, and `res()` for a public-folder file; from `overlays.tsx` `rich()` (`*word*` in the accent colour), `FitAbove` and `useEditCtx()` (`crownAt`, `crownMin`: where the head is) for a card that must clear it. Look at `TitleCard.tsx` for a card that does both.
+Helpers: from `theme.ts` the colors `C` (`accent`, `ink`, `base`, `onAccent`, `negative`, `bg`, `card`), `BRAND` (`fontFamily`, `caps`, `skew`, `smooth`), `SOLID` (the dark card surface), `appear`, `condense`, `leave`, `tint`, `negTint`, the easings, and `res()` for a public-folder file; from `overlays.tsx` `rich()` (`*word*` in the accent color), `FitAbove` and `useEditCtx()` (`crownAt`, `crownMin`: where the head is) for a card that must clear it. Look at `TitleCard.tsx` for a card that does both.
 
 Rules a graphic keeps:
 
-- Theme colours and the theme's face only, so it matches every video of the brand. No hard-coded colours or fonts.
+- Theme colors and the theme's face only, so it matches every video of the brand. No hard-coded colors or fonts.
 - Real content: text, stills and footage from the user's library. Never placeholder bars or empty fields.
 - One long smooth ease-out with a little blur and rise in; no spring, no overshoot; out in 0.3 s or less.
 - Type at least 52 px for body text, 36 px for labels (at 1080 wide: multiply by `layout.k`).

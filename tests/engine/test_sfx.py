@@ -40,7 +40,7 @@ def test_stereo_is_mixed_to_mono(tmp_path):
     assert sound.load_clip(clip(str(tmp_path / "s.wav"), "pcm_s24le", ch=2)).ndim == 1
 
 
-def test_the_level_is_normalised_to_a_peak_of_one_whatever_the_clip_was(tmp_path):
+def test_the_level_is_normalized_to_a_peak_of_one_whatever_the_clip_was(tmp_path):
     quiet = str(tmp_path / "quiet.wav")
     r = sh(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", "sine=f=440:d=0.5:r=44100", "-af", "volume=0.01", quiet])
     assert r.returncode == 0
@@ -302,14 +302,14 @@ def test_a_landing_or_a_row_is_3_db_under_and_the_per_sound_and_the_overall_leve
     assert peak_db(Y, 0.1) == pytest.approx(sound.FAM["click"] - 2.0 - 6.0, abs=0.01)
 
 
-def test_off_centre_sounds_swap_sides_and_a_centred_one_keeps_the_middle():
+def test_off_center_sounds_swap_sides_and_a_centerd_one_keeps_the_middle():
     K = unit_kit("click")
     ev = [(0.1, 2, (("click", 0, False),)), (0.6, 2, (("click", 0, False),)), (1.1, 2, (("click", 0, True),))]
     Y = sound.mix(ev, K, 2 * sound.SR, 0.1)
     at = lambda t: Y[int(t * sound.SR) + 10]
     l1, r1, l2, r2, l3, r3 = *at(0.1), *at(0.6), *at(1.1)
     assert l1 > r1 and r2 > l2 and l1 == pytest.approx(r2) and r1 == pytest.approx(l2)      # first one favours the left, the second the right
-    assert r1 / l1 == pytest.approx(0.42, abs=1e-6) and l3 == pytest.approx(r3)              # the weaker side is 0.42, a centred one is equal
+    assert r1 / l1 == pytest.approx(0.42, abs=1e-6) and l3 == pytest.approx(r3)              # the weaker side is 0.42, a centerd one is equal
 
 
 def test_the_same_clip_is_never_played_twice_in_a_row():
@@ -385,7 +385,7 @@ def test_the_variants_of_a_family_are_different_sounds(synthesized):
 
 
 def test_each_family_sounds_like_what_it_is_called(synthesized):
-    """a punch is low, a pop is mid-low, a click is bright, a shutter is bright noise: the centres of their spectra keep that order"""
+    """a punch is low, a pop is mid-low, a click is bright, a shutter is bright noise: the centers of their spectra keep that order"""
     d, _ = synthesized
     c = {}
     for fam in FAMILIES:

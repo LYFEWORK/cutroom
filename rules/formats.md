@@ -53,7 +53,7 @@ NEEDS: a library with subject tags and a keep and cut review (FOO-13).
 
 ## Quote card, reel and static
 
-STRUCTURE: for a reel, the quote sits centred in the frame and the clip behind it is a dimmed, sharp (never blurred) backdrop for feeling, not a word-for-word illustration. Safety and brand checks still apply to the clip. The music plays through the end card and fades with it (SND-08). For a static, a 4:5 post in one of three rotating treatments of one brand system: a full-bleed hero photo with the copy on a scrim, a framed object such as a tilted card on your brand ground, or a typographic spotlight with centred type, a ghost brand glyph and one accent. Never two in a row in one treatment (DEL-16).
+STRUCTURE: for a reel, the quote sits centerd in the frame and the clip behind it is a dimmed, sharp (never blurred) backdrop for feeling, not a word-for-word illustration. Safety and brand checks still apply to the clip. The music plays through the end card and fades with it (SND-08). For a static, a 4:5 post in one of three rotating treatments of one brand system: a full-bleed hero photo with the copy on a scrim, a framed object such as a tilted card on your brand ground, or a typographic spotlight with centerd type, a ghost brand glyph and one accent. Never two in a row in one treatment (DEL-16).
 
 NEEDS: a source check for every quote or verse before posting.
 

@@ -11,8 +11,8 @@
 #   <take-dir>/audio16.wav   : 16 kHz mono, for the transcriber
 #   <take-dir>/avskew.json   : the source's video/audio timeline measurement
 #
-# There is no colour grade here: the picture is conformed, tagged BT.709 and left otherwise as shot. The captions are drawn over
-# a finished cut, and the colour of the cut is the editor's. An HDR clip (HLG or PQ) cannot be conformed by the plain pass below, so
+# There is no color grade here: the picture is conformed, tagged BT.709 and left otherwise as shot. The captions are drawn over
+# a finished cut, and the color of the cut is the editor's. An HDR clip (HLG or PQ) cannot be conformed by the plain pass below, so
 # it goes through engine/hdr.py first (Apple's own tone mapper) when that module is installed; intake.py stops an HDR clip with the
 # "export an SDR version" line when it is not.
 #
@@ -96,7 +96,7 @@ CRANGE="$(ffprobe -v error -select_streams v:0 -show_entries stream=color_range 
 RANGEOPT=""
 [ "$CRANGE" = "pc" ] && RANGEOPT=":in_range=full:out_range=limited"
 # A BT.601 source (tagged bt470bg or smpte170m: a webcam, an older render) has BT.601 pixels. The plain pass below only stamps the frames bt709, so without this
-# the picture's colours shift (a lime #96FF00 came back with its green 5 levels low). Convert the matrix too; an untagged or BT.709 source is left alone.
+# the picture's colors shift (a lime #96FF00 came back with its green 5 levels low). Convert the matrix too; an untagged or BT.709 source is left alone.
 CSPACE="$(ffprobe -v error -select_streams v:0 -show_entries stream=color_space -of default=nw=1:nk=1 "$VSRC" 2>/dev/null | tr -d '[:space:]')"
 MATRIXOPT=""
 case "$CSPACE" in bt470bg|smpte170m) MATRIXOPT=":in_color_matrix=bt601:out_color_matrix=bt709" ;; esac
@@ -119,10 +119,10 @@ else
 fi
 
 # setparams stamps the FRAMES bt709/tv: the encoder copies primaries and transfer from the frames, and -color_primaries
-# alone leaves them "unknown" on an untagged source, which would reach Remotion as an unlabelled picture.
+# alone leaves them "unknown" on an untagged source, which would reach Remotion as an unlabeled picture.
 TAGS="setparams=colorspace=bt709:color_primaries=bt709:color_trc=bt709:range=tv"
 if [ -n "$RANGEOPT$MATRIXOPT" ]; then
-  # A YUV to YUV scale does not convert the matrix and rounds the range coarsely (measured on flat colours: a lime #96FF00 came back 2 to 3 levels low and a white
+  # A YUV to YUV scale does not convert the matrix and rounds the range coarsely (measured on flat colors: a lime #96FF00 came back 2 to 3 levels low and a white
   # up to 4, which is also what the finals of a BT.601 export showed). Going through planar RGB makes both exact (within 1 level).
   IN_M=bt709; [ -z "$MATRIXOPT" ] || IN_M=bt601
   IN_R=tv; [ -z "$RANGEOPT" ] || IN_R=full

@@ -1,6 +1,6 @@
 # Footage
 
-Read before organising a shoot, naming or sorting clips, cutting takes, building an index, or running the keep and cut review.
+Read before organizing a shoot, naming or sorting clips, cutting takes, building an index, or running the keep and cut review.
 
 ## Moving and naming
 
@@ -19,11 +19,11 @@ Read before organising a shoot, naming or sorting clips, cutting takes, building
 - **FOO-07** Every attempt becomes its own file, from the first scripted word to the last. A good read after a bad one in the same clip comes out on its own. Each take keeps 5 s of real footage before and after, never black and never tightened. Bloopers are cut the same way.
 - **FOO-08** A take is the whole read through to where the speaker stops, the stumble that ends it included. Never split one read into a clean take and a bad tail, never end a take mid-sentence, and treat a complete read with a small stumble as Usable, never Bad. (judgment)
 - **FOO-09** Good takes stay in their script line's folder. Every flubbed take goes into one `Bad Takes/` folder at the shoot root, the default on every ad shoot, so the coverage strip counts good takes only. (judgment)
-- **FOO-10** Keep each clip at its native resolution: no proxies, no upscale, no slate or overlay, and rotation tags honoured. Take files are re-encoded at 1.3x the camera clip's video bitrate or more (floor 8 Mbit/s, no cap). Verify each is not under the source: re-cut at 1.6x, then at CRF 9, else fail by name.
+- **FOO-10** Keep each clip at its native resolution: no proxies, no upscale, no slate or overlay, and rotation tags honored. Take files are re-encoded at 1.3x the camera clip's video bitrate or more (floor 8 Mbit/s, no cap). Verify each is not under the source: re-cut at 1.6x, then at CRF 9, else fail by name.
 
 ## Sidecars and indexes
 
-- **FOO-11** A sidecar belongs to the clip whose ID it starts with (followed by `.`, `_`, `-` or `M` plus digits) and moves to `Camera Sidecars/`. The colour step reads the camera's picture profile from it.
+- **FOO-11** A sidecar belongs to the clip whose ID it starts with (followed by `.`, `_`, `-` or `M` plus digits) and moves to `Camera Sidecars/`. The color step reads the camera's picture profile from it.
 - **FOO-12** Every video file gets a text file beside it: what it is, what is said with m:ss times, and what is on screen. A self-contained, phone-friendly index is the first page the user opens, with thumbnail, duration, audio badge, exact filename, question asked, summary, best quote, whole-transcript search and filters. (judgment)
 - **FOO-13** Keep and cut review comes before use. Every b-roll clip and finished video plays on a review page with Keep, Cut and trim, and only Keep is placed. Picks live on the device and copy out as a plain list. A wrong label can be corrected on the page and refiles the clip on apply. (judgment)
 

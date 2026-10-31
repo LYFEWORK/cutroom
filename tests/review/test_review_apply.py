@@ -46,7 +46,7 @@ HALF_FRAME = 0.5 / 24      # the test clips are 24 fps: sampling mid-frame keeps
 
 
 def picture_gap(src, t_src, part, t_part):
-    return apply.gap(apply.grey(src, t_src + HALF_FRAME, "0:0"), apply.grey(part, t_part + HALF_FRAME, "0:v:0"))
+    return apply.gap(apply.gray(src, t_src + HALF_FRAME, "0:0"), apply.gray(part, t_part + HALF_FRAME, "0:v:0"))
 
 
 # ---------------------------------------------------------------- the plan

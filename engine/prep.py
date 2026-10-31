@@ -16,9 +16,9 @@ in parallel lanes, each under its own name):
 Steps, in order: wait for an iCloud placeholder to download (up to 30 minutes), probe, check the orientation, build the mezzanine, check its
 picture against its sound, make the wav, find the words, pack the transcript, find the face.
 
-  orientation   a portrait source goes on as it is. A landscape or square one STOPs with the two ways out: --reframe crops it to a face-centred 9:16
+  orientation   a portrait source goes on as it is. A landscape or square one STOPs with the two ways out: --reframe crops it to a face-centerd 9:16
                 first (reframe.py), --keep-landscape builds a 1920x1080 mezzanine for 16:9 formats instead of stretching it. A portrait picture that is
-                not exactly 9:16 is scaled to cover 1080x1920 and centre-cropped, never stretched.
+                not exactly 9:16 is scaled to cover 1080x1920 and center-cropped, never stretched.
   hardware      HEVC sources and anything 3000 px or wider decode on VideoToolbox (--hw forces it).
   stalls        a stalled capture (a phone's thermal or storage stall) must never be frozen into fake picture time: avskew.py measures the video
                 and audio timelines BEFORE the mezzanine. A clean source encodes as it is. A disagreeing one has its frames renumbered contiguously
@@ -83,7 +83,7 @@ def wait_for_download(path, name):
 
 
 def color_of(path):
-    """the video stream's colour tags: {"space", "range", "pix_fmt"} ("" where the file says nothing)"""
+    """the video stream's color tags: {"space", "range", "pix_fmt"} ("" where the file says nothing)"""
     r = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=color_space,color_range,pix_fmt", "-of", "json", str(path)],
                        capture_output=True, text=True)
     try:
@@ -94,8 +94,8 @@ def color_of(path):
 
 
 def video_filter(w, h, landscape, color, conform_nominal=None):
-    """The ffmpeg -vf chain of the mezzanine. Scale-to-cover and centre-crop (the same as a plain scale for an exact 9:16 or 16:9 picture), the
-    colour matrix and range made BT.709 limited where the source is something else, 30 fps, 8-bit 4:2:0. A conformed source is renumbered first."""
+    """The ffmpeg -vf chain of the mezzanine. Scale-to-cover and center-crop (the same as a plain scale for an exact 9:16 or 16:9 picture), the
+    color matrix and range made BT.709 limited where the source is something else, 30 fps, 8-bit 4:2:0. A conformed source is renumbered first."""
     tw, th = (1920, 1080) if landscape else (1080, 1920)
     opts = []
     if color["space"] in ("smpte170m", "bt470bg"):
@@ -131,7 +131,7 @@ def prep(root, name, src, reframe_it=False, keep_landscape=False, hw=False):
     landscape = False
     if h <= w:
         if reframe_it:
-            say(name, f"is {w}x{h} (not portrait): reframing to a face-centred 9:16")
+            say(name, f"is {w}x{h} (not portrait): reframing to a face-centerd 9:16")
             reframed = os.path.join(root, "mez", f"{name}.reframed.mp4")
             reframe.reframe(src, reframed)
             src, codec, w, h = reframed, "h264", 1080, 1920

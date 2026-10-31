@@ -23,7 +23,7 @@ Open `GATE.md`. Show the user the transcript as the plan reads it, the tier and 
 
 ## Pass 2: render, check, deliver
 
-Run the exact same command again. It applies the gate, builds the person matte only if a phrase sits behind the head, renders through Remotion (4K sources render at 2x), remuxes the source audio, runs the QC gates (face on camera, picture equals sound, caption ink inside the safe box and off the face, every spoken word on screen in order, no event under three frames, loudness, colour tags, the pacing gate as the DNA sets it), and on a PASS files `<Title>.mp4`, `<Title> - Transcript.md` and `<Title> - Caption.txt` into the destination with a `Build/` folder beside them (notes, gate, QC report, evidence sheets).
+Run the exact same command again. It applies the gate, builds the person matte only if a phrase sits behind the head, renders through Remotion (4K sources render at 2x), remuxes the source audio, runs the QC gates (face on camera, picture equals sound, caption ink inside the safe box and off the face, every spoken word on screen in order, no event under three frames, loudness, color tags, the pacing gate as the DNA sets it), and on a PASS files `<Title>.mp4`, `<Title> - Transcript.md` and `<Title> - Caption.txt` into the destination with a `Build/` folder beside them (notes, gate, QC report, evidence sheets).
 
 Exit 0 delivered; 1 rendered but a gate failed (nothing shipped; the line names the second and the gate; fix in `GATE.md` and run again); 2 stopped before a render (the message says why).
 

@@ -1,4 +1,4 @@
-"""engine/dna.py: the colour maths, the folder scan, the logo palette and init (the wizard's first step)."""
+"""engine/dna.py: the color maths, the folder scan, the logo palette and init (the wizard's first step)."""
 import json
 import os
 import re
@@ -46,18 +46,18 @@ def guide(tmp_path, css=True, fonts=("Acme-ExtraBold.woff2", "Acme-Regular.woff2
 
 
 def png(path, blocks, size=(60, 60)):
-    """a logo PNG from (colour, share of the width) blocks side by side; the rest transparent"""
+    """a logo PNG from (color, share of the width) blocks side by side; the rest transparent"""
     from PIL import Image
     im, x = Image.new("RGBA", size, (0, 0, 0, 0)), 0
-    for colour, share in blocks:
+    for color, share in blocks:
         w = round(size[0] * share)
-        im.paste(colour + (255,), (x, 0, x + w, size[1]))
+        im.paste(color + (255,), (x, 0, x + w, size[1]))
         x += w
     im.save(path)
     return path
 
 
-# ------------------------------------------------------------------ the colour maths
+# ------------------------------------------------------------------ the color maths
 
 def test_luma_sat_mix_and_contrast_have_known_values():
     assert dna.luma("#000000") == 0 and dna.luma("#FFFFFF") == pytest.approx(1.0)
@@ -70,7 +70,7 @@ def test_luma_sat_mix_and_contrast_have_known_values():
 
 
 @pytest.mark.parametrize("ink", PAPER_INKS + ["#0B1F3A"])
-def test_text_on_a_light_accent_is_the_inks_own_colour_when_it_reads_there_else_black(ink):
+def test_text_on_a_light_accent_is_the_inks_own_color_when_it_reads_there_else_black(ink):
     want = ink if wcag(ink, "#FFB703") >= 4.5 else "#000000"
     assert dna.on_accent("#FFB703", ink) == want
 
@@ -81,7 +81,7 @@ def test_text_on_a_deep_accent_is_white_and_a_light_accent_with_no_ink_gets_blac
 
 
 @pytest.mark.parametrize("ink", DARK_INKS)
-def test_tone_at_finds_the_colour_that_reads_the_ratio_on_the_floor(ink):
+def test_tone_at_finds_the_color_that_reads_the_ratio_on_the_floor(ink):
     hexv, share = dna.tone_at(ink, "#FFFFFF", 5.2)
     assert 5.2 <= wcag(hexv, ink) < 5.3 and 0 < share < 1
 
@@ -106,16 +106,16 @@ def test_scan_proposes_accent_ink_base_on_accent_font_and_logos(tmp_path):
     g = guide(tmp_path)
     before = sorted(str(p.relative_to(g)) for p in g.rglob("*"))
     p, notes = dna.scan(g)
-    assert (p["accent"], p["ink"], p["base"]) == ("#FF5418", "#0B1F3A", "#FFFFFF")      # the most frequent strong colour, dark colour and white
+    assert (p["accent"], p["ink"], p["base"]) == ("#FF5418", "#0B1F3A", "#FFFFFF")      # the most frequent strong color, dark color and white
     assert p["on_accent"] == dna.on_accent("#FF5418", "#0B1F3A") == "#FFFFFF"
     assert os.path.basename(p["font"]) == "Acme-ExtraBold.woff2" and [os.path.basename(x) for x in p["fonts"]] == ["Acme-Regular.woff2"]   # the heaviest wins
     assert os.path.basename(p["emblem"]) == "acme-mark.svg" and os.path.basename(p["lockup"]) == "acme-wordmark.svg" and len(p["logos"]) == 2
     assert any(n.startswith("colors.accent proposed #FF5418") for n in notes) and any(n.startswith("colors.ink proposed #0B1F3A") for n in notes)
-    assert "other colours found (count): #777777 x1" in notes and not [n for n in notes if n.startswith("heads up")]
+    assert "other colors found (count): #777777 x1" in notes and not [n for n in notes if n.startswith("heads up")]
     assert sorted(str(p.relative_to(g)) for p in g.rglob("*")) == before                # read only
 
 
-def test_scan_picks_the_strong_colour_over_a_more_frequent_grey_and_skips_what_it_cannot_read(tmp_path):
+def test_scan_picks_the_strong_color_over_a_more_frequent_gray_and_skips_what_it_cannot_read(tmp_path):
     g = tmp_path / "g"
     g.mkdir()
     (g / "a.css").write_text("#777777 " * 9 + "#10B981 " * 3 + "#0A0A0A " * 2)
@@ -147,21 +147,21 @@ def test_a_wordmark_is_a_lockup_and_not_the_emblem(tmp_path):
     assert os.path.basename(p["emblem"]) == "acme-mark.svg" and os.path.basename(p["lockup"]) == "AcmeWordmark.svg"
 
 
-def test_scan_reads_a_logo_png_when_no_colour_is_written_anywhere(tmp_path):
+def test_scan_reads_a_logo_png_when_no_color_is_written_anywhere(tmp_path):
     pytest.importorskip("PIL")
     g = guide(tmp_path, css=False, fonts=(), logos=())
     png(g / "logo.png", [((255, 84, 24), 0.5), ((11, 31, 58), 0.4)])
     p, notes = dna.scan(g)
-    assert "colours read from the logo logo.png" in notes
+    assert "colors read from the logo logo.png" in notes
     assert dna.luma(p["accent"]) > 0.12 and dna.sat(p["accent"]) > 0.45 and abs(int(p["accent"][1:3], 16) - 255) < 8 and p["ink"] == "#0B1F3A"
 
 
-def test_palette_from_image_gives_the_biggest_colour_first_and_leaves_transparency_out(tmp_path):
+def test_palette_from_image_gives_the_biggest_color_first_and_leaves_transparency_out(tmp_path):
     pytest.importorskip("PIL")
     pal, note = dna.palette_from_image(png(tmp_path / "l.png", [((255, 84, 24), 0.5), ((11, 31, 58), 0.3), ((240, 240, 240), 0.1)]))
     assert note == "" and [c["hex"] for c in pal][:3] == ["#FF5418", "#0B1F3A", "#F0F0F0"]
     assert pal[0]["share"] > pal[1]["share"] > pal[2]["share"] and sum(c["share"] for c in pal) == pytest.approx(1.0, abs=0.02)   # shares of the opaque part
-    assert pal[0]["share"] == pytest.approx(0.5 / 0.9, abs=0.03) and len(pal) == 3                                                   # the clear tenth is no colour
+    assert pal[0]["share"] == pytest.approx(0.5 / 0.9, abs=0.03) and len(pal) == 3                                                   # the clear tenth is no color
     assert dna.palette_from_image(png(tmp_path / "l.png", [((255, 84, 24), 0.5), ((11, 31, 58), 0.3), ((240, 240, 240), 0.1)])) == (pal, "")       # a run repeats
 
 
@@ -174,7 +174,7 @@ def test_palette_from_image_says_why_it_skipped(tmp_path, monkeypatch):
     pal, note = dna.palette_from_image(tmp_path / "bad.png")
     assert pal == [] and note.startswith("bad.png could not be read as an image")
     monkeypatch.setitem(sys.modules, "PIL", None)                                       # as if Pillow were not installed
-    assert dna.palette_from_image(tmp_path / "clear.png") == ([], "Pillow is not installed, so the colours of the logo were not read (pip install pillow)")
+    assert dna.palette_from_image(tmp_path / "clear.png") == ([], "Pillow is not installed, so the colors of the logo were not read (pip install pillow)")
 
 
 # ------------------------------------------------------------------ init
@@ -469,7 +469,7 @@ def test_scan_says_so_when_a_png_logo_cannot_be_read_for_want_of_pillow(tmp_path
     (g / "logo.png").write_bytes(b"\x89PNG not read")
     monkeypatch.setitem(sys.modules, "PIL", None)
     p, notes = dna.scan(g)
-    assert "accent" not in p and "Pillow is not installed, so the colours of the logo were not read (pip install pillow)" in notes
+    assert "accent" not in p and "Pillow is not installed, so the colors of the logo were not read (pip install pillow)" in notes
     assert p["logos"] == [str(g / "logo.png")]
 
 

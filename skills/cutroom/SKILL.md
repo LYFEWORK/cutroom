@@ -25,7 +25,7 @@ Footage in, finished videos out, in your own look. Everything mechanical is a sc
 
 | The ask | Skill |
 |---|---|
-| First run, or changing the look, colours, fonts, caption styles, formats, graphics wishlist, music rules, folders | `cutroom-setup` |
+| First run, or changing the look, colors, fonts, caption styles, formats, graphics wishlist, music rules, folders | `cutroom-setup` |
 | "I dropped footage", a card dump, a folder of clips, organizing, naming, cutting takes out | `cutroom-intake` |
 | Keep, cut, trim clips; "open the review page"; apply the picks; "which clips may I use" | `cutroom-review` |
 | Make a video from footage: a talking head, a graphic talking head, a story over b-roll, a montage, a screen walkthrough, a podcast clip | `cutroom-edit` |

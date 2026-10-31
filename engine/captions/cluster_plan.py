@@ -12,7 +12,7 @@ no_behind (spec_adapter.py, tier MINIMAL): the room check found no space above t
 hero text — every hand-specified spec["behind"] entry is skipped and zone is forced to "chest"
 even if the spec asked for "top", so nothing tries to render above the head.
 case (upper|mixed|title, default "mixed"): applied to every word cluster_plan.py renders — upper
-uppercases, title capitalises the first letter only, mixed renders the words as transcribed.
+uppercases, title capitalizes the first letter only, mixed renders the words as transcribed.
 caption_style (spec_adapter.py, only when the take has a named style, its pick or your default): the id of the style whose fields were laid
 over your look when look.json was made. The planner reads the styled values like any look value and only records the id, as a "style:<id>" entry in the plan's
 flags; a spec without it plans (and flags) byte for byte as before.
@@ -23,12 +23,12 @@ the cap and a block is placed by the height that renders.
 Soft build (README, "The soft build"): when spec.look.soft_build is on, build() plans thoughts instead of clusters
 (soft_plan, soft_events). The words go to the shared splitter (softbuild/), steered by the keys the planner puts on them (neg, struck,
 logo, glue) so each device's words land on a payoff, and each thought is one front event with "soft": true and a lead-in row, a payoff row and an
-optional tail row, laid out once under the chin and centred on the safe box: no colour, no glow, no stagger. The payoff row is the hero row
+optional tail row, laid out once under the chin and centerd on the safe box: no color, no glow, no stagger. The payoff row is the hero row
 and carries the devices, refitted to what the renderer draws; one payoff of the plan that is neither red nor struck and carries no pin, logo or
 spread takes the bar (an icon gives way to it). A person regroups the thoughts and moves the bar in GATE.md's Thoughts section: edited lines
 reach soft_events as device_overrides.thoughts and replace the split, their [bar] the bar, whatever its payoff carries. Each event carries its
 line as GATE.md shows it. A soft
-plan is chest only (spec behind and finale are skipped, so there is no matte window and no whip) and adds "soft", the colours its words
+plan is chest only (spec behind and finale are skipped, so there is no matte window and no whip) and adds "soft", the colors its words
 settle through. The device switches are read once, for both planners, by switches(), and both write plan.json through plan_doc(). A spec
 without soft_build plans byte for byte as before.
 
@@ -39,7 +39,7 @@ an all-weak phrase, and a frame with no room for a lockup at MIN_ROW (a face fil
 Caption DEVICES (the README, "Devices"): glow / neg /
 count / strike are tags on the HERO row of an automatic phrase cluster (hand-specified spec["behind"]
 rows are author-written and are only ever considered for glow, since that one is a pure function of
-"is this row already coloured accent"); pin + spaced are tags the hero row (or the row above it, for
+"is this row already colored accent"); pin + spaced are tags the hero row (or the row above it, for
 pin) gets when the phrase contains one of the brand's spec["places"] entries. Every device defaults
 OFF when its spec key is simply absent from spec.json (spec.get(key, False)/spec.get("places", [])
 etc. -- never spec.get(key, True)) -- the brand-level "on by default" (count_up) is realised by
@@ -77,7 +77,7 @@ if not all(os.path.isfile(os.path.join(SOFTBUILD, f)) for f in ("__init__.py", "
     raise SystemExit(f"SETUP: the soft build's shared core is missing: {SOFTBUILD}")
 from softbuild import look as soft_look, sentences, thoughts  # noqa: E402
 FPS = 30; SAFE = dict(roomcheck.SAFE); MAXW = 800
-CL_W = 860; CL_DX = -38   # chest budget + shift so the lockup is centred in the safe box (x 502), not on the canvas
+CL_W = 860; CL_DX = -38   # chest budget + shift so the lockup is centerd in the safe box (x 502), not on the canvas
 EDGE_MARGIN = 12          # px kept between a row's edge and the safe box (glow and shadow reach past the glyphs)
 MIN_ROW = 44              # the smallest caption row worth drawing, px
 MIN_GAP = 24              # the least air a row keeps under the chin when nothing else fits
@@ -122,7 +122,7 @@ def fit(text, px, maxw, weight=800, floor=60, face="display"):
     while px > floor and width(text, px, weight, face) > maxw: px -= 4
     return px
 def row_cap(center, x0, x1, margin=EDGE_MARGIN):
-    """The widest a row centred at x=center may be and still sit inside [x0, x1] with `margin` px to spare."""
+    """The widest a row centerd at x=center may be and still sit inside [x0, x1] with `margin` px to spare."""
     return max(120, 2 * min(x1 - center, center - x0) - 2 * margin)
 # --- the renderer's own row-size cap ---------------------------------------------------------------------------
 # CaptionsDynamic draws a cluster row no bigger than floor(maxW / max(FLOOR_LETTERS x caps, letters x factor + tracking + mark)): a row of FLOOR_LETTERS letters or fewer is held
@@ -187,7 +187,7 @@ def scale_to_room(sizes, room):
     return k, [int(s * k) for s in sizes]
 def scale_lockup(rows, max_w, glyph, chin, crown, chin_gap, glow_room):
     """A lockup whose block fits nowhere at its own size stays a lockup (every phrase is ONE tight cluster): its rows, as the renderer draws them, are scaled together
-    (sizes, and the stagger of each row off the lockup's centre) until the block fits, in the first of these places that can hold it with every row still at MIN_ROW:
+    (sizes, and the stagger of each row off the lockup's center) until the block fits, in the first of these places that can hold it with every row still at MIN_ROW:
       1. under the chin, in the take's own lane, at the usual gap, down to SHRINK_FLOOR (the exact version of the shrink the planner already tried);
       2. above the head, in front, the lane every lifted cluster uses;
       3. under the chin at the least gap (MIN_GAP), down to MIN_ROW.
@@ -208,8 +208,8 @@ def clean(t):
     t = t.strip(); return t[:-1] if t and t[-1] in ".,!" else t   # keep "?"
 def casef(t, case):
     # spec["case"] (spec_adapter.py, from your look's case): one case per
-    # look. "title" here means sentence case (capitalise the first letter only), not Python's
-    # str.title() (which would capitalise every word).
+    # look. "title" here means sentence case (capitalize the first letter only), not Python's
+    # str.title() (which would capitalize every word).
     if case == "upper": return t.upper()
     if case == "title": return t[:1].upper() + t[1:] if t else t
     return t
@@ -432,7 +432,7 @@ def last_matte_frame(end_s, cut_s, total_frames):
 
 
 # --- the soft build (the README, "The soft build"): thoughts instead of clusters ---------------------------------------
-SOFT_DX = soft_look.CENTRE_X["engine"] - 540   # -38: every line of a thought is centred on x 502, the middle of the QC safe box; no stagger
+SOFT_DX = soft_look.CENTER_X["engine"] - 540   # -38: every line of a thought is centerd on x 502, the middle of the QC safe box; no stagger
 SOFT_SHADOW = 24                               # px the soft shadow reaches under a thought's last line: 6 px down and an 18 px blur
 def _ends(w):
     """Whether a word ends its clause for a strike: it carries a stop, a comma or a hard end."""
@@ -497,7 +497,7 @@ def _soft_words(words, spec, sw):
     return W
 def _named_red(spec):
     """The red words a person or the brand named, as tokens: GATE.md neg: lines and the brand's neg_words, less GATE.md no-neg: lines. One of these that its
-    thought's payoff does not hold draws in its line's own colour, and the soft build says so in a CHECK line. The built-in red words (NEG_BUILTIN) were
+    thought's payoff does not hold draws in its line's own color, and the soft build says so in a CHECK line. The built-in red words (NEG_BUILTIN) were
     only ever drawn on a cluster's hero row, so one of those off the payoff is not said."""
     ov = spec.get("device_overrides") or {}
     return ({tok(x) for x in (spec.get("neg_words") or [])} | {tok(x) for x in (ov.get("neg_add") or [])}) - {tok(x) for x in (ov.get("neg_off") or [])}
@@ -628,7 +628,7 @@ def soft_events(words, track, spec, cut_s, sw=None):
     """The soft build's captions: the take's words split into thoughts (softbuild/thoughts.py, at the engine's widths and floors, measured with the
     brand's display font), or the thoughts a person wrote in GATE.md, one front event {mode, soft, start, end, exitAt, y, words, line} a thought (and
     short when it cannot be read in time, as the splitter or parse_lines marks it; red_off, [{text, at}], the red words a person or the brand named
-    (_named_red) that its payoff does not hold, which draw in their line's own colour, since red is drawn only on a payoff (thoughts.red_left_off);
+    (_named_red) that its payoff does not hold, which draw in their line's own color, since red is drawn only on a payoff (thoughts.red_left_off);
     and last_unread when a layout event's edge cuts off its last word, which it leaves before that word is drawn: thoughts.last_word_cut_off),
     its rows the lead-in, the payoff and the tail, and line the thought as GATE.md shows it (thoughts.format_line over the words as spoken). It
     starts to arrive ARRIVE_EARLY before its first word; it starts to leave (exitAt) LEAVE_LEAD before the next thought's first word, or LEAVE_S
@@ -689,7 +689,7 @@ def soft_events(words, track, spec, cut_s, sw=None):
             _dropped(pay or rows[0], ["logo"])
     chin_gap, named = spec.get("chin_gap", 90), _named_red(spec)
 
-    def red_off(t):   # the red words a person or the brand named that the payoff does not hold: they draw in their line's own colour
+    def red_off(t):   # the red words a person or the brand named that the payoff does not hold: they draw in their line's own color
         return [{"text": W[k]["text"], "at": W[k]["start"]} for k in thoughts.red_left_off(t, W) if toks[k] in named]
     return [{"mode": "front", "soft": True, "start": start, "end": end, "exitAt": exit_at, "y": _soft_place(rows, track, start, end, chin_gap),
              "words": rows, "line": thoughts.format_line(t, W), **({"short": True} if t["short"] else {}),
@@ -699,7 +699,7 @@ def soft_events(words, track, spec, cut_s, sw=None):
 def soft_plan(words, track, spec, cut_s, total_frames):
     """plan.json for a soft build take: the thoughts (soft_events) as its events, chest only (spec behind and finale are skipped, as no_behind does,
     so there is no matte window and no whip), the flags as today (no_caption_room counts the thoughts that pass the safe box even at their floors),
-    and "soft", the colours a thought settles through: the accent's deep and light tints, text (the brand's colors.white, which every spec carries as
+    and "soft", the colors a thought settles through: the accent's deep and light tints, text (the brand's colors.white, which every spec carries as
     look.base: what every line that is not red and not on the bar settles to), barInk (the brand's on_accent, what the payoff settles to on the bar)
     and neg (the brand's negative red)."""
     sw = switches(spec)
@@ -714,7 +714,7 @@ def soft_plan(words, track, spec, cut_s, total_frames):
 
 def build(words, track, spec, cut_s, total_frames):
     if not spec.get("accent"):
-        raise EngineStop("cluster_plan: the spec has no accent colour; build spec.json with spec_adapter.py")
+        raise EngineStop("cluster_plan: the spec has no accent color; build spec.json with spec_adapter.py")
     font_spec = spec.get("font") or {}
     set_measure(font_spec.get("measure"), ((spec.get("look") or {}).get("word_font") or {}).get("measure"))
     if not font_spec.get("family") or not font_spec.get("faces"):
@@ -722,7 +722,7 @@ def build(words, track, spec, cut_s, total_frames):
     if (spec.get("look") or {}).get("soft_build"):
         return soft_plan(words, track, spec, cut_s, total_frames)
     accent = spec["accent"]
-    # The non-accent row colour is your look's base (spec.look.base), not a hardcoded white: a look
+    # The non-accent row color is your look's base (spec.look.base), not a hardcoded white: a look
     # on a light page captions in ink, not white.
     WHITE = (spec.get("look") or {}).get("base") or "#FFFFFF"
     chin_gap = spec.get("chin_gap", 90); hero_max = spec.get("hero_max", 220); row_px = spec.get("row_px", [96, 120])
@@ -742,7 +742,7 @@ def build(words, track, spec, cut_s, total_frames):
     cl_w = spec.get("width", CL_W); cl_dx = 0 if zone == "top" else CL_DX
     # In the top zone the placement ALTERNATES — the big moments (a numeral hero, or a hand-spec'd
     # behind cluster) stay behind the head; the phrases between them come forward to the chest band
-    # in front of him. `mix: false` in the spec restores the old all-behind behaviour.
+    # in front of him. `mix: false` in the spec restores the old all-behind behavior.
     mix = bool(spec.get("mix", True)) and zone == "top"
     # spec.finale = {"top": "...", "bottom": "..."} pins the closing pair (the top line stays on screen the
     # entire time and the bottom one is drawn under it): the top phrase
@@ -785,7 +785,7 @@ def build(words, track, spec, cut_s, total_frames):
                     text, px, col, dx = r; text = casef(text, case); col = accent if col == "accent" else col
                     wi = next((w for w in seg if tok(w["text"]) == tok(text.split()[0])), seg[0])
                     row = {"text": text, "at": wi["start"], "size": fit(text, px, MAXW), "color": col, "dx": dx, "weight": 800, "hero": True}
-                    # glow is a pure function of "is this row coloured accent" -- it
+                    # glow is a pure function of "is this row colored accent" -- it
                     # applies here too, a hand-specified hero moment is still a hero moment.
                     if GLOW_ON and col == accent:
                         row["glow"] = True
@@ -899,7 +899,7 @@ def build(words, track, spec, cut_s, total_frames):
         rows.append((casef(hero, case), hero_max, col, 0 if not (pre and post) else 20, p[h]["start"], "display", True))
         if post: rows.append((casef(" ".join(post), case), row_px[1], WHITE, 110, p[h + 1]["start"], "running", False))
         # fit every row, then size the block. A row is measured with its own face (the brand's running face for the
-        # non-hero rows) and held inside the QC safe box: centred at 540 + its dx, with EDGE_MARGIN px to spare.
+        # non-hero rows) and held inside the QC safe box: centerd at 540 + its dx, with EDGE_MARGIN px to spare.
         box_x = TOP_BOX_X if zone == "top" else SAFE_BOX_X
         fitted = []
         for text, px, c, dx, at, face, is_hero in rows:
@@ -928,7 +928,7 @@ def build(words, track, spec, cut_s, total_frames):
         is_num_hero = bool(re.search(r"\d", fitted[1 if pre else 0]["text"]))   # pre/hero/post are ROWS: the hero row is 1 when a pre row exists
         # alternate lanes: even clusters (and any numeral hero) stay BEHIND up top, odd ones come
         # FORWARD to the chest band in front of him. A front cluster is sized down — the chest
-        # budget is the narrow centred one (CL_W), not the top zone's full width.
+        # budget is the narrow centerd one (CL_W), not the top zone's full width.
         # the front lane is every THIRD cluster, so the
         # eye stays up top for two beats before it drops.
         go_behind = (zone == "top") and (not mix or k % 3 != 2 or is_num_hero)
@@ -1089,7 +1089,7 @@ def build(words, track, spec, cut_s, total_frames):
     whips = sorted({w["at"]: w for w in whips}.values(), key=lambda w: w["at"])[:10]
     return plan_doc(spec, total_frames, events, windows, whips, zone, len(no_room), top_zone if zone == "top" else None)
 def plan_doc(spec, total_frames, events, windows, whips, zone, no_room, safe=None):
-    """plan.json as both planners write it: the brand's fonts and colours as the composition reads them (camelCase, each only when the brand sets
+    """plan.json as both planners write it: the brand's fonts and colors as the composition reads them (camelCase, each only when the brand sets
     it), the person matte's windows, the whip cuts, the events and the flags (cluster_plan, the zone, no_caption_room:<n> when n lockups found no
     room, style:<id> when the take chose a style), and the top zone's own safe box when there is one."""
     look = spec.get("look") or {}

@@ -36,7 +36,7 @@ def _tok(t):
 
 
 def _find_span(W, toks, occurrence=1):
-    """Locate the occurrence-th (1-indexed) contiguous run in W (words.json's "words") whose normalised text equals `toks` (already-normalised
+    """Locate the occurrence-th (1-indexed) contiguous run in W (words.json's "words") whose normalized text equals `toks` (already-normalized
     tokens for one segment's match text). Returns (start, end), end exclusive. Positional correlation, not a text scan of the whole transcript, so
     filler flags and start times are read off the aligned word and never off another word that shares its text."""
     n = len(toks)

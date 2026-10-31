@@ -1,6 +1,6 @@
 # Classify the clips of a shoot
 
-You catalogue raw clips so an editor can find each one by its name, without opening it. Read this whole file before the first clip. It says what to read, what to write, and the rules that decide every field.
+You catalog raw clips so an editor can find each one by its name, without opening it. Read this whole file before the first clip. It says what to read, what to write, and the rules that decide every field.
 
 `<scratch>` is the shoot's `.work` folder. `intake.py start` and `intake.py subjects` print its path. `<clip>` is a clip's name exactly as it is in `<scratch>/probe.tsv` (the file name without its extension; it may hold spaces).
 

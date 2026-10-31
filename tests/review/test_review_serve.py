@@ -146,7 +146,7 @@ def test_an_unsatisfiable_range_is_416(srv, rng):
 
 
 @pytest.mark.parametrize("rng", ["bytes=0-1,5-6", "items=0-1", "bytes=9-3", "garbage", "bytes=-"])
-def test_a_range_it_will_not_honour_gets_the_whole_file(srv, rng):
+def test_a_range_it_will_not_honor_gets_the_whole_file(srv, rng):
     url, f = proxy_path(srv)
     status, _, body = srv.get(url, headers={"Range": rng})
     assert status == 200 and body == f.read_bytes()
