@@ -1,0 +1,18 @@
+{
+  "id": "soft-build",
+  "name": "Soft build",
+  "summary": "Calm, clean captions in front of the speaker, one thought at a time, with one payoff picked out by a bar.",
+  "use_when": "a talking head where the words should read calm and clean",
+  "never_when": "the words should sit behind the head, or the video needs loud words",
+  "preview": null,
+  "source": {
+    "type": "starter"
+  },
+  "set": {
+    "soft_build": true,
+    "zone": "chest",
+    "hero_glow": false,
+    "whip_frames": 0,
+    "count_up": true
+  }
+}

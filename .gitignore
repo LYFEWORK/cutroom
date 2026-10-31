@@ -1,0 +1,29 @@
+# dependencies and build output
+node_modules/
+remotion/out/
+remotion/.remotion/
+engine/swift/*/bin/
+engine/swift/**/.build/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+
+# the user's data never lives in the repo
+*.mp4
+*.mov
+*.MOV
+*.MP4
+*.m4v
+*.wav
+*.aiff
+!templates/**/*.mp4
+!docs/**/*.png
+
+# scratch
+.DS_Store
+._*
+*.part
+*.tmp
+.playwright-mcp/
+docs/guide/.pages/

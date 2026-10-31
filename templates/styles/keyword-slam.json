@@ -1,0 +1,13 @@
+{
+  "id": "keyword-slam",
+  "name": "Keyword slam",
+  "summary": "One loud word per phrase over small supporting rows, in front of the speaker: under the chin when the frame leaves room, above the head when it does not.",
+  "use_when": "fast lists, numbers and named things, where each phrase has one word that has to land",
+  "never_when": "slow, thoughtful talk with no standout words, where every phrase would slam for no reason",
+  "preview": null,
+  "source": {"type": "starter"},
+  "opt_in": false,
+  "owner": null,
+  "set": {"zone": "chest", "hero_max": 280, "row_px": [48, 60], "whip_frames": 4},
+  "feed": {"place": "chest", "size": 0.85, "hero": {"look": "bigger_bold", "scale": 2.4, "pick": "page"}, "words": 2}
+}

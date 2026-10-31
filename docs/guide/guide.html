@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cutroom Guide</title>
+<style>
+@page { size: Letter; margin: 0.75in 0.8in; }
+:root { --ink:#141414; --mute:#5b6270; --rule:#d9dce3; --panel:#f3f4f7; --accent:#1f5eff; --accent-ink:#163fa8; --code-bg:#0f172a; --code-ink:#e6e9f2; }
+* { box-sizing:border-box; }
+html, body { margin:0; background:#ffffff; color:var(--ink); font-family:-apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; font-size:11pt; line-height:1.45; }
+h1, h2, h3, h4 { line-height:1.15; margin:0; letter-spacing:-0.01em; }
+h1 { font-size:30pt; font-weight:700; }
+h2 { font-size:20pt; font-weight:700; margin:0 0 14pt; padding-bottom:8pt; border-bottom:2px solid var(--ink); }
+h3 { font-size:13.5pt; font-weight:700; margin:18pt 0 6pt; color:var(--accent-ink); }
+h4 { font-size:11.5pt; font-weight:700; margin:12pt 0 4pt; }
+p { margin:0 0 8pt; }
+ul, ol { margin:0 0 8pt 18pt; padding:0; }
+li { margin:0 0 4pt; }
+.chapter { break-before:page; page-break-before:always; }
+.kicker { font-size:9.5pt; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--accent-ink); margin-bottom:6pt; }
+.lead { font-size:12.5pt; color:#2b3140; margin-bottom:12pt; }
+.panel { background:var(--panel); border-left:4px solid var(--accent); padding:10pt 12pt; margin:10pt 0 12pt; break-inside:avoid; }
+.panel.warn { border-left-color:#c2410c; }
+.panel.note { border-left-color:#6b7280; }
+.panel p:last-child { margin-bottom:0; }
+.panel .t { font-weight:700; margin-bottom:3pt; }
+pre { background:var(--code-bg); color:var(--code-ink); padding:9pt 11pt; border-radius:4px; font:9.6pt/1.45 "SF Mono", Menlo, Consolas, monospace; white-space:pre-wrap; word-break:break-word; margin:6pt 0 10pt; break-inside:avoid; }
+code { font:9.8pt "SF Mono", Menlo, Consolas, monospace; background:var(--panel); padding:1px 4px; border-radius:3px; }
+pre code { background:none; padding:0; font-size:inherit; }
+table { width:100%; border-collapse:collapse; margin:6pt 0 12pt; font-size:10pt; break-inside:avoid; }
+th, td { text-align:left; vertical-align:top; padding:6pt 8pt; border-bottom:1px solid var(--rule); }
+th { font-weight:700; background:var(--panel); border-bottom:1px solid #b9bec9; }
+.steps li { margin-bottom:7pt; }
+.steps li b { display:block; }
+.two { display:flex; gap:14pt; }
+.two > div { flex:1; }
+.small { font-size:9.5pt; color:var(--mute); }
+.cover { height:9.4in; display:flex; flex-direction:column; justify-content:space-between; }
+.cover .mark { width:46pt; height:46pt; background:var(--ink); border-radius:10pt; }
+.cover .title h1 { font-size:44pt; margin:0 0 10pt; }
+.cover .title p { font-size:15pt; color:#2b3140; max-width:5.6in; }
+.cover .foot { display:flex; justify-content:space-between; font-size:10pt; color:var(--mute); border-top:1px solid var(--rule); padding-top:10pt; }
+.toc li { margin-bottom:5pt; }
+.toc li span { color:var(--mute); margin-left:6pt; }
+.flow { display:flex; gap:6pt; margin:8pt 0 12pt; }
+.flow div { flex:1; background:var(--panel); border-top:3px solid var(--accent); padding:7pt 8pt; font-size:9.6pt; }
+.flow div b { display:block; margin-bottom:2pt; }
+.kv td:first-child { width:30%; font-weight:700; }
+</style>
+</head>
+<body>
+
+<section class="cover">
+  <div class="mark"></div>
+  <div class="title">
+    <div class="kicker">The guide</div>
+    <h1>Cutroom</h1>
+    <p>Footage in, finished videos out, in your own look. How to install it, set it up, and run every video from the card dump to the finished file, with Claude Code doing the mechanics and you making the calls.</p>
+  </div>
+  <div class="foot"><span>Version 1.0</span><span>For macOS and Claude Code on Opus 5.5</span></div>
+</section>
+
+<section class="chapter">
+  <div class="kicker">Contents</div>
+  <h2>What is in this guide</h2>
+  <ol class="toc">
+    <li>What you will be able to do <span>one page</span></li>
+    <li>Before you start <span>the Mac, Claude Code, GitHub access, what to gather</span></li>
+    <li>Install <span>the one paragraph you paste, what happens, how you know it worked</span></li>
+    <li>The setup wizard <span>twelve steps, what each asks and writes</span></li>
+    <li>How it works <span>the folder map, the life of a video, who decides what</span></li>
+    <li>Day to day <span>recipes: new footage, review, make a video, caption, learn from a reference, change a style, add a graphic</span></li>
+    <li>Quality <span>the rules the system follows and the gates it will not ship past</span></li>
+    <li>Storage over time <span>the monthly routine, the SSD, archive, cleanup</span></li>
+    <li>Updating and troubleshooting</li>
+    <li>Reference <span>commands, files, the DNA</span></li>
+  </ol>
+  <div class="panel note"><p class="t">How to read this</p><p>Chapters 2 to 4 are the one-time path: get the Mac ready, install, set up. Chapter 5 is what you do every week. Chapter 6 is why the system refuses some things. Chapters 7 to 10 are for later. Commands you type into Claude Code are shown as quotes; commands Claude runs for you are shown in dark boxes, so you know what is happening under the hood.</p></div>
+</section>
+
+<section class="chapter">
+  <div class="kicker">Chapter 1</div>
+  <h2>What you will be able to do</h2>
+  <p class="lead">Cutroom turns Claude Code into your editing room. You shoot, you drop the card, you say what you want, and you approve. Everything mechanical runs on your Mac.</p>
+  <div class="flow">
+    <div><b>Drop</b>Put a card dump in one folder.</div>
+    <div><b>Organize</b>Originals moved and named by what is said or shown; takes cut out; an index page.</div>
+    <div><b>Review</b>Keep, cut or trim every clip on one page. Only kept clips are ever used.</div>
+    <div><b>Edit</b>The cut, the hook card, b-roll, graphics, music, end card. You approve before anything renders.</div>
+    <div><b>Caption</b>In styles you designed. You approve the words and the look.</div>
+    <div><b>Ship</b>Gates check it. The final lands with a transcript and a caption file. The mess is cleaned up.</div>
+  </div>
+  <h3>What makes it different</h3>
+  <ul>
+    <li><b>It never clips a word.</b> Every cut edge sits on the voice's own onset or decay, read off the audio, and every joint is re-checked and re-cut if a word was hurt.</li>
+    <li><b>Your look, not a template.</b> A setup wizard builds your brand DNA from your colours, fonts and logo and from reference videos you paste in. Caption styles are previewed on your own clip before you keep one.</li>
+    <li><b>Only approved footage.</b> You keep, cut and trim on a review page. The system refuses to place a clip you did not keep.</li>
+    <li><b>Hard gates.</b> Loudness, safe zones, head clearance, every spoken word on screen, colour tags. A failed gate means nothing ships, and the line tells you the second and the reason.</li>
+    <li><b>Nothing posts.</b> Finished videos land in a folder. Posting is yours.</li>
+    <li><b>It cleans up after itself.</b> When a video is delivered, the heavy intermediates go to the Trash with a receipt. Originals and finals are never touched.</li>
+  </ul>
+  <div class="panel"><p class="t">What it is not</p><p>It is not a timeline editor and it does not replace a grade. It edits short-form video (talking heads, graphic talking heads, stories over b-roll, montages, screen walkthroughs, podcast clips) in 9:16 first, with 16:9 and 4:5 copies where a format wants them. It runs on a Mac only, because the face tracking and the person matte use Apple's own vision frameworks.</p></div>
+</section>
+
+<section class="chapter">
+  <div class="kicker">Chapter 2</div>
+  <h2>Before you start</h2>
+  <h3>The Mac</h3>
+  <table class="kv">
+    <tr><td>Mac</td><td>macOS 14 or newer. Apple Silicon (M1 or later) is recommended; Intel works, slower.</td></tr>
+    <tr><td>Disk</td><td>About 12 GB for the tools. Your footage is separate: an external SSD for the footage library is the right call if you shoot a lot (chapter 8).</td></tr>
+    <tr><td>Network</td><td>For the install (about 6 GB of downloads) and for reference links. Editing itself runs offline.</td></tr>
+    <tr><td>Claude Code</td><td>Version 2 or newer, in the app or the terminal, with the main session on <b>Opus 5.5</b>. In the app, pick the model in the model picker. In the terminal, <code>claude --model claude-opus-5-5</code>, or put <code>"model": "claude-opus-5-5"</code> in <code>~/.claude/settings.json</code>. The system was built and tested at this level; a smaller model makes worse edits.</td></tr>
+    <tr><td>GitHub</td><td>A GitHub account, invited to the private repo. Send your username to the person who gave you this guide. Then, once on this Mac, <code>brew install gh</code> and <code>gh auth login</code> (a browser flow). If you have no Homebrew yet, the installer in chapter 3 will tell you how to get it first.</td></tr>
+    <tr><td>Google Chrome</td><td>Optional. The review page opens in your default browser either way.</td></tr>
+  </table>
+  <h3>What to gather for the setup wizard</h3>
+  <p>You can run the wizard with nothing and fill things in later, but it goes faster with these at hand:</p>
+  <ul>
+    <li><b>Your colours.</b> One main colour as a hex code (for example <code>#1F5EFF</code>) and your dark and light colours if you have them. A brand folder, a style guide or your website also works: the wizard can read colours out of it.</li>
+    <li><b>Your font.</b> A font file (.ttf, .otf, .woff2), or the name of a Google Fonts family. One display face is enough; a second running face is optional.</li>
+    <li><b>Your logo.</b> An emblem (the mark) and a lockup (mark plus name), as SVG or PNG. Optional: with no logo, nothing is drawn.</li>
+    <li><b>Reference videos.</b> Three to ten links to videos whose captions, pace, hook or graphics you want to learn from, each with a few words on what you like. TikTok, Reels, Shorts and YouTube links work; Instagram often needs a login, so a downloaded file is the fallback.</li>
+    <li><b>One sample clip.</b> A talking-head clip of yourself, 10 to 60 seconds, 9:16. The wizard previews every caption style on it and runs one video through the whole chain at the end.</li>
+    <li><b>Music.</b> A folder of tracks you are licensed to use, if you want a bed under your videos. Optional.</li>
+    <li><b>An SSD.</b> If you have one for footage, know its path (it shows under <code>/Volumes/</code>).</li>
+  </ul>
+  <div class="panel warn"><p class="t">What the system never does</p><p>It never posts or schedules anything. It never deletes a camera original or a finished video. It never sends your footage anywhere: transcription, face tracking and rendering run on your Mac. Optional paid services (a verbatim transcription API, a sound library, an AI b-roll service) are off until you add a key.</p></div>
+</section>
+
+<section class="chapter">
+  <div class="kicker">Chapter 3</div>
+  <h2>Install</h2>
+  <p class="lead">One paragraph, pasted into Claude Code, installs everything. Claude follows the install document in the repo step by step and reports back.</p>
+  <h3>Step 1: paste this into Claude Code</h3>
+  <div class="panel"><p>Clone https://github.com/LYFEWORK/cutroom to ~/cutroom (or <code>git pull</code> it if it is already there), then read ~/cutroom/INSTALL.md and follow it exactly.</p></div>
+  <p>That paste is your go-ahead for about 6 GB of downloads, Homebrew installs, a Python environment for word timing, the renderer's install, and linking eight skills into <code>~/.claude/skills/</code>. Nothing touches your footage.</p>
+  <h3>Step 2: what happens, and what Claude will ask you for</h3>
+  <ol class="steps">
+    <li><b>The Mac is checked.</b> macOS version, free disk, Xcode command-line tools, Homebrew, GitHub access. Two things need you: Apple's command-line-tools window (click Install) and Homebrew's installer (it asks for your Mac password). Claude shows you the exact command or window and waits.</li>
+    <li><b>The repo is cloned</b> to <code>~/cutroom</code>.</li>
+    <li><b>The installer runs</b> (<code>bash ~/cutroom/install.sh</code>), 10 to 20 minutes the first time. It prints one line per item: a check mark for done, an exclamation mark for optional or skipped, a cross for something to fix. It is safe to run again; it resumes.</li>
+    <li><b>The doctor runs</b> and proves the stack: ffmpeg, the transcriber and its model, the word-timing environment with a live test, the Apple Vision helpers, the renderer's TypeScript, the skills, your config.</li>
+  </ol>
+  <pre>bash ~/cutroom/install.sh      # what Claude runs
+bash ~/cutroom/bin/doctor.sh   # safe any time</pre>
+  <h3>Step 3: how you know it worked</h3>
+  <p>The doctor's last line reads <code>N passed, 0 failed, M warnings</code>. <b>Zero failed is what matters.</b> Two warnings are expected before setup: "no workspace yet" and "no Brand/dna.json yet". For any cross, Claude reads the fix in INSTALL.md ("If something fails") and runs the installer again.</p>
+  <h3>Step 4: start a new session</h3>
+  <p>Skills load when a session starts. Open a new Claude Code session (still on Opus 5.5), in any folder, and type:</p>
+  <div class="panel"><p><code>/cutroom-setup</code></p></div>
+  <div class="panel note"><p class="t">What got installed, in plain words</p><p><b>ffmpeg</b> does every cut, conversion and mix. <b>whisper.cpp</b> with the large-v3-turbo model transcribes; <b>WhisperX</b> times every word, in its own Python 3.12 environment at <code>~/.cutroom/venv</code>. <b>Apple Vision helpers</b> (built here with swiftc) find the face, the person's outline and on-screen text. <b>Remotion</b> renders captions, cards and your graphics. <b>yt-dlp</b> downloads reference links. Your config is <code>~/.cutroom/config.json</code>; optional keys go in <code>~/.cutroom/keys.env</code>.</p></div>
+</section>
+
+<section class="chapter">
+  <div class="kicker">Chapter 4</div>
+  <h2>The setup wizard</h2>
+  <p class="lead">Twelve steps, one question at a time. Everything the wizard writes lands in your workspace under <code>Brand/</code>, never in the repo, so updates never touch it. You can stop at any point and pick it up later: Claude reads what is still open and continues.</p>
+  <table>
+    <tr><th style="width:4%">#</th><th style="width:22%">Step</th><th>What it asks</th><th style="width:26%">What it writes</th></tr>
+    <tr><td>1</td><td>Where footage lives</td><td>A folder for your video work: the default <code>~/Movies/Cutroom</code>, or a folder on your SSD. Big libraries belong on an SSD.</td><td>The workspace: <code>Drop/ Footage/ Projects/ Finished/ Brand/ Review/ Archive/</code></td></tr>
+    <tr><td>2</td><td>Who you are</td><td>Your name or brand, your handle, what the videos are about, who watches, who is on camera.</td><td><code>Brand/dna.json</code> (identity, people), <code>Brand/DNA.md</code> (in your words)</td></tr>
+    <tr><td>3</td><td>Your look</td><td>Point at a brand folder and the wizard proposes an accent, a dark ink, a text colour, the text colour that reads on your accent, a font and a logo. Or give a hex and a font. Every colour is checked for contrast.</td><td>Colours, fonts (copied into <code>Brand/assets/fonts/</code>), logo files</td></tr>
+    <tr><td>4</td><td>References</td><td>Paste as many links as you like, each with what you like about it. Each is downloaded, measured (cuts a minute, shot length, text share, sound hits), its frames and on-screen text pulled, and Claude writes a breakdown. Then a synthesis: what your references share, and a proposal for caption styles, a hook look, formats and a graphics wishlist. You pick.</td><td><code>Brand/references/&lt;slug&gt;/</code> with boards, strips, numbers, transcript and the breakdown</td></tr>
+    <tr><td>5</td><td>Caption styles</td><td>One to three styles, each started from a base (clean clusters, top clusters, hero lockup, keyword slam, quiet, soft build) and tuned: where the words sit, how big, upper or mixed case, the hero word, how words arrive, optional own colours. Each is previewed on your clip. You keep, change or drop it. One becomes the default.</td><td><code>Brand/styles/&lt;id&gt;.json</code> and a preview image each</td></tr>
+    <tr><td>6</td><td>Formats</td><td>Which kinds of video you make (talking head, graphic talking head, story, montage, screen walkthrough, podcast clip), each with its caption style, whether graphics are allowed, the b-roll rule, music on or off.</td><td><code>formats</code> in the DNA</td></tr>
+    <tr><td>7</td><td>Graphics wishlist</td><td>What you want to see on screen: lower third, title card, list reveal, quote card, pop-up card, progress bar, picture-in-picture, counter. Two ship built (lower third, title card); the rest are built the first time an edit needs them, test-rendered, and shown to you.</td><td><code>graphics.wishlist</code>, <code>graphics.built</code></td></tr>
+    <tr><td>8</td><td>Music and sound</td><td>Your music folder (or none), a bed under talking heads or not, how many videos before a track may repeat, sound effects on or off (clicks and ticks on graphics, very subtle).</td><td><code>music</code>, <code>sound</code></td></tr>
+    <tr><td>9</td><td>Delivery</td><td>9:16 only or also 16:9 and 4:5; what the end card says; a transcript and a caption file beside every final (default yes).</td><td><code>output</code>, <code>delivery</code></td></tr>
+    <tr><td>10</td><td>Review habits</td><td>The keep/cut page opens on every intake (default on); nothing renders without your approval (always on).</td><td><code>review</code></td></tr>
+    <tr><td>11</td><td>Storage</td><td>Your SSD for old footage, if any; whether cleanup after a delivered video asks you or runs on its own.</td><td><code>storage</code>, <code>cleanup</code></td></tr>
+    <tr><td>12</td><td>Test run</td><td>One clip through the whole chain: intake, review, one short video. You see every stop and every file.</td><td>Your first <code>Finished/</code> video and <code>Brand/SETUP.md</code></td></tr>
+  </table>
+  <h3>What a caption style is</h3>
+  <p>A style is a small file that says where the words sit (chest height under the chin, or up top behind the head), how wide the block is, how big the hero word gets, the row heights, the clearance under the chin, whether the accent draws as a chip, the glow, how words arrive (whip cuts between phrases, numbers that count up) and, for the soft build, that each phrase lays out once as a lead-in, a payoff and a tail with the words settling in from your accent colour. A style may also carry its own colours and font slot, so a "quiet white" style and a "loud accent" style can live side by side. The base colours and fonts come from your DNA; a style never carries someone else's.</p>
+  <div class="panel"><p class="t">The one rule about looks</p><p>Pick one hook look and one spot for it. Every video of yours shows the hook card in the same place and style, and the captions in the same home. Variety comes from the edit (the lead move, the inserts, the graphics), never from moving the furniture around.</p></div>
+  <h3>Changing things later</h3>
+  <p>Any step can be re-run alone: say "run the setup for my colours" or "add a caption style". Changing colours, fonts or logo re-previews every style, because they change the captions. A new reference can be added any time with the study skill (chapter 6).</p>
+</section>
+
+<section class="chapter">
+  <div class="kicker">Chapter 5</div>
+  <h2>How it works</h2>
+  <h3>The folder map</h3>
+  <table class="kv">
+    <tr><td>Drop/</td><td>Where a card dump goes. A folder per shoot, or loose files.</td></tr>
+    <tr><td>Footage/&lt;date name&gt;/</td><td>An organized shoot: <code>Interview/&lt;question or line&gt;/</code> with takes, <code>B-Roll/&lt;subject&gt;/</code>, <code>Bad Takes/</code>, <code>Off Topic/</code>, <code>Unusable/</code>, <code>Camera Sidecars/</code>, a <code>START HERE.html</code> index you can open on a phone, a manifest and a text note beside every clip. Originals are moved here, never re-encoded.</td></tr>
+    <tr><td>Review/</td><td>The keep/cut page: small proxies of every clip, posters, your decisions, the apply log.</td></tr>
+    <tr><td>Projects/&lt;title&gt;/</td><td>One video's working files: the words, the cut, the plan, the renders, the caption gate. Cleaned after delivery.</td></tr>
+    <tr><td>Finished/&lt;title&gt;/</td><td>The final MP4 with <code>&lt;title&gt; - Transcript.md</code> and <code>&lt;title&gt; - Caption.txt</code> beside it, and a <code>Build/</code> folder with the gate, the QC report and the evidence sheets. Never cleaned.</td></tr>
+    <tr><td>Brand/</td><td>Your DNA: <code>dna.json</code>, <code>DNA.md</code>, <code>styles/</code>, <code>assets/</code> (fonts, logos), <code>references/</code>, <code>graphics/</code> (your components), <code>music/</code>, a ledger of what shipped.</td></tr>
+    <tr><td>Archive/</td><td>Old shoots moved out, or the SSD path you set.</td></tr>
+  </table>
+  <h3>The life of a video</h3>
+  <ol class="steps">
+    <li><b>Footage lands.</b> You drop the card into <code>Drop/</code> and say "I dropped footage". Claude probes and transcribes every clip, reads the contact sheets, names each clip by what is said or shown, files interview answers by question and b-roll by subject, cuts every take of a scripted read into its own file (five seconds of real footage on both sides, flubs into Bad Takes), builds the index, and opens the review page.</li>
+    <li><b>You review.</b> On the page you play each clip, keep it, cut it, or trim it to the parts worth keeping. Every tap saves. When you say "apply my picks", trims are cut as exact stream copies, cut clips go to the Trash, and the kept list becomes the only menu an edit may use.</li>
+    <li><b>You ask for a video.</b> "Make a talking head from the answer about pricing." Claude picks the best take (or joins several), runs the cutter to the first stop, and shows you <code>SCRIPT.md</code>: the transcript as lines. You strike what goes; you never rewrite a word. On your yes it cuts, with every edge on the voice, re-checks every joint, masters the voice.</li>
+    <li><b>You see the plan.</b> The hook card text (words you actually say in the first seconds), where the b-roll inserts land and why, the graphics, the music track, the end card. Change what you want. Go.</li>
+    <li><b>It renders and captions.</b> The picture renders with the inserts, hook, graphics and end card; the music sits well under your voice and eases down before you speak. Then the caption chain plans every phrase against your words and your face and stops at <code>GATE.md</code>: the hero words, the thoughts, any warning. You approve. It renders the captions and remuxes the sound.</li>
+    <li><b>Gates check it.</b> Face on camera, picture equals sound, every spoken word on screen in order, caption ink inside the safe box and off the face, loudness at the platform standard, colour tags right, pacing as you set it. A failure names the second and the gate; nothing ships until it passes.</li>
+    <li><b>It ships and cleans up.</b> The final lands in <code>Finished/&lt;title&gt;/</code> with its transcript and caption file. A line goes in your ledger. The project's heavy files go to the Trash with a receipt (or Claude asks first, as you chose).</li>
+  </ol>
+  <h3>Who decides what</h3>
+  <div class="two">
+    <div><h4>You decide</h4><ul><li>What to keep, cut or trim.</li><li>Which lines stay in the cut.</li><li>The hook text, the plan, the music.</li><li>The caption words, hero words and style.</li><li>When a CHECK is fine, with a reason.</li><li>When anything is removed from disk.</li></ul></div>
+    <div><h4>Claude decides, inside the rules</h4><ul><li>Clip names, folders, take boundaries.</li><li>Where cuts land on the voice.</li><li>Which kept b-roll matches which words.</li><li>Caption layout against the face.</li><li>Levels, tags, sizes, safe zones.</li><li>What a gate failure means and how to fix it.</li></ul></div>
+  </div>
+  <div class="panel note"><p class="t">Where the rules live</p><p><code>~/cutroom/rules/</code> holds the craft rulebook: cutting, hook, captions, b-roll, graphics, sound, colour, delivery, review, footage, storage, formats, QC gates. Claude reads the file for the step it is on. If you disagree with a rule, say so; most are defaults you can change in your DNA, and the measurable ones are listed in chapter 7.</p></div>
+</section>
+
+<section class="chapter">
+  <div class="kicker">Chapter 6</div>
+  <h2>Day to day</h2>
+  <p class="lead">Say what you want in plain words. Claude picks the right skill. These are the recipes.</p>
+  <h3>New footage</h3>
+  <p>Copy the card into <code>Drop/</code> (a folder named after the shoot helps), then: <i>"I dropped footage from Tuesday's shoot. It was an interview; the questions are in questions.md."</i> For a scripted shoot: <i>"Scripted shoot, the lines are in script.md, cut the takes out."</i> Claude tells you when the index and the review page are ready.</p>
+  <h3>Review</h3>
+  <p><i>"Open the review page."</i> Keep (K), cut (X), trim with I and O, next (N). When you are done: <i>"Apply my picks."</i> Claude shows the plan (what gets trimmed, what goes to the Trash, how many GB) and runs it on your yes.</p>
+  <h3>Make a video</h3>
+  <p><i>"Make a talking head from the answer about pricing, title Pricing Explained."</i> You will stop twice: once at <code>SCRIPT.md</code> (strike lines), once at <code>GATE.md</code> (approve the captions), and once in between to see the plan. A 60-second video takes a few minutes of rendering.</p>
+  <p>Other formats: <i>"Make a story over b-roll from the voiceover take"</i>, <i>"Make a montage of the workshop b-roll with the upbeat track"</i>, <i>"Cut the screen recording into a walkthrough"</i>, <i>"Make a podcast clip from the answer at 14:20"</i>.</p>
+  <h3>Caption a cut you already have</h3>
+  <p><i>"Caption this cut in my quiet style."</i> The two-pass caption chain runs on your file (9:16, 1080x1920 or 4K). You approve at <code>GATE.md</code>, it renders, checks and files the result.</p>
+  <h3>Learn from a reference</h3>
+  <p><i>"Here is a reel I like: &lt;link&gt;. The captions are what I want."</i> Claude downloads and measures it, pulls the frames, writes a breakdown, and proposes what to change in your DNA (a style, the hook spot, pacing targets). Nothing changes until you say yes. A reference never carries over its colours, fonts or logo: your videos reuse the move, not the look.</p>
+  <h3>Change a caption style, or add one</h3>
+  <p><i>"Make my default captions bigger and move them up a little"</i> or <i>"Add a loud upper-case style for the list videos."</i> Claude edits or writes the style file, previews it on your clip, and keeps it on your yes.</p>
+  <h3>Add a graphic</h3>
+  <p><i>"I want a progress bar across the top for step videos."</i> Claude writes the component in your <code>Brand/graphics/</code> folder using only your colours and fonts, renders a test, shows you a frame, and registers it. From then on edits can use it.</p>
+  <h3>Check the system</h3>
+  <p><i>"Run the doctor."</i> Any time. It changes nothing.</p>
+  <div class="panel"><p class="t">Approvals are files you can read</p><p><code>SCRIPT.md</code> (the cut) and <code>GATE.md</code> (the captions) are plain text in the project folder. Claude walks you through them, but you can open them yourself, strike a line or fix a name, set <code>approved: yes</code>, and say "run it again".</p></div>
+</section>
+
+<section class="chapter">
+  <div class="kicker">Chapter 7</div>
+  <h2>Quality: the rules and the gates</h2>
+  <p class="lead">These are the measurable rules. Judgment rules (what makes a hook land, which shot matches the words) live in the rulebook and need eyes; these are enforced by code.</p>
+  <h3>Cutting</h3>
+  <ul>
+    <li>A cut never clips a word. An end sits 0.05 s after the last word's voice has decayed; a start 0.04 s before the first word's onset, read on the audio, not on the aligner's times.</li>
+    <li>A clipped-word check runs on every joint after the cut; a failure widens the pad by 0.04 s (up to 0.12 s) and re-cuts, three times at most, then stops and flags.</li>
+    <li>Pauses of 0.25 s or more collapse to about 0.12 s. A remaining pause is reviewed from 0.18 s and fails from 0.30 s.</li>
+    <li>A video opens with 0.35 s or less of dead footage before the first word and ends 0.40 s or less after the last.</li>
+  </ul>
+  <h3>Hook</h3>
+  <ul>
+    <li>The card is fully formed from frame 0 and holds 3.0 to 6.5 s. At most 3 lines of 27 characters, 14 words.</li>
+    <li>Its words are words spoken in the first 5 s (whole, or cut with the order kept). A card word nobody says is a FIX.</li>
+    <li>It never covers a face or touches the top of the head in any frame of its window; it ends at least 22 px above the crown. If your spot would collide on a video, that video's card moves below the chin, or ships without one, and the note says so.</li>
+  </ul>
+  <h3>Captions</h3>
+  <ul>
+    <li>The words are exactly the transcript's. Every spoken word is on screen when it is spoken, within one frame of its onset. No event under three frames, none overlapping, in spoken order.</li>
+    <li>Safe box on a 1080x1920 frame: x 65 to 940, y 270 to 1420. Captions sit at chest height under the chin, never over eyes, nose or mouth, and above the crown only when a style puts type behind the head and the room check finds the room.</li>
+    <li>Size floors: body 52 px, labels 36 px, payoff 60 px. A row is never shrunk under the floor to fit; words are cut instead.</li>
+    <li>Platform interface zones are kept clear: the top 220 px, below y 1650, and the right-hand column below y 1100.</li>
+  </ul>
+  <h3>Sound</h3>
+  <ul>
+    <li>Voice at -16 LUFS integrated (gate plus or minus 1) with a -2.0 dBTP true-peak target; a peak above -1.5 fails.</li>
+    <li>The music bed sits about 22 dB under the talk and about 14 dB under the voice where it plays alone, eases down over 1.5 s before speech, and holds steady through pauses under 4 s.</li>
+    <li>Sound effects are clicks, ticks and blinks that land with their graphic, 12 to 16 dB under the speaking level, in a gap between words, never on a word, at most about 12 a minute and never two within a second.</li>
+  </ul>
+  <h3>Picture and delivery</h3>
+  <ul>
+    <li>Something new on screen at least every 2.5 s (a new picture or a graphic that shows something); a camera move does not count. Default: reported, not enforced; you can turn it on.</li>
+    <li>Emphasis zooms (1.12 to 1.22) land on payoff lines only, held, never in the hook window, never two sentences in a row.</li>
+    <li>Every export is 1080x1920 (or 2x for a 4K source), 30 fps, H.264, yuv420p, limited range, tagged BT.709 on matrix, primaries and transfer. Bitrate at or under 24 Mbps. Duration equal to the cut within 0.1 s.</li>
+    <li>A transcript and a caption text file sit beside every finished video. A placeholder caption blocks delivery.</li>
+  </ul>
+  <h3>Footage and storage</h3>
+  <ul>
+    <li>Originals are moved, never re-encoded, never removed by a tool. Takes are cut with 5 s of real footage on both sides.</li>
+    <li>Only clips you kept are placed, inside their kept ranges. Trims are stream copies from the keyframe at or before your start.</li>
+    <li>Every delete goes through the Trash, after a plan you saw. A trimmed original is trashed only after every part verified by a full decode.</li>
+  </ul>
+  <div class="panel note"><p class="t">FIX and CHECK</p><p>A <b>FIX</b> stops delivery; the line names the second and what to change. A <b>CHECK</b> needs an answer: Claude tells you what it saw, you say it is fine (with a reason that goes in the notes) or you change it. Every gate's report and its evidence sheets land in the video's <code>Build/</code> folder.</p></div>
+</section>
+
+<section class="chapter">
+  <div class="kicker">Chapter 8</div>
+  <h2>Storage over time</h2>
+  <p class="lead">Footage is the thing that fills a Mac. The system keeps one copy of every original, cleans its own mess, and gives you a report that says what can leave.</p>
+  <h3>What takes the space</h3>
+  <ul>
+    <li><b>Originals</b> in <code>Footage/</code>: the big one. A 4K shoot is tens of gigabytes. These are yours to keep or archive; the tool never removes them.</li>
+    <li><b>Review proxies</b> in <code>Review/proxies/</code>: small (about half a megabyte a clip), regenerable.</li>
+    <li><b>Project intermediates</b> in <code>Projects/&lt;title&gt;/</code>: mezzanines, word wavs, renders, mattes. Gigabytes per video, and the first thing to clean.</li>
+    <li><b>Finished videos</b>: small (tens of megabytes). Keep them.</li>
+  </ul>
+  <h3>After every delivered video</h3>
+  <p>Cleanup runs (or asks, as you set in the wizard). It keeps the small files that say what was made (the plan, the words, the gate, the receipts, the evidence sheets) and moves the heavy intermediates to the Trash. <code>CLEANUP.md</code> in the project folder lists what left and how much came back. Empty the Trash to get the space.</p>
+  <h3>The monthly routine</h3>
+  <ol class="steps">
+    <li><b>"Run the storage report."</b> Sizes by folder, each shoot with its age, each project with what can leave, free disk space, and suggested archive commands for shoots over 60 days old and over 5 GB.</li>
+    <li><b>"Clean up every delivered project."</b> One run over everything already shipped.</li>
+    <li><b>"Archive the March shoots to the SSD."</b> Each shoot is copied to the archive folder and every file verified by size and content hash before the original goes to the Trash. A note in the copy says when and from where.</li>
+    <li><b>Empty the Trash.</b></li>
+  </ol>
+  <h3>The SSD</h3>
+  <p>Two ways to use one. <b>Archive only:</b> the workspace stays on the Mac and old shoots move to the SSD; the review page forgets archived clips unless you add the archive as a review root. <b>Whole workspace on the SSD:</b> point the workspace there in the wizard (or move the folder in Finder and tell Claude the new path); everything, footage and finished videos included, lives on the drive, and the Mac stays light. Use a fast drive (USB 3.1 or Thunderbolt, SSD not spinning disk) and keep it formatted APFS. The Trash on an external drive is that drive's own Trash; empty it to get the space back.</p>
+  <div class="panel warn"><p class="t">The one copy rule</p><p>The system keeps exactly one copy of every original. It does not make backups. If a shoot matters, back the drive up yourself (Time Machine or a second drive) before you archive or empty the Trash.</p></div>
+</section>
+
+<section class="chapter">
+  <div class="kicker">Chapter 9</div>
+  <h2>Updating and troubleshooting</h2>
+  <h3>Updating</h3>
+  <p>Say <i>"update cutroom"</i>, or run:</p>
+  <pre>git -C ~/cutroom pull &amp;&amp; bash ~/cutroom/install.sh</pre>
+  <p>Your workspace and <code>Brand/</code> are never touched by an update. New skills load in the next session.</p>
+  <h3>When the doctor is red</h3>
+  <table>
+    <tr><th style="width:40%">The doctor says</th><th>Do</th></tr>
+    <tr><td>Whisper model missing or partial</td><td>Run <code>install.sh</code> again; the 1.6 GB download resumes.</td></tr>
+    <tr><td>venv python missing, or cannot import</td><td><code>install.sh</code> rebuilds <code>~/.cutroom/venv</code> (needs Python 3.12 from Homebrew; the installer gets it).</td></tr>
+    <tr><td>alignment weights not cached</td><td>Run <code>install.sh</code> once with network; the weights (about 360 MB) are fetched.</td></tr>
+    <tr><td>a helper does not build</td><td><code>xcode-select --install</code>, then the doctor again.</td></tr>
+    <tr><td>remotion not installed</td><td><code>cd ~/cutroom/remotion &amp;&amp; npm ci</code>.</td></tr>
+    <tr><td>skill not linked</td><td><code>install.sh</code> relinks every skill.</td></tr>
+    <tr><td>workspace folder missing</td><td>The drive is not connected, or the folder moved. Connect it, or tell Claude the new path.</td></tr>
+  </table>
+  <h3>When a run stops</h3>
+  <p>Every stop is one plain line starting with <code>STOP:</code> and the stage's full log is in the project's <code>logs/</code> folder. The common ones:</p>
+  <table>
+    <tr><th style="width:40%">The line</th><th>What it means</th></tr>
+    <tr><td>waiting for approval</td><td>Not an error. Open <code>SCRIPT.md</code> or <code>GATE.md</code>, approve, run the same command again.</td></tr>
+    <tr><td>no speech</td><td>The clip has no words the transcriber heard. Check the right audio track was recorded.</td></tr>
+    <tr><td>source is not 9:16</td><td>The caption chain wants 1080x1920 or 2160x3840. A landscape talking head can be reframed face-centred in the edit; a finished landscape cut needs a 16:9 workflow.</td></tr>
+    <tr><td>HDR source</td><td>An HLG or PQ phone recording. The edit tone-maps it; a finished HDR cut should be exported as SDR first.</td></tr>
+    <tr><td>a clip is CUT or NOT REVIEWED</td><td>The edit named footage you did not keep. Review it first.</td></tr>
+    <tr><td>caption pending</td><td>Write the post caption into <code>caption.md</code> and run again.</td></tr>
+    <tr><td>a gate FAILED at 31.4s</td><td>Read the gate's line and the evidence sheet in <code>Build/</code>. Fix in the gate file and run again; nothing shipped.</td></tr>
+    <tr><td>login wall (a reference link)</td><td>Download the video yourself and give Claude the file, or allow browser cookies for the download (it may ask for Keychain access).</td></tr>
+  </table>
+  <h3>Playback oddities</h3>
+  <ul>
+    <li>Some camera originals (10-bit 4:2:2 H.264) do not play in Chrome. The review page plays proxies, never originals; open an original in QuickTime if you need to.</li>
+    <li>Safari needs the review server running to play video (opened as a file, the page can be tapped but shows no picture). Say "open the review page" and Claude starts it.</li>
+  </ul>
+</section>
+
+<section class="chapter">
+  <div class="kicker">Chapter 10</div>
+  <h2>Reference</h2>
+  <h3>The skills</h3>
+  <table>
+    <tr><th style="width:22%">Skill</th><th>What it does</th></tr>
+    <tr><td>cutroom</td><td>The front door: what you can ask for, where things are, which skill owns the ask.</td></tr>
+    <tr><td>cutroom-setup</td><td>The twelve-step wizard. Also for changing any part of your look later.</td></tr>
+    <tr><td>cutroom-intake</td><td>Footage in: organize, name, cut takes, index, hand to the review.</td></tr>
+    <tr><td>cutroom-review</td><td>Keep, cut, trim; apply the picks; the kept list every edit must use.</td></tr>
+    <tr><td>cutroom-edit</td><td>Make a video: take, cut, plan, render, caption, gates, deliver, cleanup.</td></tr>
+    <tr><td>cutroom-captions</td><td>Captions on a cut that is already final.</td></tr>
+    <tr><td>cutroom-study</td><td>Learn from a reference video and propose DNA changes.</td></tr>
+    <tr><td>cutroom-storage</td><td>Report, cleanup, archive.</td></tr>
+  </table>
+  <h3>Commands Claude runs (so you recognise them)</h3>
+  <pre>bash ~/cutroom/bin/doctor.sh
+python3 ~/cutroom/engine/dna.py check | todo | styles | scan &lt;folder&gt; | theme
+python3 ~/cutroom/engine/study.py &lt;url or file&gt; --out &lt;folder&gt; --liked "..."
+python3 ~/cutroom/engine/footage/intake.py start | subjects | apply | takes | notes | status | reverse
+python3 ~/cutroom/engine/review/ingest.py --serve
+python3 ~/cutroom/engine/review/apply.py plan | go
+python3 ~/cutroom/engine/review/approved.py list | check | status
+bash ~/cutroom/engine/run_take.sh &lt;project&gt; take &lt;source&gt;
+python3 ~/cutroom/engine/render.py &lt;edit.json&gt; --out &lt;mp4&gt;
+bash ~/cutroom/engine/captions/run_captions.sh &lt;cut&gt; &lt;take dir&gt; --style &lt;id&gt; --dest &lt;folder&gt;
+python3 ~/cutroom/engine/finish.py &lt;title&gt; [--go]
+python3 ~/cutroom/engine/storage.py report | archive &lt;shoot&gt; --to &lt;folder&gt; [--go]</pre>
+  <h3>Files you may open</h3>
+  <table class="kv">
+    <tr><td>~/.cutroom/config.json</td><td>Workspace path, model and environment paths, a few knobs (proxy height, review port, cleanup mode, archive path).</td></tr>
+    <tr><td>~/.cutroom/keys.env</td><td>Optional service keys, empty by default. Never shared, never printed.</td></tr>
+    <tr><td>Brand/dna.json</td><td>Your look and your rules as data (below).</td></tr>
+    <tr><td>Brand/DNA.md</td><td>Your look in words: who is on camera, the voice, the look, how much motion, captions, b-roll, music, formats, never.</td></tr>
+    <tr><td>Brand/styles/&lt;id&gt;.json</td><td>A caption style: layout and motion in <code>set</code>, optional own colours and font slot in <code>look</code>.</td></tr>
+    <tr><td>Projects/&lt;title&gt;/SCRIPT.md, GATE.md</td><td>Your two approvals, as text.</td></tr>
+    <tr><td>Finished/&lt;title&gt;/Build/</td><td>The gate, the QC report, the evidence sheets of a delivered video.</td></tr>
+  </table>
+  <h3>The DNA, section by section</h3>
+  <table>
+    <tr><th style="width:18%">Section</th><th>What it holds</th></tr>
+    <tr><td>id, name, handle, people</td><td>Who you are and who is on camera (name, role, whether a name tag shows).</td></tr>
+    <tr><td>colors</td><td>ink, base (your text colour), accent, on_accent (text on the accent), negative (bad-news words), bg, card.</td></tr>
+    <tr><td>fonts, type, logo</td><td>Your display face (and optional running and mono faces), caps and skew, emblem and lockups.</td></tr>
+    <tr><td>captions</td><td>The caption preset every style starts from: case, zone, width, sizes, clearance, chip, shadow, glow, whip cuts, count-up, negative words, place names, icon words, the default style, the pacing gate mode.</td></tr>
+    <tr><td>hook</td><td>On or off, the look (card, accent, ink, big type, bar, mono), the spot (never under 220 px), the hold.</td></tr>
+    <tr><td>formats</td><td>The kinds of video you make and your home format.</td></tr>
+    <tr><td>motion</td><td>How much the screen may change, allowed and banned transitions, punches, smoothness, energy, automatic punch-ins on or off.</td></tr>
+    <tr><td>graphics</td><td>The wishlist and the built components.</td></tr>
+    <tr><td>broll</td><td>Cut or dynamic inserts, hold range, how much of a video must be your own footage, AI imagery allowed (objects and places only) or off.</td></tr>
+    <tr><td>music, sound</td><td>Bed on talking heads and montages, the levels, the ease, your library, repeat spacing, banned tracks; sound effects, voice isolation, the master target, profanity handling.</td></tr>
+    <tr><td>words</td><td>Spelling fixes for names the transcriber gets wrong; words captions may never show.</td></tr>
+    <tr><td>output, delivery</td><td>Aspect, size, frame rate, quality, extra aspects; the end card; transcript and caption files.</td></tr>
+    <tr><td>review, cleanup, storage</td><td>Review on every intake, approval before render; cleanup ask or auto and what to keep; the archive path and the free-space warning.</td></tr>
+    <tr><td>pacing, studies, notes</td><td>Targets learned from your references, which references were studied and what was adopted, and notes.</td></tr>
+  </table>
+  <p class="small">Cutroom is a tool for your own footage and your own videos. References you study are other people's work: use what you learn as moves and rhythm, keep their look theirs, and respect each platform's terms when you download anything.</p>
+</section>
+
+</body>
+</html>

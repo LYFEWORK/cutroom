@@ -1,0 +1,151 @@
+{
+ "source": "Written for these tests: two windows of plain spoken English, one for each fixture look, with the splits the splitter records for them.",
+ "note": "Word times are written by hand at a speaking pace, a short pause after each comma and a longer one after each sentence; stop and comma follow each word's own punctuation, and next_start is when the word after the window starts. A {\"group\": ...} entry checks which words form the thought, not its lead-in and payoff: it stands where the feed and engine widths split one thought differently.",
+ "windows": [
+  {
+   "name": "Varsans, Bike Shop Basics",
+   "font": "templates/fonts/Inter-Variable.ttf",
+   "display_weight": 800,
+   "variable": true,
+   "case": "mixed",
+   "next_start": 47.84,
+   "words": [
+    {"text": "Every", "start": 31.4, "end": 31.72, "stop": false},
+    {"text": "bike", "start": 31.74, "end": 32.08, "stop": false},
+    {"text": "gets", "start": 32.11, "end": 32.37, "stop": false},
+    {"text": "a", "start": 32.4, "end": 32.47, "stop": false},
+    {"text": "full", "start": 32.49, "end": 32.76, "stop": false},
+    {"text": "safety", "start": 32.79, "end": 33.19, "stop": false},
+    {"text": "check", "start": 33.21, "end": 33.53, "stop": false},
+    {"text": "before", "start": 33.57, "end": 33.85, "stop": false},
+    {"text": "it", "start": 33.88, "end": 33.98, "stop": false},
+    {"text": "leaves.", "start": 34.01, "end": 34.41, "stop": true},
+    {"text": "A", "start": 34.87, "end": 34.94, "stop": false},
+    {"text": "loose", "start": 34.96, "end": 35.26, "stop": false},
+    {"text": "wheel", "start": 35.29, "end": 35.63, "stop": false},
+    {"text": "can", "start": 35.66, "end": 35.8, "stop": false},
+    {"text": "ruin", "start": 35.83, "end": 36.11, "stop": false},
+    {"text": "a", "start": 36.14, "end": 36.21, "stop": false},
+    {"text": "whole", "start": 36.23, "end": 36.53, "stop": false},
+    {"text": "ride.", "start": 36.56, "end": 36.98, "stop": true},
+    {"text": "Cables", "start": 37.44, "end": 37.78, "stop": false},
+    {"text": "stretch", "start": 37.82, "end": 38.16, "stop": false},
+    {"text": "over", "start": 38.19, "end": 38.39, "stop": false},
+    {"text": "time,", "start": 38.42, "end": 38.8, "stop": false, "comma": true},
+    {"text": "so", "start": 39.07, "end": 39.19, "stop": false},
+    {"text": "the", "start": 39.21, "end": 39.29, "stop": false},
+    {"text": "brakes", "start": 39.31, "end": 39.65, "stop": false},
+    {"text": "go", "start": 39.68, "end": 39.84, "stop": false},
+    {"text": "soft.", "start": 39.87, "end": 40.27, "stop": true},
+    {"text": "We", "start": 40.74, "end": 40.85, "stop": false},
+    {"text": "would", "start": 40.88, "end": 41.04, "stop": false},
+    {"text": "rather", "start": 41.07, "end": 41.37, "stop": false},
+    {"text": "explain", "start": 41.4, "end": 41.74, "stop": false},
+    {"text": "the", "start": 41.78, "end": 41.86, "stop": false},
+    {"text": "fix", "start": 41.88, "end": 42.2, "stop": false},
+    {"text": "than", "start": 42.24, "end": 42.37, "stop": false},
+    {"text": "sell", "start": 42.4, "end": 42.68, "stop": false},
+    {"text": "you", "start": 42.71, "end": 42.82, "stop": false},
+    {"text": "something", "start": 42.85, "end": 43.21, "stop": false},
+    {"text": "extra.", "start": 43.24, "end": 43.64, "stop": true},
+    {"text": "Most", "start": 44.14, "end": 44.42, "stop": false},
+    {"text": "people", "start": 44.45, "end": 44.77, "stop": false},
+    {"text": "wait", "start": 44.8, "end": 45.08, "stop": false},
+    {"text": "too", "start": 45.11, "end": 45.31, "stop": false},
+    {"text": "long,", "start": 45.34, "end": 45.68, "stop": false, "comma": true},
+    {"text": "so", "start": 45.94, "end": 46.08, "stop": false},
+    {"text": "book", "start": 46.1, "end": 46.4, "stop": false},
+    {"text": "a", "start": 46.43, "end": 46.5, "stop": false},
+    {"text": "tune", "start": 46.52, "end": 46.8, "stop": false},
+    {"text": "up", "start": 46.83, "end": 46.99, "stop": false},
+    {"text": "early.", "start": 47.02, "end": 47.44, "stop": true}
+   ],
+   "expect": [
+    {
+     "line": "Every bike gets a full | safety | check before it leaves."
+    },
+    {
+     "line": "A loose wheel can ruin | a whole ride."
+    },
+    {
+     "line": "Cables stretch over time, so | the brakes go soft."
+    },
+    {
+     "group": "We would rather explain the fix than sell you something extra."
+    },
+    {
+     "line": "Most people wait too long, so | book a tune up early."
+    }
+   ]
+  },
+  {
+   "name": "Upstatic, Small Batch Candles",
+   "font": "tests/captions/fixtures/fonts/Inter-ExtraBold.ttf",
+   "display_weight": 800,
+   "variable": false,
+   "case": "upper",
+   "next_start": 25.67,
+   "words": [
+    {"text": "There", "start": 12.85, "end": 13.05, "stop": false},
+    {"text": "is", "start": 13.08, "end": 13.17, "stop": false},
+    {"text": "a", "start": 13.2, "end": 13.26, "stop": false},
+    {"text": "lot", "start": 13.28, "end": 13.48, "stop": false},
+    {"text": "that", "start": 13.51, "end": 13.63, "stop": false},
+    {"text": "goes", "start": 13.66, "end": 13.92, "stop": false},
+    {"text": "into", "start": 13.95, "end": 14.15, "stop": false},
+    {"text": "getting", "start": 14.18, "end": 14.48, "stop": false},
+    {"text": "the", "start": 14.51, "end": 14.58, "stop": false},
+    {"text": "scent", "start": 14.6, "end": 14.94, "stop": false},
+    {"text": "right.", "start": 14.97, "end": 15.37, "stop": true},
+    {"text": "You", "start": 15.85, "end": 15.95, "stop": false},
+    {"text": "know,", "start": 15.98, "end": 16.26, "stop": false, "comma": true},
+    {"text": "we", "start": 16.56, "end": 16.66, "stop": false},
+    {"text": "test", "start": 16.69, "end": 16.97, "stop": false},
+    {"text": "every", "start": 17.0, "end": 17.28, "stop": false},
+    {"text": "blend", "start": 17.31, "end": 17.63, "stop": false},
+    {"text": "on", "start": 17.66, "end": 17.76, "stop": false},
+    {"text": "a", "start": 17.78, "end": 17.84, "stop": false},
+    {"text": "small", "start": 17.86, "end": 18.14, "stop": false},
+    {"text": "batch", "start": 18.17, "end": 18.49, "stop": false},
+    {"text": "first.", "start": 18.53, "end": 18.91, "stop": true},
+    {"text": "Every", "start": 19.37, "end": 19.67, "stop": false},
+    {"text": "jar", "start": 19.7, "end": 20.0, "stop": false},
+    {"text": "gets", "start": 20.03, "end": 20.25, "stop": false},
+    {"text": "poured", "start": 20.28, "end": 20.62, "stop": false},
+    {"text": "by", "start": 20.65, "end": 20.75, "stop": false},
+    {"text": "hand,", "start": 20.77, "end": 21.11, "stop": false, "comma": true},
+    {"text": "and", "start": 21.39, "end": 21.51, "stop": false},
+    {"text": "left", "start": 21.54, "end": 21.78, "stop": false},
+    {"text": "to", "start": 21.81, "end": 21.89, "stop": false},
+    {"text": "cool", "start": 21.91, "end": 22.21, "stop": false},
+    {"text": "overnight.", "start": 22.25, "end": 22.69, "stop": true},
+    {"text": "It's", "start": 23.15, "end": 23.3, "stop": false},
+    {"text": "a", "start": 23.32, "end": 23.37, "stop": false},
+    {"text": "lot", "start": 23.39, "end": 23.51, "stop": false},
+    {"text": "more", "start": 23.53, "end": 23.7, "stop": false},
+    {"text": "delicate", "start": 23.72, "end": 24.1, "stop": false},
+    {"text": "than", "start": 24.14, "end": 24.28, "stop": false},
+    {"text": "most", "start": 24.31, "end": 24.53, "stop": false},
+    {"text": "people", "start": 24.56, "end": 24.86, "stop": false},
+    {"text": "think.", "start": 24.89, "end": 25.27, "stop": true}
+   ],
+   "expect": [
+    {
+     "line": "There is | a lot that goes | into getting the scent right."
+    },
+    {
+     "line": "You know, we test every | blend | on a small batch first."
+    },
+    {
+     "line": "Every jar gets | poured | by hand,"
+    },
+    {
+     "line": "and left | to cool overnight."
+    },
+    {
+     "line": "It's a lot more | delicate | than most people think."
+    }
+   ]
+  }
+ ]
+}

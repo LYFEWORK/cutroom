@@ -1,0 +1,66 @@
+{
+ "accent": "#38E1B0",
+ "zone": "chest",
+ "tier": "FULL",
+ "width": 900,
+ "top_y0": 200,
+ "hero_max": 240,
+ "row_px": [
+  96,
+  120
+ ],
+ "chin_gap": 90,
+ "font": {
+  "family": "InterStaticDyn",
+  "faces": [
+   {
+    "weight": "100 900",
+    "src": "brand-upstatic/fonts/Inter-ExtraBold.ttf"
+   }
+  ],
+  "measure": "${BRANDS}/upstatic/Brand/assets/fonts/Inter-ExtraBold.ttf"
+ },
+ "no_behind": false,
+ "case": "upper",
+ "hero_glow": true,
+ "places": [
+  "Austin"
+ ],
+ "neg_words": [],
+ "count_up": true,
+ "icon_words": [],
+ "pill_icons": [],
+ "look": {
+  "base": "#F4F4EE",
+  "hero_base": "#FFFFFF",
+  "chip": true,
+  "hero_shadow": "0 3px 18px rgba(0,0,0,0.45), 0 0 2px rgba(0,0,0,0.5)",
+  "text_opacity": 1.0,
+  "text_soften": 0,
+  "hero_stroke": {
+   "width": 2,
+   "color": "#0B0F0D"
+  },
+  "whip_frames": 3,
+  "whip_amount": 1.0,
+  "glow_px": 12,
+  "chip_neg": "#D92D20",
+  "display_weight": 800,
+  "soft_build": false,
+  "word_font": {
+   "family": "InterRunDyn",
+   "faces": [
+    {
+     "weight": "100 900",
+     "src": "brand-upstatic/fonts/Inter-Variable.ttf"
+    }
+   ],
+   "measure": "${BRANDS}/upstatic/Brand/assets/fonts/Inter-Variable.ttf"
+  }
+ },
+ "glyph": {
+  "caps": 0.7539,
+  "word": 0.7578,
+  "hook": 0.7539
+ }
+}

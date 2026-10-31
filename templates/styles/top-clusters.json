@@ -1,0 +1,13 @@
+{
+  "id": "top-clusters",
+  "name": "Clusters behind the head",
+  "summary": "Big lockups up top, behind the speaker's head through a person matte, with every third phrase coming forward to the chest band.",
+  "use_when": "a hook or an energetic talking head with clear room above the crown, where big words behind the head make the shot",
+  "never_when": "the frame is tight above the crown, the clip is needed fast (the person matte makes this style slow to render), or the words already sit behind the head in another style",
+  "preview": null,
+  "source": {"type": "starter"},
+  "opt_in": false,
+  "owner": null,
+  "set": {"zone": "top", "width": 960, "top_y0": 330, "hero_max": 360, "row_px": [120, 140], "chin_gap": 125},
+  "feed": {"place": "top", "size": 1.0, "hero": {"look": "bigger", "scale": 2.0, "pick": "page"}, "words": 3}
+}

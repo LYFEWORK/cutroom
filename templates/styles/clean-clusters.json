@@ -1,0 +1,13 @@
+{
+  "id": "clean-clusters",
+  "name": "Clean clusters",
+  "summary": "Every phrase is one tight lockup of two to four words in front of the speaker, with one hero word about twice the size of the others. Sized to fit tight framing, so a phrase stays a lockup and never falls back to one small row.",
+  "use_when": "a talking head where the words should stay in front of the speaker, in any framing, including a tight one",
+  "never_when": "the words should sit behind the head, or the video needs a bigger, louder look than a lockup of this size",
+  "preview": null,
+  "source": {"type": "starter"},
+  "opt_in": false,
+  "owner": null,
+  "set": {"zone": "chest", "hero_max": 200, "row_px": [88, 104]},
+  "feed": {"place": "chest", "size": 1.0, "hero": {"look": "bigger", "scale": 1.9, "pick": "page"}, "words": 3}
+}

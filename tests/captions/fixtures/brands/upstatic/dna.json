@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "id": "upstatic",
+  "name": "Upper Static",
+  "handle": "@upstatic",
+  "colors": {
+    "ink": "#0B0F0D",
+    "base": "#F4F4EE",
+    "accent": "#38E1B0",
+    "on_accent": "#0B0F0D",
+    "negative": "#D92D20",
+    "bg": "#0B0F0D",
+    "card": "#16201C"
+  },
+  "fonts": {
+    "display": {
+      "family": "Inter Static",
+      "file": "fonts/Inter-ExtraBold.ttf"
+    },
+    "running": {
+      "family": "Inter Run",
+      "file": "fonts/Inter-Variable.ttf"
+    },
+    "mono": null
+  },
+  "captions": {
+    "case": "upper",
+    "zone": "chest",
+    "width": 900,
+    "hero_max": 240,
+    "row_px": [
+      96,
+      120
+    ],
+    "default_style": "keyword-slam",
+    "pace_gate": "enforce",
+    "chip": true,
+    "hero_base": "#FFFFFF",
+    "hero_stroke": {
+      "width": 2,
+      "color": "#0B0F0D"
+    },
+    "places": [
+      "Austin"
+    ],
+    "neg_words": [],
+    "icon_words": [],
+    "pill_icons": []
+  },
+  "words": {
+    "spelling": {},
+    "banned": []
+  },
+  "output": {
+    "aspect": "9:16",
+    "size": [
+      1080,
+      1920
+    ]
+  }
+}

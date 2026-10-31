@@ -1,0 +1,23 @@
+{
+  "id": "quiet-cluster",
+  "name": "Quiet cluster",
+  "summary": "Small, calm clusters in front of the speaker: no glow, no count-up, no whip cuts and never behind the head.",
+  "use_when": "an interview or a serious subject",
+  "never_when": "a hook, a list or a short punchy clip",
+  "preview": null,
+  "source": {
+    "type": "starter"
+  },
+  "set": {
+    "zone": "chest",
+    "hero_max": 170,
+    "row_px": [
+      84,
+      100
+    ],
+    "caption_tier_max": "REDUCED",
+    "hero_glow": false,
+    "count_up": false,
+    "whip_frames": 0
+  }
+}

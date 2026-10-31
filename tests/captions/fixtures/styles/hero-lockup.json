@@ -1,0 +1,23 @@
+{
+  "id": "hero-lockup",
+  "name": "Hero lockup",
+  "summary": "One hero word at the widest size the frame allows, stacked over two small, quiet rows, behind the head.",
+  "use_when": "a short, punchy clip with a hook or a payoff that has to hit",
+  "never_when": "a long explainer, or a tight frame with no room above the crown",
+  "preview": null,
+  "source": {
+    "type": "starter"
+  },
+  "set": {
+    "zone": "top",
+    "width": 960,
+    "top_y0": 280,
+    "hero_max": 370,
+    "row_px": [
+      76,
+      88
+    ],
+    "chin_gap": 125,
+    "whip_frames": 4
+  }
+}

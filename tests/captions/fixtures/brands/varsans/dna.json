@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "id": "varsans",
+  "name": "Variable Sans",
+  "handle": "@varsans",
+  "colors": {
+    "ink": "#101418",
+    "base": "#FFFFFF",
+    "accent": "#FFD60A",
+    "on_accent": "#101418",
+    "negative": "#E3161B",
+    "bg": "#101418",
+    "card": "#1C2128"
+  },
+  "fonts": {
+    "display": {
+      "family": "Inter",
+      "file": "fonts/Inter-Variable.ttf"
+    },
+    "running": null,
+    "mono": null
+  },
+  "captions": {
+    "case": "mixed",
+    "zone": "chest",
+    "default_style": "soft-build",
+    "pace_gate": "report",
+    "places": [
+      "Portland",
+      "Portland Oregon"
+    ],
+    "neg_words": [
+      "broken"
+    ],
+    "icon_words": [
+      "ad:play",
+      "ads:play",
+      "video:play",
+      "post:grid",
+      "content:grid",
+      "feed:grid",
+      "track:search"
+    ],
+    "pill_icons": [
+      "booking,calls:calendar",
+      "reviews:star"
+    ]
+  },
+  "words": {
+    "spelling": {
+      "acme corp": "ACME Corp",
+      "jon,": "John,"
+    },
+    "banned": [
+      "cheap"
+    ]
+  },
+  "output": {
+    "aspect": "9:16",
+    "size": [
+      1080,
+      1920
+    ]
+  }
+}

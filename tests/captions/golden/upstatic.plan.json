@@ -1,0 +1,509 @@
+{
+ "src": "",
+ "font": {
+  "family": "InterStaticDyn",
+  "faces": [
+   {
+    "weight": "100 900",
+    "src": "brand-upstatic/fonts/Inter-ExtraBold.ttf"
+   }
+  ]
+ },
+ "durationInFrames": 620,
+ "accent": "#38E1B0",
+ "base": "#F4F4EE",
+ "heroBase": "#FFFFFF",
+ "chip": true,
+ "heroShadow": "0 3px 18px rgba(0,0,0,0.45), 0 0 2px rgba(0,0,0,0.5)",
+ "textOpacity": 1.0,
+ "heroStroke": {
+  "width": 2,
+  "color": "#0B0F0D"
+ },
+ "wordFont": {
+  "family": "InterRunDyn",
+  "faces": [
+   {
+    "weight": "100 900",
+    "src": "brand-upstatic/fonts/Inter-Variable.ttf"
+   }
+  ]
+ },
+ "chipNeg": "#D92D20",
+ "heroGlow": true,
+ "glowPx": 12,
+ "displayWeight": 800,
+ "glyph": {
+  "caps": 0.7539,
+  "word": 0.7578,
+  "hook": 0.7539
+ },
+ "matte": {
+  "dir": "",
+  "windows": []
+ },
+ "whips": [
+  {
+   "at": 90,
+   "frames": 3,
+   "amount": 0.8
+  },
+  {
+   "at": 174,
+   "frames": 3,
+   "amount": 0.8
+  },
+  {
+   "at": 288,
+   "frames": 3,
+   "amount": 0.8
+  },
+  {
+   "at": 462,
+   "frames": 3,
+   "amount": 0.8
+  },
+  {
+   "at": 558,
+   "frames": 3,
+   "amount": 0.8
+  }
+ ],
+ "events": [
+  {
+   "mode": "front",
+   "cluster": true,
+   "words": [
+    {
+     "text": "MOST",
+     "at": 0.4,
+     "size": 96,
+     "color": "#F4F4EE",
+     "dx": -148,
+     "weight": 800,
+     "hero": false
+    },
+    {
+     "text": "OWNERS",
+     "at": 0.7,
+     "size": 188,
+     "color": "#38E1B0",
+     "dx": -18,
+     "weight": 800,
+     "hero": true,
+     "glow": true
+    },
+    {
+     "text": "WASTE MONEY",
+     "at": 1.0,
+     "size": 84,
+     "color": "#F4F4EE",
+     "dx": 72,
+     "weight": 800,
+     "hero": false
+    }
+   ],
+   "start": 0.4,
+   "end": 1.567,
+   "y": 1049,
+   "leading": 0.84,
+   "exit": "blur",
+   "maxW": 900
+  },
+  {
+   "mode": "front",
+   "cluster": true,
+   "words": [
+    {
+     "text": "ON",
+     "at": 1.6,
+     "size": 96,
+     "color": "#F4F4EE",
+     "dx": -148,
+     "weight": 800,
+     "hero": false
+    },
+    {
+     "text": "ADS",
+     "at": 1.9,
+     "size": 240,
+     "color": "#F4F4EE",
+     "dx": -38,
+     "weight": 800,
+     "hero": true
+    }
+   ],
+   "start": 1.6,
+   "end": 2.45,
+   "y": 1017,
+   "leading": 0.84,
+   "exit": "blur",
+   "maxW": 900
+  },
+  {
+   "mode": "front",
+   "cluster": true,
+   "words": [
+    {
+     "text": "WE DON'T DO",
+     "at": 3.0,
+     "size": 92,
+     "color": "#F4F4EE",
+     "dx": -148,
+     "weight": 800,
+     "hero": false
+    },
+    {
+     "text": "LONG TERM CONTRACTS",
+     "at": 3.9,
+     "size": 68,
+     "color": "#38E1B0",
+     "dx": -38,
+     "weight": 800,
+     "hero": true,
+     "strike": true,
+     "glow": true
+    }
+   ],
+   "start": 3.0,
+   "end": 5.05,
+   "y": 1042,
+   "leading": 0.84,
+   "exit": "blur",
+   "maxW": 900
+  },
+  {
+   "mode": "front",
+   "cluster": true,
+   "words": [
+    {
+     "text": "LAST MONTH WE",
+     "at": 5.8,
+     "size": 72,
+     "color": "#F4F4EE",
+     "dx": -148,
+     "weight": 800,
+     "hero": false
+    },
+    {
+     "text": "BOOKED",
+     "at": 6.7,
+     "size": 204,
+     "color": "#F4F4EE",
+     "dx": -38,
+     "weight": 800,
+     "hero": true
+    }
+   ],
+   "start": 5.8,
+   "end": 6.967,
+   "y": 1022,
+   "leading": 0.84,
+   "exit": "blur",
+   "maxW": 900
+  },
+  {
+   "mode": "front",
+   "cluster": true,
+   "words": [
+    {
+     "text": "12",
+     "at": 7.0,
+     "size": 240,
+     "color": "#38E1B0",
+     "dx": -38,
+     "weight": 800,
+     "hero": true,
+     "count": 12,
+     "glow": true
+    },
+    {
+     "text": "CALLS IN 30",
+     "at": 7.3,
+     "size": 104,
+     "color": "#F4F4EE",
+     "dx": 72,
+     "weight": 800,
+     "hero": false
+    }
+   ],
+   "start": 7.0,
+   "end": 8.167,
+   "y": 1066,
+   "leading": 0.84,
+   "exit": "blur",
+   "maxW": 900
+  },
+  {
+   "mode": "front",
+   "cluster": true,
+   "words": [
+    {
+     "text": "DAYS",
+     "at": 8.2,
+     "size": 240,
+     "color": "#F4F4EE",
+     "dx": -38,
+     "weight": 800,
+     "hero": true
+    }
+   ],
+   "start": 8.2,
+   "end": 8.75,
+   "y": 1036,
+   "leading": 0.84,
+   "exit": "blur",
+   "maxW": 900
+  },
+  {
+   "mode": "front",
+   "cluster": true,
+   "words": [
+    {
+     "text": "THAT'S GONNA BE A",
+     "at": 9.6,
+     "size": 84,
+     "color": "#F4F4EE",
+     "dx": 0,
+     "weight": 800,
+     "hero": false
+    }
+   ],
+   "start": 9.6,
+   "end": 10.767,
+   "y": 1053,
+   "leading": 0.84,
+   "exit": "blur",
+   "maxW": 900
+  },
+  {
+   "mode": "front",
+   "cluster": true,
+   "words": [
+    {
+     "text": "BIG",
+     "at": 10.8,
+     "size": 96,
+     "color": "#F4F4EE",
+     "dx": -148,
+     "weight": 800,
+     "hero": false
+    },
+    {
+     "text": "WIN",
+     "at": 11.1,
+     "size": 240,
+     "color": "#F4F4EE",
+     "dx": -18,
+     "weight": 800,
+     "hero": true
+    },
+    {
+     "text": "FOR YOUR",
+     "at": 11.4,
+     "size": 120,
+     "color": "#F4F4EE",
+     "dx": 72,
+     "weight": 800,
+     "hero": false
+    }
+   ],
+   "start": 10.8,
+   "end": 11.967,
+   "y": 969,
+   "leading": 0.84,
+   "exit": "blur",
+   "maxW": 900
+  },
+  {
+   "mode": "front",
+   "cluster": true,
+   "words": [
+    {
+     "text": "SHOP",
+     "at": 12.0,
+     "size": 240,
+     "color": "#38E1B0",
+     "dx": -38,
+     "weight": 800,
+     "hero": true,
+     "glow": true
+    }
+   ],
+   "start": 12.0,
+   "end": 12.367,
+   "y": 1061,
+   "leading": 0.84,
+   "exit": "blur",
+   "maxW": 900
+  },
+  {
+   "mode": "front",
+   "cluster": true,
+   "words": [
+    {
+     "text": "CALL US IN",
+     "at": 12.4,
+     "size": 96,
+     "color": "#F4F4EE",
+     "dx": -148,
+     "weight": 800,
+     "hero": false
+    },
+    {
+     "text": "PORTLAND",
+     "at": 13.3,
+     "size": 148,
+     "color": "#F4F4EE",
+     "dx": -18,
+     "weight": 800,
+     "hero": true
+    },
+    {
+     "text": "OREGON",
+     "at": 13.6,
+     "size": 120,
+     "color": "#F4F4EE",
+     "dx": 72,
+     "weight": 800,
+     "hero": false
+    }
+   ],
+   "start": 12.4,
+   "end": 14.15,
+   "y": 1004,
+   "leading": 0.84,
+   "exit": "blur",
+   "maxW": 900
+  },
+  {
+   "mode": "front",
+   "cluster": true,
+   "words": [
+    {
+     "text": "FOLLOW US ON",
+     "at": 15.4,
+     "size": 84,
+     "color": "#F4F4EE",
+     "dx": -148,
+     "weight": 800,
+     "hero": false
+    },
+    {
+     "text": "INSTAGRAM",
+     "at": 16.3,
+     "size": 144,
+     "color": "#38E1B0",
+     "dx": -38,
+     "weight": 800,
+     "hero": true,
+     "logo": "instagram",
+     "glow": true
+    }
+   ],
+   "start": 15.4,
+   "end": 16.567,
+   "y": 1066,
+   "leading": 0.84,
+   "exit": "blur",
+   "maxW": 900
+  },
+  {
+   "mode": "front",
+   "cluster": true,
+   "words": [
+    {
+     "text": "AND BOOK A",
+     "at": 16.6,
+     "size": 96,
+     "color": "#F4F4EE",
+     "dx": -148,
+     "weight": 800,
+     "hero": false
+    },
+    {
+     "text": "CALL",
+     "at": 17.5,
+     "size": 240,
+     "color": "#F4F4EE",
+     "dx": -38,
+     "weight": 800,
+     "hero": true,
+     "icon": "phone"
+    }
+   ],
+   "start": 16.6,
+   "end": 18.05,
+   "y": 1032,
+   "leading": 0.84,
+   "exit": "blur",
+   "maxW": 900
+  },
+  {
+   "mode": "front",
+   "cluster": true,
+   "words": [
+    {
+     "text": "CUSTOM SHIRTS FAST",
+     "at": 18.6,
+     "size": 56,
+     "color": "#F4F4EE",
+     "dx": -148,
+     "weight": 800,
+     "hero": false
+    },
+    {
+     "text": "TURNAROUND",
+     "at": 19.5,
+     "size": 120,
+     "color": "#38E1B0",
+     "dx": -38,
+     "weight": 800,
+     "hero": true,
+     "glow": true
+    }
+   ],
+   "start": 18.6,
+   "end": 19.767,
+   "y": 1057,
+   "leading": 0.84,
+   "exit": "blur",
+   "maxW": 900
+  },
+  {
+   "mode": "front",
+   "cluster": true,
+   "words": [
+    {
+     "text": "NO",
+     "at": 19.8,
+     "size": 96,
+     "color": "#F4F4EE",
+     "dx": -148,
+     "weight": 800,
+     "hero": false
+    },
+    {
+     "text": "SURPRISES",
+     "at": 20.1,
+     "size": 156,
+     "color": "#D92D20",
+     "dx": -38,
+     "weight": 800,
+     "hero": true,
+     "neg": true
+    }
+   ],
+   "start": 19.8,
+   "end": 20.65,
+   "y": 1023,
+   "leading": 0.84,
+   "exit": "blur",
+   "maxW": 900
+  }
+ ],
+ "flags": [
+  "cluster_plan",
+  "zone:chest"
+ ]
+}

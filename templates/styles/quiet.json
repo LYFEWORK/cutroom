@@ -1,0 +1,13 @@
+{
+  "id": "quiet",
+  "name": "Quiet",
+  "summary": "Small, calm clusters in front of the speaker: no glow, no count-up, no whip cuts and never behind the head. The quietest look the planner draws.",
+  "use_when": "an interview, a serious or sensitive subject, or a long take where the captions should support the voice and never perform",
+  "never_when": "a hook, a list or a short punchy clip that needs the words to hit, or any video that should feel loud",
+  "preview": null,
+  "source": {"type": "starter"},
+  "opt_in": false,
+  "owner": null,
+  "set": {"zone": "chest", "hero_max": 170, "row_px": [84, 100], "caption_tier_max": "REDUCED", "hero_glow": false, "count_up": false, "whip_frames": 0},
+  "feed": {"place": "lower", "size": 0.85, "hero": {"look": "color"}, "motion": "quiet"}
+}

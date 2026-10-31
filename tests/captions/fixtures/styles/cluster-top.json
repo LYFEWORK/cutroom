@@ -1,0 +1,22 @@
+{
+  "id": "cluster-top",
+  "name": "Cluster behind the head",
+  "summary": "Big lockups up top, behind the speaker's head through the person matte, with every third phrase coming forward to the chest band.",
+  "use_when": "a hook or an energetic talking head with clear room above the crown",
+  "never_when": "the frame is tight above the crown",
+  "preview": null,
+  "source": {
+    "type": "starter"
+  },
+  "set": {
+    "zone": "top",
+    "width": 960,
+    "top_y0": 330,
+    "hero_max": 360,
+    "row_px": [
+      120,
+      140
+    ],
+    "chin_gap": 125
+  }
+}

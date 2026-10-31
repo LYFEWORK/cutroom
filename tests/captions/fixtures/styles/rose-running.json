@@ -1,0 +1,25 @@
+{
+  "id": "rose-running",
+  "name": "Rose, running face",
+  "summary": "A look of its own: a rose accent, dark ink on the accent, the running face for the words.",
+  "use_when": "the parts of a take that should feel quieter",
+  "never_when": "a look with no running face",
+  "preview": null,
+  "source": {
+    "type": "hand"
+  },
+  "set": {
+    "zone": "chest",
+    "hero_max": 220
+  },
+  "look": {
+    "accent": "#E8456B",
+    "text": "#F7F2EE",
+    "on_accent": "#1A1014",
+    "hero_tint": "#FFB3C4",
+    "hero_shadow": "0 2px 10px rgba(0,0,0,0.5)",
+    "chip_neg": "#B3122B",
+    "display_weight": 700,
+    "font": "running"
+  }
+}

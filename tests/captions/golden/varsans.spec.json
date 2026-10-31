@@ -1,0 +1,65 @@
+{
+ "accent": "#FFD60A",
+ "zone": "chest",
+ "tier": "FULL",
+ "width": 860,
+ "top_y0": 200,
+ "hero_max": 250,
+ "row_px": [
+  112,
+  132
+ ],
+ "chin_gap": 90,
+ "font": {
+  "family": "InterDyn",
+  "faces": [
+   {
+    "weight": "100 900",
+    "src": "brand-varsans/fonts/Inter-Variable.ttf"
+   }
+  ],
+  "measure": "${BRANDS}/varsans/Brand/assets/fonts/Inter-Variable.ttf"
+ },
+ "no_behind": false,
+ "case": "mixed",
+ "hero_glow": true,
+ "places": [
+  "Portland",
+  "Portland Oregon"
+ ],
+ "neg_words": [
+  "broken"
+ ],
+ "count_up": true,
+ "icon_words": [
+  "ad:play",
+  "ads:play",
+  "video:play",
+  "post:grid",
+  "content:grid",
+  "feed:grid",
+  "track:search"
+ ],
+ "pill_icons": [
+  "booking,calls:calendar",
+  "reviews:star"
+ ],
+ "look": {
+  "base": "#FFFFFF",
+  "chip": false,
+  "hero_shadow": "0 3px 18px rgba(0,0,0,0.45), 0 0 2px rgba(0,0,0,0.5)",
+  "text_opacity": 1.0,
+  "text_soften": 0,
+  "whip_frames": 3,
+  "whip_amount": 1.0,
+  "glow_px": 12,
+  "chip_neg": "#E3161B",
+  "display_weight": 800,
+  "soft_build": false
+ },
+ "glyph": {
+  "caps": 0.7578,
+  "word": 0.5886,
+  "hook": 0.5752
+ }
+}

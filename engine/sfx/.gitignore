@@ -1,0 +1,2 @@
+# the kit is synthesized and ships with the engine: the repo-wide *.wav rule does not apply here
+!*.wav

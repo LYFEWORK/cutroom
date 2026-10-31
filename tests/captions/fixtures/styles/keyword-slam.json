@@ -1,0 +1,20 @@
+{
+  "id": "keyword-slam",
+  "name": "Keyword slam",
+  "summary": "One loud word per phrase over small supporting rows, in front of the speaker.",
+  "use_when": "fast lists, numbers and named things",
+  "never_when": "slow, thoughtful talk with no standout words",
+  "preview": null,
+  "source": {
+    "type": "starter"
+  },
+  "set": {
+    "zone": "chest",
+    "hero_max": 280,
+    "row_px": [
+      48,
+      60
+    ],
+    "whip_frames": 4
+  }
+}

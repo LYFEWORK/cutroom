@@ -1,0 +1,129 @@
+{
+ "id": "upstatic",
+ "dna_file": "${BRANDS}/upstatic/Brand/dna.json",
+ "brand": "Upper Static",
+ "handle": "@upstatic",
+ "accent": "#38E1B0",
+ "base": "#F4F4EE",
+ "on_accent": "#0B0F0D",
+ "font": "Inter Static",
+ "font_fallback": "sans-serif",
+ "fonts_dir": "brand-upstatic/fonts",
+ "font_prefix": "InterStatic",
+ "font_family": "InterStaticDyn",
+ "font_files": {
+  "400": "brand-upstatic/fonts/Inter-ExtraBold.ttf",
+  "500": "brand-upstatic/fonts/Inter-ExtraBold.ttf",
+  "700": "brand-upstatic/fonts/Inter-ExtraBold.ttf",
+  "800": "brand-upstatic/fonts/Inter-ExtraBold.ttf",
+  "900": "brand-upstatic/fonts/Inter-ExtraBold.ttf"
+ },
+ "font_faces": [
+  {
+   "weight": "100 900",
+   "src": "brand-upstatic/fonts/Inter-ExtraBold.ttf"
+  }
+ ],
+ "font_abs": {
+  "400": "${BRANDS}/upstatic/Brand/assets/fonts/Inter-ExtraBold.ttf",
+  "500": "${BRANDS}/upstatic/Brand/assets/fonts/Inter-ExtraBold.ttf",
+  "700": "${BRANDS}/upstatic/Brand/assets/fonts/Inter-ExtraBold.ttf",
+  "800": "${BRANDS}/upstatic/Brand/assets/fonts/Inter-ExtraBold.ttf",
+  "900": "${BRANDS}/upstatic/Brand/assets/fonts/Inter-ExtraBold.ttf"
+ },
+ "font_variable": false,
+ "display_font": {
+  "fonts_dir": "brand-upstatic/fonts",
+  "prefix": "InterStatic",
+  "family": "InterStaticDyn",
+  "faces": [
+   {
+    "weight": "100 900",
+    "src": "brand-upstatic/fonts/Inter-ExtraBold.ttf"
+   }
+  ]
+ },
+ "word_font": {
+  "fonts_dir": "brand-upstatic/fonts",
+  "prefix": "InterRun",
+  "family": "InterRunDyn",
+  "files": {
+   "400": "brand-upstatic/fonts/Inter-Variable.ttf",
+   "500": "brand-upstatic/fonts/Inter-Variable.ttf",
+   "700": "brand-upstatic/fonts/Inter-Variable.ttf",
+   "800": "brand-upstatic/fonts/Inter-Variable.ttf",
+   "900": "brand-upstatic/fonts/Inter-Variable.ttf"
+  },
+  "faces": [
+   {
+    "weight": "100 900",
+    "src": "brand-upstatic/fonts/Inter-Variable.ttf"
+   }
+  ],
+  "abs": {
+   "400": "${BRANDS}/upstatic/Brand/assets/fonts/Inter-Variable.ttf",
+   "500": "${BRANDS}/upstatic/Brand/assets/fonts/Inter-Variable.ttf",
+   "700": "${BRANDS}/upstatic/Brand/assets/fonts/Inter-Variable.ttf",
+   "800": "${BRANDS}/upstatic/Brand/assets/fonts/Inter-Variable.ttf",
+   "900": "${BRANDS}/upstatic/Brand/assets/fonts/Inter-Variable.ttf"
+  }
+ },
+ "case": "upper",
+ "zone": "chest",
+ "width": 900,
+ "hero_max": 240,
+ "row_px": [
+  96,
+  120
+ ],
+ "default_style": "keyword-slam",
+ "pace_gate": "enforce",
+ "chip": true,
+ "hero_base": "#FFFFFF",
+ "hero_stroke": {
+  "width": 2,
+  "color": "#0B0F0D"
+ },
+ "places": [
+  "Austin"
+ ],
+ "neg_words": [],
+ "icon_words": [],
+ "pill_icons": [],
+ "top_y0": 200,
+ "chin_gap": 90,
+ "hero_shadow": "0 3px 18px rgba(0,0,0,0.45), 0 0 2px rgba(0,0,0,0.5)",
+ "text_opacity": 1.0,
+ "text_soften": 0,
+ "whip_frames": 3,
+ "whip_amount": 1.0,
+ "caption_tier_max": "FULL",
+ "soft_build": false,
+ "hero_glow": true,
+ "hero_tint": null,
+ "glow_px": 12,
+ "chip_neg": "#D92D20",
+ "count_up": true,
+ "cta_wash": null,
+ "page_bg": null,
+ "page_ink": null,
+ "display_weight": 800,
+ "pill_bg": null,
+ "pill_ink": null,
+ "feel": "",
+ "look_note": "",
+ "text_hook": "on",
+ "auto_punches": false,
+ "spelling": {},
+ "do_not_say": [],
+ "master_audio": "off",
+ "devices": "off",
+ "transcribe": {
+  "engine": "local",
+  "language": null
+ },
+ "font_sources": {
+  "brand-upstatic/fonts/Inter-ExtraBold.ttf": "${BRANDS}/upstatic/Brand/assets/fonts/Inter-ExtraBold.ttf",
+  "brand-upstatic/fonts/Inter-Variable.ttf": "${BRANDS}/upstatic/Brand/assets/fonts/Inter-Variable.ttf"
+ }
+}

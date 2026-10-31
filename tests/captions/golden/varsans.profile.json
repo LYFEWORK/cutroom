@@ -1,0 +1,120 @@
+{
+ "id": "varsans",
+ "dna_file": "${BRANDS}/varsans/Brand/dna.json",
+ "brand": "Variable Sans",
+ "handle": "@varsans",
+ "accent": "#FFD60A",
+ "base": "#FFFFFF",
+ "on_accent": "#101418",
+ "font": "Inter",
+ "font_fallback": "sans-serif",
+ "fonts_dir": "brand-varsans/fonts",
+ "font_prefix": "Inter",
+ "font_family": "InterDyn",
+ "font_files": {
+  "400": "brand-varsans/fonts/Inter-Variable.ttf",
+  "500": "brand-varsans/fonts/Inter-Variable.ttf",
+  "700": "brand-varsans/fonts/Inter-Variable.ttf",
+  "800": "brand-varsans/fonts/Inter-Variable.ttf",
+  "900": "brand-varsans/fonts/Inter-Variable.ttf"
+ },
+ "font_faces": [
+  {
+   "weight": "100 900",
+   "src": "brand-varsans/fonts/Inter-Variable.ttf"
+  }
+ ],
+ "font_abs": {
+  "400": "${BRANDS}/varsans/Brand/assets/fonts/Inter-Variable.ttf",
+  "500": "${BRANDS}/varsans/Brand/assets/fonts/Inter-Variable.ttf",
+  "700": "${BRANDS}/varsans/Brand/assets/fonts/Inter-Variable.ttf",
+  "800": "${BRANDS}/varsans/Brand/assets/fonts/Inter-Variable.ttf",
+  "900": "${BRANDS}/varsans/Brand/assets/fonts/Inter-Variable.ttf"
+ },
+ "font_variable": true,
+ "display_font": {
+  "fonts_dir": "brand-varsans/fonts",
+  "prefix": "Inter",
+  "family": "InterDyn",
+  "faces": [
+   {
+    "weight": "100 900",
+    "src": "brand-varsans/fonts/Inter-Variable.ttf"
+   }
+  ]
+ },
+ "word_font": null,
+ "case": "mixed",
+ "zone": "chest",
+ "default_style": "soft-build",
+ "pace_gate": "report",
+ "places": [
+  "Portland",
+  "Portland Oregon"
+ ],
+ "neg_words": [
+  "broken"
+ ],
+ "icon_words": [
+  "ad:play",
+  "ads:play",
+  "video:play",
+  "post:grid",
+  "content:grid",
+  "feed:grid",
+  "track:search"
+ ],
+ "pill_icons": [
+  "booking,calls:calendar",
+  "reviews:star"
+ ],
+ "width": 860,
+ "top_y0": 200,
+ "hero_max": 250,
+ "row_px": [
+  112,
+  132
+ ],
+ "chin_gap": 90,
+ "chip": false,
+ "hero_base": null,
+ "hero_shadow": "0 3px 18px rgba(0,0,0,0.45), 0 0 2px rgba(0,0,0,0.5)",
+ "hero_stroke": null,
+ "text_opacity": 1.0,
+ "text_soften": 0,
+ "whip_frames": 3,
+ "whip_amount": 1.0,
+ "caption_tier_max": "FULL",
+ "soft_build": false,
+ "hero_glow": true,
+ "hero_tint": null,
+ "glow_px": 12,
+ "chip_neg": "#E3161B",
+ "count_up": true,
+ "cta_wash": null,
+ "page_bg": null,
+ "page_ink": null,
+ "display_weight": 800,
+ "pill_bg": null,
+ "pill_ink": null,
+ "feel": "",
+ "look_note": "",
+ "text_hook": "on",
+ "auto_punches": false,
+ "spelling": {
+  "acme corp": "ACME Corp",
+  "jon,": "John,"
+ },
+ "do_not_say": [
+  "cheap"
+ ],
+ "master_audio": "off",
+ "devices": "off",
+ "transcribe": {
+  "engine": "local",
+  "language": null
+ },
+ "font_sources": {
+  "brand-varsans/fonts/Inter-Variable.ttf": "${BRANDS}/varsans/Brand/assets/fonts/Inter-Variable.ttf"
+ }
+}

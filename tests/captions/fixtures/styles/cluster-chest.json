@@ -1,0 +1,19 @@
+{
+  "id": "cluster-chest",
+  "name": "Cluster in front",
+  "summary": "Every phrase is one tight lockup of two to four words in front of the speaker, with one hero word about twice the size of the others.",
+  "use_when": "a talking head where the words should stay in front of the speaker",
+  "never_when": "the words should sit behind the head",
+  "preview": null,
+  "source": {
+    "type": "starter"
+  },
+  "set": {
+    "zone": "chest",
+    "hero_max": 200,
+    "row_px": [
+      88,
+      104
+    ]
+  }
+}
