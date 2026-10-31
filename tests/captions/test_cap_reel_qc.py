@@ -532,16 +532,17 @@ def _flat_vf(box):
             "scale=out_color_matrix=bt709:out_range=limited:flags=accurate_rnd+full_chroma_int,format=yuv420p")
 
 
-def _take(tmp, name, box, no_audio_on_reel=False, audio_delay_ms=0, seconds=2, word="why", mez_box=None, source_box=None):
+def _take(tmp, name, box, no_audio_on_reel=False, audio_delay_ms=0, seconds=2, word="why", mez_box=None, source_box=None, amplitude=None):
     """A minimal take-dir the CLI can read: a `seconds` long 270x480 mezzanine (real bt709/tv/yuv420p tags, a moving picture over pink noise so freezedetect
     and cross-correlation both have something real to measure) and a 'reel' that is the SAME picture with one white box drawn on it (the box IS the caption ink
     the sweep has to find), remuxed with the SAME audio.wav this take extracted (output time == source time: no cutting, no retiming). The one caption says
     `word` the whole time. `mez_box` and `source_box` (x, y, w, h, 0xRRGGBB) draw a flat color into the mezzanine and into a source.mp4 beside it, for the
-    accent gate."""
+    accent gate. `amplitude` scales the noise (1.0 is full scale): the loudness tests pass 0.25, a mix about 12 dB under full scale, which measures well
+    off the -16 LUFS target on every ffmpeg build (the full-scale noise lands near the target on some builds and off it on others)."""
     t = os.path.join(tmp, name); os.makedirs(t, exist_ok=True)
     mez = os.path.join(t, "mez.mp4")
     base = ["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", f"testsrc2=size=270x480:rate=30:duration={seconds}",
-            "-f", "lavfi", "-i", f"anoisesrc=color=pink:duration={seconds}:sample_rate=48000:seed=42"]
+            "-f", "lavfi", "-i", f"anoisesrc=color=pink:duration={seconds}:sample_rate=48000:seed=42" + (f":amplitude={amplitude}" if amplitude else "")]
     tail = ["-c:v", "libx264", "-preset", "ultrafast", "-qp", "0", "-pix_fmt", "yuv420p", *BT709_TAGS,
             "-c:a", "aac", "-ar", "48000", "-shortest"]
     subprocess.run(base + (["-vf", _flat_vf(mez_box)] if mez_box else []) + tail + [mez], check=True)
@@ -644,16 +645,16 @@ def test_cli_g2_measures_the_audio_lag_against_audio_wav_and_fails_a_late_remux(
 
 
 def test_cli_g7_never_blocks_the_verdict_without_strict_loudness(tmp_path):
-    t = _take(str(tmp_path), "t4", CAPTION_BOX)
+    t = _take(str(tmp_path), "t4", CAPTION_BOX, amplitude=0.25)   # a mix about 12 dB under full scale: off the target on every ffmpeg build
     r = _cli(t, "t4")
     card = _card(t)
     assert card["gates"]["G7"]["pass"] is True and card["gates"]["G7"].get("report_only") is True
-    assert card["gates"]["G7"]["mode"] == "audit" and "check" in card["gates"]["G7"]      # this clip's own mix is off the target
+    assert card["gates"]["G7"]["mode"] == "audit" and "check" in card["gates"]["G7"], card["gates"]["G7"]      # this clip's own mix is off the target
     assert "social platforms" in card["gates"]["G7"]["check"]
 
 
 def test_cli_strict_loudness_makes_g7_a_gate(tmp_path):
-    t = _take(str(tmp_path), "t9", CAPTION_BOX)
+    t = _take(str(tmp_path), "t9", CAPTION_BOX, amplitude=0.25)   # off the target on every ffmpeg build (see _take)
     r = _cli(t, "t9", "--strict-loudness")
     card = _card(t)
     assert r.returncode == 1 and card["gates"]["G7"]["pass"] is False and card["gates"]["G7"]["mode"] == "enforced"

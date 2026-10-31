@@ -64,7 +64,7 @@ def main(argv=None):
     SCR = J["scratch"]
     model, lang = J["whisper_model"], J["whisper_language"]
     if not shutil.which("whisper-cli"):
-        stop("whisper-cli not found: install whisper.cpp first (brew install whisper-cpp)")
+        stop(f"whisper-cli not found: install whisper.cpp first ({common.install_hint('whisper-cpp')})")
     if not os.path.exists(model):
         stop(f"whisper model missing: {model} (run the setup, or set whisper_model in ~/.cutroom/config.json)")
     if not os.path.exists(f"{SCR}/evidence.json"):

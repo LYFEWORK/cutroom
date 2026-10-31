@@ -1,5 +1,5 @@
 """takes.py's encode: a take is aimed at 1.3x its camera clip's video bitrate, measured from its packets against the same span of the camera clip, and
-climbs a ladder (VideoToolbox 1.3x, VideoToolbox 1.6x, libx264 crf) until it is not under it. A take that no rung gets there fails by name; a rerun cuts an
+climbs a ladder (VideoToolbox 1.3x, VideoToolbox 1.6x, libx264 crf; off a Mac libx264 1.3x, 1.6x, crf) until it is not under it. A take that no rung gets there fails by name; a rerun cuts an
 existing take again when it is under its camera clip and keeps it when it is not; two takes are cut at once.
 
 The ladder and the rerun are tested with ffmpeg and the measure stubbed, so the numbers are exact. The measure is tested against canned ffprobe output that
@@ -261,10 +261,16 @@ def test_when_no_encode_runs_the_line_still_names_the_take_and_the_camera_clip_b
     assert "\n" not in line and line.startswith("C0574-02:") and "100.0 Mbit/s" in line and "cannot create the session" in line and not os.path.exists(dst)
 
 
-def test_a_mac_without_videotoolbox_goes_straight_to_libx264(tmp_path, monkeypatch):
+def test_a_machine_without_videotoolbox_climbs_libx264_at_1_3x_then_1_6x_then_crf(tmp_path, monkeypatch):
+    """Linux and WSL2 (and a Mac without VideoToolbox): the same two bitrate targets on libx264, then the fixed-quality rung"""
     rig = Rig(monkeypatch, [120 * M], vt=False)
     r = cut(tmp_path)[1]()
-    assert r["rung"] == f"libx264 crf {takes.CRF}" and len(rig.cmds) == 1 and rig.arg(0, "-c:v") == "libx264"
+    assert r["rung"] == "libx264 1.3x" and len(rig.cmds) == 1 and rig.arg(0, "-c:v") == "libx264" and rig.arg(0, "-b:v") == str(130 * M) and "-crf" not in rig.cmds[0]
+    rig = Rig(monkeypatch, [90 * M, 95 * M, 101 * M], vt=False)
+    r = cut(tmp_path)[1]()
+    assert r["rung"] == f"libx264 crf {takes.CRF}" and len(rig.cmds) == 3
+    assert rig.arg(1, "-b:v") == str(160 * M) and rig.arg(2, "-crf") == str(takes.CRF) and "-b:v" not in rig.cmds[2]
+    assert [takes.rung_name(x) for x in takes.RUNGS_X264] == ["libx264 1.3x", "libx264 1.6x", f"libx264 crf {takes.CRF}"]
 
 
 def test_a_stopping_run_starts_no_new_encode(tmp_path, monkeypatch):
@@ -462,7 +468,7 @@ def test_every_take_the_script_cuts_is_not_under_its_camera_clip(shoot):
     for row in rows:
         got, want = takes.video_bps(str(shoot / row["file"])), camera_span(shoot, row)
         assert want > 0 and got >= want, (row["file"], got, want)
-    assert sum(bool(re.match(r"  C000\d-\d\d: (VideoToolbox [\d.]+x|libx264 crf \d+): ", line)) for line in r.stdout.splitlines()) == 4   # each cut says which rung got there
+    assert sum(bool(re.match(r"  C000\d-\d\d: (VideoToolbox [\d.]+x|libx264 ([\d.]+x|crf \d+)): ", line)) for line in r.stdout.splitlines()) == 4   # each cut says which rung got there
 
 
 def test_the_takes_are_named_numbered_filed_and_the_camera_files_move_to_raw_clips(shoot):
@@ -593,7 +599,7 @@ def test_the_libx264_rung_cuts_a_real_clip_to_a_take_not_under_it(tmp_path, monk
     c = {"id": "C0001-01", "in": 0.5, "out": 2.5, "word_in": 1.0, "word_out": 2.0}
     dst = str(tmp_path / "Interview" / "L01 Test" / "C0001-01.mov")
     r = takes.cut_take(c, src, dst, str(tmp_path / "scratch"))
-    assert r["rung"] == f"libx264 crf {takes.CRF}" and r["take_bps"] >= r["src_bps"] > 0
+    assert r["rung"].startswith("libx264") and r["take_bps"] >= r["src_bps"] > 0
     info = json.loads(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "stream=codec_name,width,height:format=duration", "-of", "json", dst],
                                      capture_output=True, text=True, check=True).stdout)
     assert [(s["codec_name"], s.get("width")) for s in info["streams"]] == [("h264", 320), ("pcm_s16le", None)]

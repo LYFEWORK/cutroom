@@ -82,7 +82,12 @@ def command(clip: dict, src: str, tmp: str, height: int, hw: bool, silent: bool)
     cmd += ["-vf", video_filter(clip, height)]
     if not silent:
         cmd += ["-af", "aresample=44100,apad"]
-    cmd += ["-shortest", "-c:v", "libx264", "-preset", "veryfast", "-crf", str(CRF), "-g", str(FPS * 2),
+    # the proxy ends where the clip ends: -t with the clip's own length. -shortest with a padded (endless) sound track is not deterministic on
+    # every ffmpeg build (on 8.1 for Linux the same 4 s clip came out with 5 to 45 s of sound from run to run), so it is only the fallback when
+    # the inventory holds no length for the clip
+    dur = float(clip.get("dur") or 0)
+    cmd += ["-t", f"{dur:.3f}"] if dur > 0 else ["-shortest"]
+    cmd += ["-c:v", "libx264", "-preset", "veryfast", "-crf", str(CRF), "-g", str(FPS * 2),
             "-c:a", "aac", "-ac", "1", "-ar", "44100", "-b:a", "32k", "-write_tmcd", "0", "-movflags", "+faststart", tmp]
     return cmd
 

@@ -57,6 +57,7 @@ UI_BANDS = [(0, 0, 1080, 220), (0, 1650, 1080, 1920), (980, 1100, 1080, 1920)]
 MEASURED = ("board.jpg", "keyframes.jpg", "metrics.json", "transcript.md", "transcript.json", "moments.json", "palette.json", "frames", "strips")
 LOGIN_WALL = re.compile(r"log ?in|sign ?in|cookies|authenticat|private", re.I)
 FONTS = ("/System/Library/Fonts/Helvetica.ttc", "/System/Library/Fonts/SFNS.ttf", "/Library/Fonts/Arial.ttf",
+         os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "templates", "fonts", "Inter-Variable.ttf"),   # the font Cutroom ships: a Linux machine may have no system fonts
          "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", "DejaVuSans.ttf")
 NOTES = {
     "cuts_per_min": "approximate: scene change above 0.2 in the middle of the frame; a whip pan, a flash or a transition spread over a few frames can count more than once",
@@ -224,11 +225,27 @@ def to_mp4(f, dest, move=False):
     os.replace(part, dest)
 
 
+def ytdlp_bin():
+    """yt-dlp: the one on PATH, else the one install.sh puts in the word-timing environment (on Linux it is user-local, and a shell that never
+    read ~/.profile, such as a tool shell started before the install, does not see it on PATH). Stops with one plain line when neither is there."""
+    p = shutil.which("yt-dlp")
+    if p:
+        return p
+    try:
+        venv = common.load_config(require_workspace=False).get("venv_python") or ""
+    except SystemExit:
+        venv = ""
+    cand = os.path.join(os.path.dirname(os.path.expanduser(venv)), "yt-dlp") if venv else ""
+    if cand and os.access(cand, os.X_OK):
+        return cand
+    return need("yt-dlp", f" ({common.install_hint('yt-dlp')})")
+
+
 def fetch(url, out, a):
     """yt-dlp into a scratch folder, then source.mp4 and the video's own details; a login wall is one plain STOP line"""
     tmp = Path(tempfile.mkdtemp(prefix=".fetch-", dir=out))
     try:
-        cmd = ["yt-dlp", "-f", "bv*[height<=1920]+ba/b", "--merge-output-format", "mp4", "--no-playlist", "--write-info-json", "--no-progress"]
+        cmd = [ytdlp_bin(), "-f", "bv*[height<=1920]+ba/b", "--merge-output-format", "mp4", "--no-playlist", "--write-info-json", "--no-progress"]
         cb = a.cookies_from_browser or os.environ.get("STUDY_COOKIES_BROWSER")
         if cb:
             cmd += ["--cookies-from-browser", cb]
@@ -329,7 +346,7 @@ def sound_hits(src, tmp):
 
 
 def whisper_ready(cfg):
-    need("whisper-cli", " (brew install whisper-cpp), or run with --no-transcript")
+    need("whisper-cli", f" ({common.install_hint('whisper-cpp')}), or run with --no-transcript")
     model = Path(cfg["whisper_model"]).expanduser()
     if not model.is_file():
         stop(f"whisper model not found at {model} (set whisper_model in {common.CONF}), or run with --no-transcript")
@@ -763,7 +780,7 @@ def run_study(a, st):
     if not url and not Path(src).expanduser().is_file():
         stop(f"input file not found: {src}")
     if url:
-        need("yt-dlp", " (brew install yt-dlp)")
+        ytdlp_bin()
     if a.max_moments is not None and a.max_moments < 1:
         stop("--max-moments needs a number of 1 or more")
     model = None if a.no_transcript else whisper_ready(common.load_config(require_workspace=False))

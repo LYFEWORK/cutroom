@@ -256,8 +256,7 @@ def test_the_shared_swift_builder_is_used_when_present_and_ignored_when_it_break
     assert own == tmp_path / "b" / "swift" / "textboxes" / "bin" / "textboxes" and os.access(own, os.X_OK)    # fell back to its own build
 
 
-def test_no_text_reader_on_other_systems_is_one_stop_line(monkeypatch, capsys):
+def test_off_a_mac_the_text_reader_is_the_tesseract_stand_in(monkeypatch):
+    """Linux (and Windows through WSL2) read on-screen text with engine/vision/textboxes, handed out by the shared locator; it stops plainly itself when tesseract is missing"""
     monkeypatch.setattr(study.sys, "platform", "linux")
-    with pytest.raises(SystemExit) as e:
-        study.textboxes_bin()
-    assert e.value.code == 2 and "--no-ocr" in capsys.readouterr().err
+    assert study.textboxes_bin() == str(study.SWIFT.parent / "vision" / "textboxes")

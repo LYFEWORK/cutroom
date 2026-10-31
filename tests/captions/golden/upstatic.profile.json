@@ -99,6 +99,8 @@
  "whip_amount": 1.0,
  "caption_tier_max": "FULL",
  "soft_build": false,
+ "devices": "off",
+ "master_audio": "off",
  "hero_glow": true,
  "hero_tint": null,
  "glow_px": 12,
@@ -116,8 +118,6 @@
  "auto_punches": false,
  "spelling": {},
  "do_not_say": [],
- "master_audio": "off",
- "devices": "off",
  "transcribe": {
   "engine": "local",
   "language": null

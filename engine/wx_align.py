@@ -10,7 +10,7 @@ words.py is the one that calls it. Any failure is one "STOP: ..." line and exit 
 import sys
 
 if sys.version_info < (3, 12):   # plain code only above this line: it has to compile on the oldest Python that might run it
-    print("STOP: Cutroom needs Python 3.12 or newer; this is Python %d.%d. Install a newer one (brew install python@3.12) and run again."
+    print("STOP: Cutroom needs Python 3.12 or newer; this is Python %d.%d. Install a newer one (a Mac: brew install python@3.12; Ubuntu: apt install python3.12 python3.12-venv) and run again."
           % (sys.version_info[0], sys.version_info[1]), file=sys.stderr)
     sys.exit(2)
 

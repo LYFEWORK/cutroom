@@ -11,6 +11,7 @@ Every stand-in answers `--check` with one `ok <name>: ...` line and exit 0 when 
 else one `STOP: <name>: ...` line and exit 2. Model files live in $CUTROOM_MODELS, else ~/.cutroom/models (install.sh puts them there; a
 stand-in downloads a missing one itself and says so).
 """
+import hashlib
 import importlib.util
 import os
 import sys
@@ -23,9 +24,12 @@ if ENGINE not in sys.path:
 import support  # noqa: E402  (the Python version guard, and where the venv is)
 import common  # noqa: E402
 
+# name, url, bytes, sha256: a file is used only when both its size and its hash are these (install.sh checks the same numbers, bin/lib.sh)
 YUNET = ("face_detection_yunet_2023mar.onnx",
-         "https://media.githubusercontent.com/media/opencv/opencv_zoo/main/models/face_detection_yunet/face_detection_yunet_2023mar.onnx", 232589)
-RVM = ("rvm_mobilenetv3_fp32.onnx", "https://github.com/PeterL1n/RobustVideoMatting/releases/download/v1.0.0/rvm_mobilenetv3_fp32.onnx", 14975696)
+         "https://media.githubusercontent.com/media/opencv/opencv_zoo/main/models/face_detection_yunet/face_detection_yunet_2023mar.onnx", 232589,
+         "8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4")
+RVM = ("rvm_mobilenetv3_fp32.onnx", "https://github.com/PeterL1n/RobustVideoMatting/releases/download/v1.0.0/rvm_mobilenetv3_fp32.onnx", 14975696,
+       "88d4531297118f595bf2fd60f6f566aec2e559393802d1f436c380f0cbbd2828")
 
 
 def fail(name, msg):
@@ -53,11 +57,21 @@ def models_dir():
     return os.environ.get("CUTROOM_MODELS") or str(common.CONF_DIR / "models")
 
 
-def model(name, url, size, who):
-    """the path of a model file, downloaded into the models folder when it is not there yet (size-checked, written as .part then moved)"""
+def sha256_of(path):
+    h = hashlib.sha256()
+    with open(path, "rb") as fh:
+        for chunk in iter(lambda: fh.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def model(name, url, size, sha256, who):
+    """the path of a model file, downloaded into the models folder when it is not there yet (size- and hash-checked, written as .part then moved)"""
     path = os.path.join(models_dir(), name)
     if os.path.isfile(path) and os.path.getsize(path) == size:
-        return path
+        if sha256_of(path) == sha256:
+            return path
+        fail(who, f"{path} is not the file it should be (its hash differs from the one this version of Cutroom pins): remove it and run install.sh again")
     os.makedirs(models_dir(), exist_ok=True)
     part = path + ".part"
     print(f"{who}: fetching {name} ({size / 1e6:.1f} MB) into {models_dir()}", file=sys.stderr)
@@ -68,6 +82,9 @@ def model(name, url, size, who):
     if os.path.getsize(part) != size:
         os.remove(part)
         fail(who, f"{name} downloaded with the wrong size (expected {size} bytes); try again")
+    if sha256_of(part) != sha256:
+        os.remove(part)
+        fail(who, f"{name} downloaded with the wrong hash (the file at {url} is not the one this version of Cutroom pins); nothing was kept")
     os.replace(part, path)
     return path
 

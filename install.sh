@@ -33,8 +33,20 @@ apt_has() {
   return 1
 }
 
-# sudo_bash: run the script on stdin as root (NodeSource's setup script). `sudo -E` only when there is a sudo to ask.
-sudo_bash() { if [ -n "$SUDO" ]; then "$SUDO" -E bash -; else bash -; fi; }
+# nodesource_repo: NodeSource's apt repository for Node 22, set up the documented way (their signing key into a keyring, one sources line),
+# never a script piped into a root shell. Returns 1 when the key or the list could not be written.
+nodesource_repo() {
+  local key=/etc/apt/keyrings/nodesource.gpg list=/etc/apt/sources.list.d/nodesource.list f
+  # an entry for the same repository left by NodeSource's own setup script (another file, another keyring path) makes apt refuse both:
+  # one entry for deb.nodesource.com, ours
+  for f in /etc/apt/sources.list.d/*; do
+    [ -f "$f" ] && [ "$f" != "$list" ] && grep -qs "deb.nodesource.com" "$f" && $SUDO rm -f "$f"
+  done
+  $SUDO mkdir -p /etc/apt/keyrings || return 1
+  curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | $SUDO gpg --dearmor --yes -o "$key" > /dev/null 2>&1 || return 1
+  echo "deb [signed-by=$key] https://deb.nodesource.com/node_22.x nodistro main" | $SUDO tee "$list" > /dev/null || return 1
+  apt_get update -qq > /dev/null 2>&1 || true
+}
 
 # path_local: $LOCAL_BIN first on PATH, for this run.
 path_local() {
@@ -42,32 +54,40 @@ path_local() {
   hash -r
 }
 
-# link_bin <file> <name>: make <name> a command. /usr/local/bin first (sudo ln -sf). When that cannot be done the link goes in $LOCAL_BIN, which
-# joins PATH for this run and, once ever, ~/.profile (a line that is already there is never added again). The warning prints once a run.
+# link_bin [--local] <file> <name>: make <name> a command. A binary goes into /usr/local/bin as a root-owned COPY (install -o root -m 0755),
+# never as a symlink to a file the user can rewrite. When that cannot be done, or with --local (a script that runs out of the user's own venv),
+# a link goes in $LOCAL_BIN, which joins PATH for this run and, once ever, ~/.profile (a line that is already there is never added again).
 link_bin() {
-  local src="$1" name="$2" line
-  if $SUDO ln -sf "$src" "/usr/local/bin/$name" 2> /dev/null; then hash -r; return 0; fi
+  local local_only=0 src name line
+  if [ "$1" = "--local" ]; then local_only=1; shift; fi
+  src="$1"; name="$2"
+  if [ "$local_only" = 0 ] && $SUDO install -o root -g root -m 0755 "$src" "/usr/local/bin/$name" 2> /dev/null; then hash -r; return 0; fi
   mkdir -p "$LOCAL_BIN"
   if [ "$src" != "$LOCAL_BIN/$name" ]; then ln -sf "$src" "$LOCAL_BIN/$name"; fi
   path_local
   if [ "$LINK_WARNED" = 0 ]; then
     LINK_WARNED=1
     line="export PATH=\"$LOCAL_BIN:\$PATH\""
+    local why="could not link into /usr/local/bin:"
+    [ "$local_only" = 1 ] && why="$name runs from the Python environment, so"
     if grep -qxF "$line" "$HOME/.profile" 2> /dev/null; then
-      warn "could not link into /usr/local/bin: $(tilde "$LOCAL_BIN") is on PATH for this run, and ~/.profile already adds it for new login shells"
+      warn "$why $(tilde "$LOCAL_BIN") is on PATH for this run, and ~/.profile already adds it for new terminals"
     elif printf '\n# added by Cutroom: the tools it fetched\n%s\n' "$line" 2> /dev/null >> "$HOME/.profile"; then
-      warn "could not link into /usr/local/bin: $(tilde "$LOCAL_BIN") is on PATH for this run and now in ~/.profile (a new login shell picks it up, or run: source ~/.profile)"
+      warn "$why $(tilde "$LOCAL_BIN") is on PATH for this run and now in ~/.profile (a new terminal picks it up, or run: source ~/.profile)"
     else
-      warn "could not link into /usr/local/bin or write ~/.profile: add this line to your shell profile: $line"
+      warn "$why add this line to your shell profile: $line"
     fi
   fi
 }
 
-# fetch_model <path> <url> <bytes> <what>: one model file, size-checked. The download is resumable: it goes to <path>.part and moves into place
-# only when the size is exactly right.
+# fetch_model <path> <url> <bytes> <what> <sha256>: one model file, checked by size and SHA-256 (the numbers in bin/lib.sh). The download is
+# resumable: it goes to <path>.part and moves into place only when both match; a file already there with another hash stops the install.
 fetch_model() {
-  local path="$1" url="$2" bytes="$3" what="$4" part="$1.part"
-  if [ "$(filesize "$path")" = "$bytes" ]; then pass "$(tilde "$path")"; return 0; fi
+  local path="$1" url="$2" bytes="$3" what="$4" sha="$5" part="$1.part"
+  if [ "$(filesize "$path")" = "$bytes" ]; then
+    if [ "$(sha256_of "$path")" = "$sha" ]; then pass "$(tilde "$path")"; return 0; fi
+    fail "$(tilde "$path") is not the file this version pins (its hash differs): move it away and run again"; exit 1
+  fi
   mkdir -p "$(dirname "$path")"
   if [ "$(filesize "$part")" -gt "$bytes" ]; then rm -f "$part"; fi
   if [ "$(filesize "$part")" != "$bytes" ]; then
@@ -75,6 +95,7 @@ fetch_model() {
     curl -L --fail --retry 3 -C - -o "$part" "$url" || true
   fi
   [ "$(filesize "$part")" = "$bytes" ] || { fail "$what: download incomplete; run again to resume"; exit 1; }
+  if [ "$(sha256_of "$part")" != "$sha" ]; then rm -f "$part"; fail "$what: the download's hash is not the one this version pins ($url); nothing was kept"; exit 1; fi
   mv "$part" "$path"
   pass "$(tilde "$path")"
 }
@@ -83,45 +104,58 @@ fetch_model() {
 ffmpeg_ok() { local m; m=$(ffmpeg_major); [ "${m:-0}" -ge 7 ] && ffmpeg_has_filter zscale; }
 ffmpeg_version() { ffmpeg -version 2> /dev/null | awk 'NR == 1 { print $3 }' || true; }
 
-# fetch_ffmpeg: a static ffmpeg 7 or newer with zscale (johnvansickle.com; Ubuntu's own is older) into $LOCAL_BIN, linked onto PATH. The download is
-# resumable, and a copy an earlier run fetched but could not link is reused instead of fetched again.
+# fetch_ffmpeg: one pinned static ffmpeg build (BtbN's, with libx264, libx265 and libzimg; Ubuntu's own is too old) into $LOCAL_BIN, then onto PATH.
+# The tarball is checked against the SHA-256 in bin/lib.sh before anything is unpacked. The download is resumable, and a tarball an earlier run
+# fetched is reused instead of fetched again.
 fetch_ffmpeg() {
-  local a url tarball part
-  case "$ARCH" in x86_64) a=amd64 ;; *) a=arm64 ;; esac
-  url="https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-$a-static.tar.xz"
-  tarball="$CONF_DIR/src/ffmpeg-release-$a-static.tar.xz"; part="$tarball.part"
+  local url sha tarball part
+  case "$ARCH" in x86_64) url="$FFMPEG_URL_X86_64"; sha="$FFMPEG_SHA256_X86_64" ;; *) url="$FFMPEG_URL_ARM64"; sha="$FFMPEG_SHA256_ARM64" ;; esac
+  tarball="$CONF_DIR/src/$(basename "$url")"; part="$tarball.part"
   mkdir -p "$CONF_DIR/src" "$LOCAL_BIN"
   if [ ! -x "$LOCAL_BIN/ffprobe" ] || ! (PATH="$LOCAL_BIN:$PATH"; hash -r; ffmpeg_ok); then
-    if ! xz -t "$tarball" 2> /dev/null; then
-      echo "  downloading a static ffmpeg (about 40 MB; resumable: run again if it stops)..."
+    if [ "$(sha256_of "$tarball")" != "$sha" ]; then
+      echo "  downloading ffmpeg $FFMPEG_BUILD (about 150 MB; resumable: run again if it stops)..."
       curl -L --fail --retry 3 -C - -o "$part" "$url" || true
-      xz -t "$part" 2> /dev/null || { fail "the ffmpeg download is incomplete; run again to resume"; exit 1; }
+      [ "$(sha256_of "$part")" = "$sha" ] || { rm -f "$part" 2> /dev/null; fail "the ffmpeg download is incomplete or is not the pinned build; run again"; exit 1; }
       mv "$part" "$tarball"
     fi
-    tar -xJf "$tarball" -C "$LOCAL_BIN" --strip-components=1 --wildcards '*/ffmpeg' '*/ffprobe' || { fail "could not unpack $(tilde "$tarball")"; exit 1; }
+    tar -xJf "$tarball" -C "$LOCAL_BIN" --strip-components=2 --wildcards '*/bin/ffmpeg' '*/bin/ffprobe' || { fail "could not unpack $(tilde "$tarball")"; exit 1; }
   fi
   link_bin "$LOCAL_BIN/ffmpeg" ffmpeg
   link_bin "$LOCAL_BIN/ffprobe" ffprobe
   hash -r
   if ffmpeg_ok; then
     rm -f "$tarball"
-    pass "ffmpeg $(ffmpeg_version) (static build, has zscale)"
+    pass "ffmpeg $(ffmpeg_version) (pinned static build, has zscale)"
   else
     fail "the ffmpeg on PATH is still older than 7 or has no zscale filter ($(command -v ffmpeg || echo none)): put $(tilde "$LOCAL_BIN") first on PATH"; exit 1
   fi
 }
 
-# build_whisper: whisper.cpp built from source (apt has no package for it), linked as whisper-cli. A finished build is reused.
+# build_whisper: whisper.cpp built from source (apt has no package for it), at the release bin/lib.sh pins, and put on PATH as whisper-cli. A
+# source folder at another commit is moved to the pinned tag and built again; a finished build of the pinned release is reused.
 build_whisper() {
-  local src="$CONF_DIR/src/whisper.cpp" log="$CONF_DIR/src/whisper-build.log"
+  local src="$CONF_DIR/src/whisper.cpp" log="$CONF_DIR/src/whisper-build.log" build=0
   mkdir -p "$CONF_DIR/src"
-  if [ ! -x "$src/build/bin/whisper-cli" ]; then
-    echo "  building whisper.cpp from source (several minutes the first time)..."
-    if [ -d "$src/.git" ]; then
-      git -C "$src" pull --quiet > "$log" 2>&1 || true
-    else
-      git clone --quiet --depth 1 https://github.com/ggml-org/whisper.cpp "$src" > "$log" 2>&1 || { fail "could not download whisper.cpp: $(tail -1 "$log")"; exit 1; }
+  if [ -d "$src/.git" ]; then
+    if [ "$(git -C "$src" rev-parse HEAD 2> /dev/null)" != "$WHISPER_CPP_COMMIT" ]; then
+      echo "  moving the whisper.cpp source to release $WHISPER_CPP_TAG..."
+      if ! (git -C "$src" fetch --quiet --depth 1 origin tag "$WHISPER_CPP_TAG" && git -C "$src" checkout --quiet --detach "$WHISPER_CPP_TAG") > "$log" 2>&1; then
+        fail "could not fetch whisper.cpp $WHISPER_CPP_TAG into $(tilde "$src"): $(tail -1 "$log"); move that folder away and run again"; exit 1
+      fi
+      build=1
     fi
+  else
+    echo "  downloading whisper.cpp $WHISPER_CPP_TAG..."
+    git clone --quiet --depth 1 --branch "$WHISPER_CPP_TAG" https://github.com/ggml-org/whisper.cpp "$src" > "$log" 2>&1 || { fail "could not download whisper.cpp $WHISPER_CPP_TAG: $(tail -1 "$log")"; exit 1; }
+    build=1
+  fi
+  if [ "$(git -C "$src" rev-parse HEAD 2> /dev/null)" != "$WHISPER_CPP_COMMIT" ]; then
+    fail "whisper.cpp at $(tilde "$src") is not release $WHISPER_CPP_TAG (commit $WHISPER_CPP_COMMIT): move that folder away and run again"; exit 1
+  fi
+  [ -x "$src/build/bin/whisper-cli" ] || build=1
+  if [ "$build" = 1 ]; then
+    echo "  building whisper.cpp from source (several minutes the first time)..."
     if ! (cd "$src" && cmake -B build -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DWHISPER_BUILD_TESTS=OFF -DWHISPER_BUILD_EXAMPLES=ON \
       && cmake --build build -j "$(nproc)" --config Release) >> "$log" 2>&1; then
       fail "whisper.cpp did not build: $(tail -1 "$log") (full log: $(tilde "$log"))"; exit 1
@@ -129,7 +163,7 @@ build_whisper() {
   fi
   [ -x "$src/build/bin/whisper-cli" ] || { fail "whisper.cpp built without build/bin/whisper-cli (log: $(tilde "$log"))"; exit 1; }
   link_bin "$src/build/bin/whisper-cli" whisper-cli
-  pass "whisper-cli (built from source)"
+  pass "whisper-cli $WHISPER_CPP_TAG (built from source)"
 }
 
 # node_ok: node 18 or newer, with the npm that comes with a real Node install (Debian's own nodejs package ships without npm).
@@ -192,7 +226,7 @@ if [ "$IS_MAC" = 1 ]; then
 else
   # System packages through apt. Only what is missing is installed, so a second run never asks for the password. The Remotion libraries and
   # fonts are what its headless Chrome needs. libasound2t64 is Ubuntu 24.04's name for libasound2 (older releases get libasound2 below).
-  APT_BUILD="build-essential cmake git curl ca-certificates xz-utils"
+  APT_BUILD="build-essential cmake git curl ca-certificates xz-utils gnupg"
   APT_PYTHON="python3 python3-venv python3-pip python3-pil python3-numpy python3-pytest"
   APT_MEDIA="tesseract-ocr espeak-ng"
   APT_CHROME="libnss3 libatk-bridge2.0-0 libatk1.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libpango-1.0-0 libcairo2 libasound2t64 fonts-liberation"
@@ -246,7 +280,7 @@ else
     pass "node $(node -v)"
   else
     echo "  installing node 22 from NodeSource... (sudo may ask for your password)"
-    if curl -fsSL https://deb.nodesource.com/setup_22.x | sudo_bash > /dev/null && apt_get install -y -qq nodejs > /dev/null; then
+    if nodesource_repo && apt_get install -y -qq nodejs > /dev/null; then
       hash -r
       if node_ok; then pass "node $(node -v) (installed from NodeSource)"; else fail "node is still missing or older than 18 after the NodeSource install"; exit 1; fi
     else
@@ -304,7 +338,7 @@ else
   # yt-dlp (reference study) is optional: a failure here only warns, as the doctor does.
   if [ ! -x "$VENV/bin/yt-dlp" ]; then "$VENV_PYTHON" -m pip install --quiet yt-dlp || warn "could not install yt-dlp: reference links cannot be downloaded until it is"; fi
   if [ -x "$VENV/bin/yt-dlp" ]; then
-    if ! have yt-dlp; then link_bin "$VENV/bin/yt-dlp" yt-dlp; fi
+    if ! have yt-dlp; then link_bin --local "$VENV/bin/yt-dlp" yt-dlp; fi
     pass "yt-dlp"
   fi
 fi
@@ -324,6 +358,9 @@ else
   if [ "$(filesize "$part")" != "$WHISPER_MODEL_BYTES" ]; then
     echo "  downloading 1.6 GB (resumable: run again if it stops)..."
     curl -L --fail --retry 3 -C - -o "$part" "$WHISPER_MODEL_URL"
+    if [ "$(filesize "$part")" = "$WHISPER_MODEL_BYTES" ] && [ "$(sha256_of "$part")" != "$WHISPER_MODEL_SHA256" ]; then
+      rm -f "$part"; fail "the Whisper model download is not the file Hugging Face publishes (hash mismatch); nothing was kept, run again"; exit 1
+    fi
   fi
   [ "$(filesize "$part")" = "$WHISPER_MODEL_BYTES" ] || { fail "download incomplete; run again to resume"; exit 1; }
   mv "$part" "$WHISPER_MODEL"
@@ -332,8 +369,8 @@ fi
 
 if [ "$IS_MAC" = 0 ]; then
   step "4b/8  Vision models (face detector and person matte, 15 MB)"
-  fetch_model "$YUNET_MODEL" "$YUNET_MODEL_URL" "$YUNET_MODEL_BYTES" "the face detector (0.2 MB)"
-  fetch_model "$RVM_MODEL" "$RVM_MODEL_URL" "$RVM_MODEL_BYTES" "the person matte model (15 MB)"
+  fetch_model "$YUNET_MODEL" "$YUNET_MODEL_URL" "$YUNET_MODEL_BYTES" "the face detector (0.2 MB)" "$YUNET_MODEL_SHA256"
+  fetch_model "$RVM_MODEL" "$RVM_MODEL_URL" "$RVM_MODEL_BYTES" "the person matte model (15 MB)" "$RVM_MODEL_SHA256"
 fi
 
 step "5/8  Vision helpers"

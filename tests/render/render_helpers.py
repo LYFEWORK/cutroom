@@ -62,13 +62,24 @@ def ffmpeg(*args):
 
 
 # ---------------------------------------------------------------- synthetic media
+VOICE_TEXT = "Three things nobody tells you about running a small shop. Here is the first one, and it matters."
+
+
 def make_voice(path, dur):
-    """a 48 kHz stereo wav that sounds like speech to a level meter: a macOS voice when there is one, else pulsing tones"""
+    """a 48 kHz stereo wav that sounds like speech to a level meter: a macOS voice when there is one, espeak-ng's on Linux (install.sh puts it
+    there), else pulsing tones. Real speech has pauses and a silent tail, which the music bed tests need (a stretch of talk, then music alone);
+    the tones have neither, so those tests only hold with a voice."""
     if shutil.which("say"):
         aiff = Path(path).with_suffix(".aiff")
-        r = run(["say", "-o", aiff, "Three things nobody tells you about running a small shop. Here is the first one, and it matters."])
+        r = run(["say", "-o", aiff, VOICE_TEXT])
         if r.returncode == 0 and aiff.exists():
             ffmpeg("-i", aiff, "-af", f"apad,aresample=48000", "-ac", "2", "-t", f"{dur}", path)
+            return Path(path)
+    if shutil.which("espeak-ng"):
+        wav = Path(path).with_name(Path(path).stem + "-espeak.wav")
+        r = run(["espeak-ng", "-a", "60", "-w", str(wav), VOICE_TEXT])   # -a 60: a speaking level like a Mac voice's, not espeak-ng's near-full-scale default
+        if r.returncode == 0 and wav.exists():
+            ffmpeg("-i", wav, "-af", f"apad,aresample=48000", "-ac", "2", "-t", f"{dur}", path)
             return Path(path)
     ffmpeg("-f", "lavfi", "-i", f"sine=f=190:d={dur}", "-f", "lavfi", "-i", f"sine=f=2.2:d={dur}",
            "-filter_complex", "[0][1]amultiply,volume=4,aformat=sample_rates=48000:channel_layouts=stereo", "-t", f"{dur}", path)

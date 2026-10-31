@@ -948,7 +948,7 @@ def main(argv=None):
     t0 = time.time()
     for tool in ("ffmpeg", "ffprobe"):
         if not shutil.which(tool):
-            stop(f"{tool} not found: install ffmpeg first (brew install ffmpeg)")
+            stop(f"{tool} not found: install ffmpeg first ({common.install_hint('ffmpeg')})")
     BRAND_OVERRIDE = args.brand
 
     plan, base = load_plan(args.plan)

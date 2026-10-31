@@ -807,13 +807,17 @@ def build(words, track, spec, cut_s, total_frames):
             text = casef(" ".join(clean(w["text"]) for w in p), case)
             gcl = SAFE_BOX_X if zone != "top" else TOP_BOX_X
             px = fit(text, row_px[1], min(cl_w, row_cap(540 + cl_dx, *gcl)), face="running")
-            f = facetrack.at(track, p[0]["start"])
+            # the face at the phrase's ONSET is not the face for the whole phrase (the same lesson the hero clusters learned below): a speaker who
+            # settles or leans drops his chin 40 px inside a second, and a quiet row placed from the first frame sat 14 px over his beard by the
+            # phrase's middle (G4, 8 px of ink). Place against the LOWEST chin, and up top against the HIGHEST crown, across the row's own life.
+            g_start, g_end = p[0]["start"], p[-1]["end"] + 0.30
+            faces = [facetrack.at(track, tt) for tt in (g_start, (g_start + g_end) / 2, min(g_end, g_start + 1.5))]
             if zone == "top" and not (mix and k % 3 == 2):
-                top = int(max(top_zone["y0"], f["cy"] - f["h"] * 0.8 - px - 20))
+                top = int(max(top_zone["y0"], min(c["cy"] - c["h"] * 0.8 for c in faces) - px - 20))
                 fronts.append({"mode": "behind", "cluster": True, "words": [{"text": text, "at": p[0]["start"], "size": px, "color": WHITE, "dx": 0, "weight": 800, "hero": False}],
                                "start": round(p[0]["start"], 3), "end": p[-1]["end"] + 0.30, "y": top, "stack": "column", "leading": 0.84, "exit": "blur", "maxW": cl_w, "safe": top_zone})
             else:
-                chin = f["cy"] + f["h"] / 2
+                chin = max(c["cy"] + c["h"] / 2 for c in faces)
                 top = int(chin + chin_gap + 40)
                 if top + px + 48 > SAFE["y1"]:         # no room for the usual gap: the largest row that fits directly under the chin, never past the safe box
                     top = int(chin + MIN_GAP); px = int(min(px, SAFE["y1"] - top - 48))

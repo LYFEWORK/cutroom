@@ -20,14 +20,16 @@ Rules:
 - HANDLE s of real footage on the front and the back of every cut (default 5, or takes_handle_s in config.json), clamped to the clip edges. Never black, never trimmed tighter.
 - Bloopers (laughs, swears, self-roasts, meltdowns, crew jokes) are cut out the same way and filed under B-Roll/Bloopers.
 - Native resolution per clip: a 1080p clip stays 1080p, a 4K clip stays 4K. Rotation metadata is honored (vertical stays vertical). No slate, no overlay.
-- Video is re-encoded frame-accurately to H.264 at 1.3x the camera clip's own video bitrate (floor 8 Mbit/s), on h264_videotoolbox when this Mac has it.
+- Video is re-encoded frame-accurately to H.264 at 1.3x the camera clip's own video bitrate (floor 8 Mbit/s), on h264_videotoolbox when this Mac has it,
+  else (Linux, Windows through WSL2, a Mac without it) on libx264 told the same average bitrate (its single-pass rate control lands close to the target).
   No -maxrate and no cap. A -maxrate is what throttles VideoToolbox: on a shoot's leanest take it left 0.10x to 0.16x of the camera clip's bitrate whatever the
   target, and a first version that set one cut 104 takes to 0.10 to 0.69 of their camera clips (0.50 at the median). Without it VideoToolbox is still not exact:
   the same take at 1.3x came out at 0.85x, 0.91x and 1.03x of the camera clip in three runs, so every cut is measured (below). Audio PCM, from the clip's first audio
   stream (a clip with no sound is cut without any). The camera originals are never cut or re-encoded: they move to Raw Clips/.
 - Every cut is measured: its video bitrate (the video packets' sizes over their duration) against the same span of its camera clip, read the same way.
   A cut under its camera clip is redone at 1.6x, then with libx264 -crf 9 -preset medium (4K at 97 Mbit/s on one shoot: crf 14 landed at 0.41x to 0.76x
-  of the camera clip, crf 10 at 0.96x on a lean span, crf 9 at 1.15x to 1.74x on all five spans tried); a cut still under it FAILS, in one line naming the
+  of the camera clip, crf 10 at 0.96x on a lean span, crf 9 at 1.15x to 1.74x on all five spans tried, and 0.99x once on an 81 Mbit/s 1080p take on Linux,
+  which is why crf 9 is the last rung and not the only one off a Mac); a cut still under it FAILS, in one line naming the
   take and both bitrates, and the run stops before the manifest and before the camera files move. A rerun cuts an existing take again when it is under its
   camera clip and keeps it when it is not. Two takes are cut at once.
 - Also writes a thumbnail per cut (<scratch>/thumbs/<cut id>.jpg) and rewrites README.txt to say what was cut.
@@ -50,8 +52,10 @@ from job import bad_takes_folder, cut_id, load_job, question_folder, read_csv, r
 FLOOR_BPS = 8_000_000   # a camera clip thinner than this (a phone at 4 Mbit/s) is still cut at 8: the re-encode must not thin it more
 LANES = 2               # takes cut at once (VideoToolbox runs two sessions well)
 CRF = 9                 # libx264's quality setting, the last rung
-# The ladder a take climbs until its video bitrate is not under its camera clip's: (encoder, multiple of the camera clip's bitrate). libx264 has no multiple, it is quality based.
+# The ladder a take climbs until its video bitrate is not under its camera clip's: (encoder, multiple of the camera clip's bitrate), and a last rung with no
+# multiple, libx264 at a fixed quality (CRF). A Mac climbs VideoToolbox; anything without it (Linux, WSL2) climbs libx264 at the same two targets first.
 RUNGS = (("h264_videotoolbox", 1.3), ("h264_videotoolbox", 1.6), ("libx264", None))
+RUNGS_X264 = (("libx264", 1.3), ("libx264", 1.6), ("libx264", None))
 EPS = 1e-5              # seconds: ffprobe prints a presentation time to the microsecond
 
 
@@ -72,11 +76,13 @@ def have_videotoolbox():
 
 
 def ladder():
-    return RUNGS if have_videotoolbox() else RUNGS[-1:]
+    return RUNGS if have_videotoolbox() else RUNGS_X264
 
 
 def rung_name(rung):
-    return f"libx264 crf {CRF}" if rung[0] == "libx264" else f"VideoToolbox {rung[1]:g}x"
+    enc, mult = rung
+    if mult is None: return f"libx264 crf {CRF}"
+    return f"{'libx264' if enc == 'libx264' else 'VideoToolbox'} {mult:g}x"
 
 
 def mbps(bps):
@@ -88,7 +94,8 @@ def mbps(bps):
 def enc_args(rung, src_bps):
     """the video encoder arguments of one rung. VideoToolbox is told its average bitrate and nothing else: a -maxrate throttles it to a fraction of it"""
     enc, mult = rung
-    if enc == "libx264": return ["-c:v", "libx264", "-preset", "medium", "-crf", str(CRF)]
+    if mult is None: return ["-c:v", "libx264", "-preset", "medium", "-crf", str(CRF)]
+    if enc == "libx264": return ["-c:v", "libx264", "-preset", "medium", "-b:v", str(int(max(FLOOR_BPS, mult * src_bps)))]
     return ["-c:v", enc, "-b:v", str(int(max(FLOOR_BPS, mult * src_bps)))]
 
 

@@ -10,14 +10,28 @@ MODEL_DIR="${CUTROOM_MODELS:-$CONF_DIR/models}"
 WHISPER_MODEL="${WHISPER_MODEL:-$MODEL_DIR/ggml-large-v3-turbo.bin}"
 WHISPER_MODEL_URL="https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large-v3-turbo.bin"
 WHISPER_MODEL_BYTES=1624555275
+WHISPER_MODEL_SHA256=1fc70f774d38eb169993ac391eea357ef47c88757ef72ee5943879b7e8e2bc69   # the hash Hugging Face publishes for the file
 # Away from a Mac the face and person helpers are the stand-ins in engine/vision/, which read these two small models from $MODEL_DIR.
 # install.sh downloads them; the doctor checks their sizes.
 YUNET_MODEL="$MODEL_DIR/face_detection_yunet_2023mar.onnx"
 YUNET_MODEL_URL="https://media.githubusercontent.com/media/opencv/opencv_zoo/main/models/face_detection_yunet/face_detection_yunet_2023mar.onnx"
 YUNET_MODEL_BYTES=232589
+YUNET_MODEL_SHA256=8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4
 RVM_MODEL="$MODEL_DIR/rvm_mobilenetv3_fp32.onnx"
 RVM_MODEL_URL="https://github.com/PeterL1n/RobustVideoMatting/releases/download/v1.0.0/rvm_mobilenetv3_fp32.onnx"
 RVM_MODEL_BYTES=14975696
+RVM_MODEL_SHA256=88d4531297118f595bf2fd60f6f566aec2e559393802d1f436c380f0cbbd2828
+# whisper.cpp is built from one pinned release on Linux: the tag, and the commit the tag points at (checked after the clone)
+# ffmpeg on Linux: one pinned static build from BtbN/FFmpeg-Builds (gpl: libx264, libx265, libzimg for zscale), checked against these hashes before
+# it is unpacked. BtbN keeps its month-end builds for about two years, so the pin is a month-end build; move it (URL and both hashes, after a
+# run of the tests) when a newer one is wanted. Mac: Homebrew's ffmpeg.
+FFMPEG_BUILD="n8.1.3 (BtbN, 2026-10-31)"
+FFMPEG_URL_X86_64="https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2026-10-31-12-59/ffmpeg-n8.1.3-27-g8dca1586f4-linux64-gpl-8.1.tar.xz"
+FFMPEG_SHA256_X86_64=41e9c565594c390622cf968d82fa4135d9e9a11d06c1515644288cbc844e3380
+FFMPEG_URL_ARM64="https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2026-10-31-12-59/ffmpeg-n8.1.3-27-g8dca1586f4-linuxarm64-gpl-8.1.tar.xz"
+FFMPEG_SHA256_ARM64=a08c0ee6e1c4e02139344b303002dcc7c37cf125d639f1fbd15dabee40fcb525
+WHISPER_CPP_TAG=v1.9.5
+WHISPER_CPP_COMMIT=d1be6fde11ac6e0407606b4e42fe72d34add8037
 LOCAL_BIN="$CONF_DIR/bin"   # on Linux, where a fetched ffmpeg lands, and what joins PATH when /usr/local/bin cannot be written
 
 # Optional paid services. Each is off until its key is in $KEYS. Nothing in the core needs one.
@@ -45,6 +59,8 @@ if [ "$(id -u)" -ne 0 ] && have sudo; then SUDO=sudo; fi
 # BSD stat (macOS) and GNU stat (Linux) take different flags, so every script goes through these two.
 filesize() { if [ "$OS" = Darwin ]; then stat -f %z "$1" 2> /dev/null || echo 0; else stat -c %s "$1" 2> /dev/null || echo 0; fi; }
 filemode() { if [ "$OS" = Darwin ]; then stat -f %Lp "$1" 2> /dev/null; else stat -c %a "$1" 2> /dev/null; fi; }
+# sha256_of <path>: the file's SHA-256 (shasum on a Mac, sha256sum on Linux), nothing when the file is missing.
+sha256_of() { if [ "$OS" = Darwin ]; then shasum -a 256 "$1" 2> /dev/null | cut -d" " -f1; else sha256sum "$1" 2> /dev/null | cut -d" " -f1; fi; }
 
 # ffmpeg_major: the major version of the ffmpeg on PATH (7 for 7.0.2-static or n7.1); nothing when there is none or the build carries no release number.
 ffmpeg_major() { ffmpeg -version 2> /dev/null | sed -n '1s/^ffmpeg version [nN]*\([0-9][0-9]*\).*$/\1/p' || true; }

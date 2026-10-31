@@ -39,6 +39,13 @@ def helper(tmp_path, name="facerect", text="// helper"):
     return str(d)
 
 
+
+@pytest.fixture(autouse=True)
+def the_swift_build_path(monkeypatch):
+    """these tests are about building the Apple helpers with swiftc (faked below); off a Mac the locator would hand out engine/vision/ stand-ins instead,
+    so the Mac branch is forced in this process. The tests that run swiftbin.py as a subprocess skip off a Mac."""
+    monkeypatch.setattr(swiftbin, "IS_MAC", True)
+
 def stops(capsys, fn, *args):
     with pytest.raises(SystemExit) as e:
         fn(*args)
@@ -140,6 +147,7 @@ def test_helpers_lists_the_folders_that_hold_a_main_swift_sorted(tmp_path):
 
 # --- the command line ---------------------------------------------------------------------------------------------------------------
 
+@pytest.mark.skipif(sys.platform != "darwin", reason="the Swift build path is a Mac's")
 def test_all_builds_every_helper_under_a_root_and_prints_one_ok_line_each(tmp_path, monkeypatch):
     calls, bindir = fake_swiftc(tmp_path, monkeypatch)
     root = tmp_path / "root"
@@ -154,6 +162,7 @@ def test_all_builds_every_helper_under_a_root_and_prints_one_ok_line_each(tmp_pa
     assert r.returncode == 0 and len(r.stdout.splitlines()) == 2 and calls() == 2           # nothing is built twice
 
 
+@pytest.mark.skipif(sys.platform != "darwin", reason="the Swift build path is a Mac's; off a Mac the locator hands out the stand-ins (tests/engine/test_vision.py)")
 def test_named_helper_folders_work_without_all(tmp_path, monkeypatch):
     _, bindir = fake_swiftc(tmp_path, monkeypatch)
     r = run_engine("swift/swiftbin.py", helper(tmp_path, "one"), helper(tmp_path, "two"), env={"PATH": f"{bindir}{os.pathsep}{os.environ['PATH']}"})
@@ -165,6 +174,7 @@ def test_all_over_a_root_with_no_helper_is_one_usage_line(tmp_path):
     assert r.returncode == 2 and len(stop_lines(r)) == 1 and r.stderr.startswith("STOP: usage: swiftbin.py"), r.stdout + r.stderr
 
 
+@pytest.mark.skipif(sys.platform != "darwin", reason="the Swift build path is a Mac's")
 def test_a_helper_that_does_not_build_is_one_stop_line_naming_it(tmp_path, monkeypatch):
     _, bindir = fake_swiftc(tmp_path, monkeypatch, fail=True)
     r = run_engine("swift/swiftbin.py", helper(tmp_path, "broken"), env={"PATH": f"{bindir}{os.pathsep}{os.environ['PATH']}"})

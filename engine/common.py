@@ -192,6 +192,11 @@ def read_json(path, default=None):
         stop(f"{path} is not valid JSON ({e})")
 
 
+def install_hint(brew):
+    """how to get a missing tool, for one STOP line: Homebrew's package on a Mac, the installer anywhere else (Linux, Windows through WSL2)"""
+    return f"brew install {brew}" if sys.platform == "darwin" else "run install.sh"
+
+
 def trash(path):
     """Move a file to the Trash. macOS: /usr/bin/trash (Finder's Put Back works). Otherwise a holding folder in the workspace."""
     path = Path(path)

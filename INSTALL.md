@@ -67,7 +67,7 @@ It prints one line per item: **✓** done, **!** optional or skipped, **✗** mu
 | # | Step | Notes |
 |---|---|---|
 | 1 | This machine | Mac: stops if the command-line tools or Homebrew are missing (Step 0), then run again. Linux: checks the distro and the CPU. |
-| 2 | Tools | installs any missing: ffmpeg, whisper-cpp, node, python, yt-dlp. On Linux: apt packages (sudo asks for the password), a static ffmpeg 7 with the tone mapper, whisper.cpp built from source (several minutes), Node from NodeSource, Tesseract |
+| 2 | Tools | installs any missing: ffmpeg, whisper-cpp, node, python, yt-dlp. On Linux: apt packages (sudo asks for the password), one pinned static ffmpeg build checked against its hash before it is unpacked, whisper.cpp at a pinned release built from source (several minutes), Node 22 from NodeSource's signed apt repository, Tesseract. Every download is checked by size and SHA-256 |
 | 3 | Python | Pillow, numpy, pytest, then the word-timing venv at `~/.cutroom/venv` and its alignment weights. On Linux the venv also holds OpenCV, onnxruntime and pytesseract for the vision stand-ins, and torch is the CPU build unless an NVIDIA card is present |
 | 4 | Whisper model | `~/.cutroom/models/ggml-large-v3-turbo.bin`, resumable, size-checked. On Linux also the two vision models (YuNet faces, Robust Video Matting), 15 MB together |
 | 5 | Vision helpers | Mac: compiled with swiftc. Linux: the stand-ins in `engine/vision/` are checked (OpenCV, onnxruntime, Tesseract, ffmpeg's tone mapper) |

@@ -6,6 +6,7 @@ Video only, every frame at its own presentation time (no retiming), BT.709 tagge
 same last line as the Apple helper: `hdr2sdr: frames=N first_pts=S size=WxH codec=C -> out`, where first_pts is the source's first video
 frame time in seconds (engine/hdr.py puts the audio back with that offset). Needs an ffmpeg built with libzimg (the static build install.sh
 fetches has it); without the zscale filter it stops with one plain line."""
+import json
 import os
 import subprocess
 import sys
@@ -28,14 +29,20 @@ def has_filter(name):
 
 
 def probe(path):
-    r = sh(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height,r_frame_rate,color_transfer", "-of", "csv=p=0:s=,", path])
-    parts = (r.stdout.strip().splitlines() or [""])[0].split(",")
-    if len(parts) < 3:
+    """(width, height, fps, color_transfer) of the first video stream, read as JSON: ffprobe's CSV prints the fields in its own order, which differs
+    between ffmpeg versions, so a name is never trusted to a column"""
+    r = sh(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height,r_frame_rate,color_transfer", "-of", "json", path])
+    try:
+        s = (json.loads(r.stdout or "{}").get("streams") or [])[0]
+        w, h = int(s["width"]), int(s["height"])
+    except (ValueError, KeyError, IndexError, TypeError):
         _shim.fail(NAME, f"ffprobe could not read {os.path.basename(path)}: {' '.join(r.stderr.split())[:200]}")
-    w, h = int(parts[0]), int(parts[1])
-    num, _, den = parts[2].partition("/")
-    fps = float(num) / float(den or 1) if float(den or 1) else 30.0
-    return w, h, fps, (parts[3] if len(parts) > 3 else "")
+    num, _, den = str(s.get("r_frame_rate") or "30/1").partition("/")
+    try:
+        fps = float(num) / float(den or 1)
+    except (ValueError, ZeroDivisionError):
+        fps = 0.0
+    return w, h, fps or 30.0, str(s.get("color_transfer") or "")
 
 
 def first_pts(path):

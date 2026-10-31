@@ -22,7 +22,7 @@ if [ $# -lt 3 ]; then
 fi
 PY="${CUTROOM_PYTHON:-python3}"
 "$PY" -c 'import sys; sys.exit(0 if sys.version_info >= (3, 12) else 1)' 2> /dev/null \
-  || { echo "STOP: Cutroom needs Python 3.12 or newer ($PY is $("$PY" -c 'import sys; print("%d.%d" % sys.version_info[:2])' 2> /dev/null || echo missing)): install one (brew install python@3.12) and run again" >&2; exit 2; }
+  || { echo "STOP: Cutroom needs Python 3.12 or newer ($PY is $("$PY" -c 'import sys; print("%d.%d" % sys.version_info[:2])' 2> /dev/null || echo missing)): install one (a Mac: brew install python@3.12; Ubuntu: apt install python3.12 python3.12-venv) and run again" >&2; exit 2; }
 mkdir -p "$1"
 ROOT="$(cd "$1" && pwd)"; N="$2"; SRC="$3"
 E="$(cd "$(dirname "$0")" && pwd -P)"; T="$ROOT/$N"; mkdir -p "$T"

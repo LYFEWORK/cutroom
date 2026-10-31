@@ -31,7 +31,9 @@ have whisper-cli && pass "whisper-cli" || fail "whisper-cli missing ($(hint "bre
 if [ "$(filesize "$WHISPER_MODEL")" = "$WHISPER_MODEL_BYTES" ]; then pass "Whisper model $(tilde "$WHISPER_MODEL")"; else fail "Whisper model missing or partial at $(tilde "$WHISPER_MODEL") (install.sh downloads it)"; fi
 if have node && [ "$(node -p 'process.versions.node.split(".")[0]')" -ge 18 ]; then pass "node $(node -v)"; else fail "node 18+ missing ($(hint "brew install node" "install.sh installs it"))"; fi
 if python3 -c "import PIL, numpy" 2> /dev/null; then pass "python3 $(python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))') + pillow + numpy"; else fail "python3 pillow/numpy missing (install.sh installs them)"; fi
-have yt-dlp && pass "yt-dlp (reference study)" || warn "yt-dlp missing: reference links cannot be downloaded ($(hint "brew install yt-dlp" "install.sh installs it"))"
+if have yt-dlp; then pass "yt-dlp (reference study)"
+elif [ -x "$VENV/bin/yt-dlp" ]; then pass "yt-dlp (reference study; in the Python environment, $(tilde "$VENV/bin"), which install.sh adds to PATH for new terminals)"
+else warn "yt-dlp missing: reference links cannot be downloaded ($(hint "brew install yt-dlp" "install.sh installs it"))"; fi
 if [ "$IS_MAC" = 1 ]; then
   [ -d "/Applications/Google Chrome.app" ] && pass "Google Chrome" || warn "Google Chrome not installed (optional)"
   have swiftc && pass "swiftc" || fail "swiftc missing (xcode-select --install)"

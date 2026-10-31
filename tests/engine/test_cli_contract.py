@@ -91,7 +91,7 @@ def test_every_module_refuses_a_python_older_than_3_12_with_one_line(script):
 
 def test_the_guard_names_the_interpreter_it_found_and_how_to_get_a_newer_one():
     r = fake_old_import("support", "(3, 8, 2, 'final', 0)")
-    assert r.returncode == 2 and r.stderr.strip() == "STOP: Cutroom needs Python 3.12 or newer; this is Python 3.8. Install a newer one (brew install python@3.12) and run again."
+    assert r.returncode == 2 and r.stderr.strip() == "STOP: Cutroom needs Python 3.12 or newer; this is Python 3.8. Install a newer one (a Mac: brew install python@3.12; Ubuntu: apt install python3.12 python3.12-venv) and run again."
 
 
 def test_python_3_12_itself_is_accepted_and_the_guard_costs_nothing():

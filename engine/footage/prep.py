@@ -73,26 +73,33 @@ def sh(cmd, **kw):
 def need_tools(skip_whisper):
     missing = [t for t in ("ffmpeg", "ffprobe") if not shutil.which(t)]
     if missing:
-        stop(f"{' and '.join(missing)} not found: install ffmpeg first (brew install ffmpeg)")
+        stop(f"{' and '.join(missing)} not found: install ffmpeg first ({common.install_hint('ffmpeg')})")
     if not skip_whisper and not shutil.which("whisper-cli"):
-        stop("whisper-cli not found: install whisper.cpp first (brew install whisper-cpp)")
+        stop(f"whisper-cli not found: install whisper.cpp first ({common.install_hint('whisper-cpp')})")
     try:
         import PIL  # noqa: F401
     except ImportError:
         stop("Pillow is not installed: pip install pillow")
 
 
+REPO_FONT = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "templates", "fonts", "Inter-Variable.ttf")
+
+
 def font(sz):
+    """the sheets' label font: the Mac's own, else the font Cutroom ships (a Linux machine may have no system fonts at all), else DejaVu"""
     from PIL import ImageFont
     for p in ("/System/Library/Fonts/Helvetica.ttc", "/System/Library/Fonts/SFNS.ttf", "/Library/Fonts/Arial.ttf",
-              "/System/Library/Fonts/Supplemental/Arial.ttf", "DejaVuSans.ttf", "C:\\Windows\\Fonts\\arial.ttf"):
+              "/System/Library/Fonts/Supplemental/Arial.ttf", REPO_FONT, "DejaVuSans.ttf", "C:\\Windows\\Fonts\\arial.ttf"):
         if p.startswith("/") and not os.path.exists(p):
             continue
         try:
             return ImageFont.truetype(p, sz)
         except Exception:
             pass
-    return ImageFont.load_default()
+    try:
+        return ImageFont.load_default(size=sz)
+    except TypeError:   # an old Pillow has one fixed size
+        return ImageFont.load_default()
 
 
 def atomic_run(cmd, dst):

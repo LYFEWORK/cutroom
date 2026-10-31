@@ -130,6 +130,14 @@ def build_intake(source_copy, source_original, sha256_64mb, size_bytes,
 # --- filesystem / ffprobe --------------------------------------------------------------------
 
 def stat_flags(path):
+    """the file's flag words. macOS: `stat -f %Sf`, where `dataless` marks an iCloud-evicted file. Elsewhere (Linux, Windows through WSL2) there is
+    no iCloud eviction and GNU stat reads -f as a file-system query, so the file is only checked to be there and the flag list is empty."""
+    if sys.platform != "darwin":
+        try:
+            os.stat(path)
+        except OSError as e:
+            raise EngineStop(f"could not stat {path}: {e.strerror or e}")
+        return ""
     r = subprocess.run(["stat", "-f", "%Sf", path], capture_output=True, text=True)
     if r.returncode != 0:
         raise EngineStop(f"could not stat {path}: {(r.stderr or '').strip()}")

@@ -7,13 +7,19 @@ import sys
 
 import pytest
 
-from studykit import MODEL, STUDY, TEXTS, WATERMARK
+from studykit import MODEL, STUDY, TEXTS, WATERMARK, installed_config
 
 
 @pytest.fixture(scope="session")
 def home(tmp_path_factory):
+    """a config home of the tests' own; venv_python is the installed one's, so study.py's fall back to the venv's yt-dlp works in a shell that
+    never read ~/.profile (on Linux yt-dlp is a script of that venv and user-local)"""
     h = tmp_path_factory.mktemp("cutroom-home")
-    (h / "config.json").write_text(json.dumps({"workspace": str(h / "ws"), "whisper_model": str(MODEL), "whisper_language": "auto"}))
+    cfg = {"workspace": str(h / "ws"), "whisper_model": str(MODEL), "whisper_language": "auto"}
+    venv_python = installed_config().get("venv_python")
+    if venv_python and os.path.exists(os.path.expanduser(venv_python)):
+        cfg["venv_python"] = venv_python
+    (h / "config.json").write_text(json.dumps(cfg))
     return h
 
 
