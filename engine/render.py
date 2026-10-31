@@ -18,7 +18,7 @@ The edit plan (JSON; relative paths are read from the plan's own folder):
   zooms       [{start_s, end_s, z, cx?, cy?, ease_s?}]   eased emphasis zooms
   inserts     [{src, start_s, end_s, mode: full|window|pip, transition: cut|whip-l|whip-r|zoom|soft|band, from_s?, rate?, pos?, side?}]
   hook        {lines: ["..."], end_s, look?, top?, size?, turn_s?}   the hook card, on screen from frame 0 (none when the theme says hook_on false)
-  graphics    [{component, start_s, end_s, props, captions?: "hide"}]   components registered in remotion/graphics/index.ts
+  graphics    [{component, start_s, end_s, props, captions?: "hide"}]   components registered in remotion/graphics/index.ts or your own in remotion/graphics/user/index.ts
   mark        true | false   the brand mark (default: the theme's lockup_on)
   safe        {top, bottom, rail, railTop}   platform UI to stay out of, as fractions of the frame (remotion/README.md)
   end_card    {at_s, line?, handle?} | false   line and handle default to the theme's end_card
@@ -246,16 +246,19 @@ def load_theme(plan, base):
 
 
 def registered_graphics():
-    """the ids registered in remotion/graphics/index.ts (read from the file, so a plan is checked before a render starts)"""
-    f = REMOTION / "graphics" / "index.ts"
-    if not f.is_file():
-        return set()
-    text = re.sub(r"/\*.*?\*/|//[^\n]*", "", f.read_text(), flags=re.S)
-    m = re.search(r"export\s+const\s+GRAPHICS\b[^=]*=\s*\{(.*?)\}", text, re.S)
-    if not m:
-        return set()
-    names = (part.split(":")[0].strip() for part in m.group(1).split(","))
-    return {n for n in names if re.fullmatch(r"[A-Za-z_]\w*", n)}
+    """the ids registered in remotion/graphics/index.ts and the user's own in remotion/graphics/user/index.ts (read from the files, so a
+    plan is checked before a render starts)"""
+    out = set()
+    for f, var in ((REMOTION / "graphics" / "index.ts", "GRAPHICS"), (REMOTION / "graphics" / "user" / "index.ts", "USER_GRAPHICS")):
+        if not f.is_file():
+            continue
+        text = re.sub(r"/\*.*?\*/|//[^\n]*", "", f.read_text(), flags=re.S)
+        m = re.search(r"export\s+const\s+" + var + r"\b[^=]*=\s*\{(.*?)\}", text, re.S)
+        if not m:
+            continue
+        names = (part.split(":")[0].strip() for part in m.group(1).split(","))
+        out |= {n for n in names if re.fullmatch(r"[A-Za-z_]\w*", n)}
+    return out
 
 
 def dna_graphics():

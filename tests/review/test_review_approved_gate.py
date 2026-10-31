@@ -255,6 +255,18 @@ def test_time_keys_and_where_they_are_read_from(reviewed, tmp_path):
     assert problems(write_plan(tmp_path, {"c": {"src": h, "in": 1.5}}, "e.json")) == {("OUTSIDE", "desk_h.mp4")}                        # from 1.5 to the end
 
 
+def test_a_renderer_insert_is_read_by_its_from_s_and_its_span_on_the_edit(reviewed, tmp_path):
+    """engine/render.py's insert shape: the clip plays from from_s for (end_s - start_s) seconds of the edit, at rate. The gate reads it without
+    extra keys, so an edit plan is checked as written."""
+    h = path_of(reviewed, "desk_h.mp4")
+    assert problems(write_plan(tmp_path, {"inserts": [{"src": h, "from_s": 1.1, "start_s": 4.0, "end_s": 5.8}]})) == set()
+    assert problems(write_plan(tmp_path, {"inserts": [{"src": h, "from_s": 0.0, "start_s": 4.0, "end_s": 5.8}]}, "b.json")) == {("OUTSIDE", "desk_h.mp4")}
+    assert problems(write_plan(tmp_path, {"inserts": [{"src": h, "from_s": 1.1, "start_s": 4.0, "end_s": 4.9, "rate": 2.0}]}, "c.json")) == set()   # 0.9 s of the edit at 2x is 1.8 s of the clip
+    assert problems(write_plan(tmp_path, {"inserts": [{"src": h, "from_s": 1.1, "start_s": 4.0, "end_s": 5.0, "rate": 3.0}]}, "d.json")) == {("OUTSIDE", "desk_h.mp4")}
+    assert problems(write_plan(tmp_path, {"inserts": [{"src": h, "from_s": 1.1}]}, "e.json")) == {("OUTSIDE", "desk_h.mp4")}   # no span: from 1.1 to the end
+    assert problems(write_plan(tmp_path, {"inserts": [{"src": h, "in": 1.1, "out": 2.9, "from_s": 0.0}]}, "f.json")) == set()  # explicit in/out win
+
+
 def test_a_folder_is_scanned_and_housekeeping_files_are_skipped(reviewed, ws, tmp_path):
     proj = ws / "Projects" / "demo"
     (proj / "node_modules").mkdir(parents=True)

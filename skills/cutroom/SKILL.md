@@ -11,13 +11,13 @@ Footage in, finished videos out, in your own look. Everything mechanical is a sc
 
 | Thing | Where |
 |---|---|
-| Your workspace (footage, projects, finals, your look) | the folder in `~/.cutroom/config.json` (`workspace`); default `~/Movies/Cutroom` |
+| Your workspace (footage, projects, finals, your look) | the folder named by `workspace` in `~/.cutroom/config.json`, set by `cutroom-setup` (it offers `~/Movies/Cutroom`) |
 | Your look (the DNA) | `<workspace>/Brand/dna.json`, `DNA.md`, `styles/`, `assets/`, `references/` |
 | New footage goes | `<workspace>/Drop/` |
 | Organized shoots | `<workspace>/Footage/<YYYY-MM-DD Name>/` with `START HERE.html` |
 | The review page (keep, cut, trim) | `<workspace>/Review/` served at `http://127.0.0.1:8765` |
 | One video's working files | `<workspace>/Projects/<Title>/` |
-| Finished videos | `<workspace>/Finished/<Title>/` with `Transcript.md` and `Caption.txt` beside the MP4 |
+| Finished videos | `<workspace>/Finished/<Title>/`: `<Title>.mp4` with `<Title> - Transcript.md` and `<Title> - Caption.txt` beside it, and `Build/<Title>/` (notes, gate, QC report, evidence) |
 | The rules every edit follows | `~/cutroom/rules/` (read the file for the step you are on) |
 | Health check | `bash ~/cutroom/bin/doctor.sh` |
 
@@ -39,7 +39,11 @@ Pick one row, load that skill, let it run. If the ask spans two (footage just la
 
 1. **A person approves before anything renders or ships.** The cut stops at `SCRIPT.md`, the captions stop at `GATE.md`, and the edit plan is shown before the render.
 2. **Only kept clips are placed.** Every b-roll and take comes from the review page's Keep list, inside its kept range. Unreviewed footage is off limits until it is reviewed.
-3. **Move, never delete.** Cleanup goes through the Trash with a receipt. Camera originals are moved into shoot folders, never re-encoded, never removed by a script.
+3. **Move, never delete.** Cleanup goes through the Trash with a receipt. Camera originals are moved into shoot folders, never re-encoded, never removed by a script. Two commands remove files outright, each only on the user's word: `finish.py --go --delete` (a delivered project's intermediates) and `intake.py reverse` (only the files the organizer itself made).
+
+## How the scripts answer
+
+A script that cannot go on prints one `STOP: ...` line and exits 2. Exit 1 means a QC or gate check failed and the lines above say which. `run_take.sh` waiting at `SCRIPT.md` exits 0. Every script needs `python3` 3.12 or newer (the installer checks).
 
 ## If something is red
 

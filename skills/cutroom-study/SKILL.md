@@ -13,6 +13,7 @@ A reference is someone else's video the user wants to learn from. You describe i
 python3 ~/cutroom/engine/study.py "<url or file>" --out "<workspace>/Brand/references/<slug>" --liked "<the user's words>"
 ```
 
+- `--out` must be a new or empty folder, or the folder of an earlier study of the same video. After the run read `slug` in `metrics.json` (the engine names it `yt-<id>`, `tt-<id>`, `ig-<code>` or the file's stem) and use that slug in `studies[].slug` and `from_study`. Other flags: `--name`, `--language`, `--cookies <file>`, `--no-ocr`, `--max-moments N`, `--keep-static-text`. Exit 0, or 2 with one `STOP:` line.
 - A URL goes through yt-dlp. A login wall stops with one line: offer `--cookies-from-browser chrome` (it may ask for Keychain access, say so) or ask the user to download the file and pass its path.
 - The output folder holds `board.jpg` (one tile per shot), `keyframes.jpg` (one tile per on-screen text moment), `strips/m<NN>.jpg` (every frame of one moment in a row with times), `metrics.json`, `transcript.md`, `moments.json`, `palette.json`, `source.json`, and `study.md` prefilled with the numbers and empty sections for you.
 - Numbers are approximate (cuts a minute, median shot length, text share, sound hits, words a minute). Compare like with like.
@@ -28,13 +29,13 @@ Fill the empty sections of `study.md`: Captions (where they sit, size, case, col
 ## 4. Propose, then write only on a yes
 
 Tell the user in one screen what you would change in their DNA because of this reference, with the numbers:
-- a caption style (a new `Brand/styles/<id>.json`, or `set` changes to an existing one), previewed with `python3 ~/cutroom/engine/captions/preview_style.py <id> --clip <their clip> --out <jpg>` before it is kept;
+- a caption style (a new `Brand/styles/<id>.json`, or `set` changes to an existing one), previewed with `python3 ~/cutroom/engine/captions/preview_style.py <id> --clip <their clip> --out "<workspace>/Brand/styles/<id>.jpg"` before it is kept (the preview writes a hidden `.stills.json` record beside the jpg; it is not a style);
 - the hook look or spot (`hook.look`, `hook.top_px`, never under 220 px);
-- a format or a graphics wishlist entry (`graphics.wishlist`, with `from_study: <slug>:m<NN>`);
+- a format or a graphics wishlist entry (`graphics.wishlist`: `{"id", "name", "priority": "must" | "later", "what", "from_study": "<slug>:m<NN>"}`);
 - pacing targets (`pacing.cuts_per_min`, `pacing.median_shot_s`) for `cutroom-edit` to aim at;
 - music feel and sound notes.
 
-On their yes, write the changes, add the study to `studies` in `dna.json` (slug, url, date, liked, adopted), and run `python3 ~/cutroom/engine/dna.py check`. On a no, leave the breakdown in `references/` and change nothing.
+On their yes, write the changes, add the study to `studies` in `dna.json` (`slug`, `url`, `date` as YYYY-MM-DD, `liked`, `adopted` as a list of strings), and run `python3 ~/cutroom/engine/dna.py check`. On a no, leave the breakdown in `references/` and change nothing.
 
 ## Rules that apply
 

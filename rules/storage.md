@@ -5,7 +5,7 @@ Read before moving, copying, archiving or deleting anything, and before any step
 ## Rules
 
 - **STO-01** Keep one copy and clear the rest. The long-term drive holds the only original. The working machine holds masters, proxies and the work folder, and nothing else: no stabilised, no-grade, second-render or phone copies. Once a batch has posted and its b-roll and grade are checked, those are cleared by script (STO-06). A master is remade from the raw footage and the saved look if it is needed again.
-- **STO-02** Every delete goes through the Trash, moved by script and emptied by the human, never `rm`. A trimmed original goes to the Trash only after every trimmed part verifies. A clip the human cuts is moved, never deleted.
+- **STO-02** Every delete goes through the Trash, moved by script and emptied by the human, never `rm`; the one exception is a cleanup the human asks to remove outright (`finish.py --go --delete`), on a delivered project only. A trimmed original goes to the Trash only after every trimmed part verifies. A clip the human cuts is moved, never deleted.
 - **STO-03** Move, never delete. Setup keeps a timestamped `.bak` of anything it replaces and moves clashing folders to an archive folder.
 - **STO-04** Check free space before copying or starting a batch of renders. A nearly full disk makes cloud sync evict files (FOO-16). A same-volume move needs no space. When space is short, ask the user what to clear.
 - **STO-05** A script never touches what it did not make. Export removes only files listed in its own manifest and leaves hand-staged folders alone. Transient render folders are temp directories removed on exit, success or failure. (judgment)

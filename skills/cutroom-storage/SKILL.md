@@ -5,7 +5,7 @@ description: Cleanup and storage for Cutroom. Use after a video is delivered (cl
 
 # Cleanup and storage
 
-Three facts first: nothing here deletes outright (the Trash, then the user empties it); camera originals and finished videos are never touched by a script; every run prints a plan before it changes anything, and the user says go.
+Three facts first: nothing here deletes outright (the Trash, then the user empties it) unless the user asks for `finish.py --go --delete`; camera originals and finished videos are never touched by a script; every run prints a plan before it changes anything, and the user says go.
 
 ## The report
 
@@ -22,7 +22,7 @@ python3 ~/cutroom/engine/finish.py "<Title>"          # the plan: what would lea
 python3 ~/cutroom/engine/finish.py "<Title>" --go     # move it to the Trash, write CLEANUP.md
 ```
 
-It refuses a project whose final is not in `Finished/<Title>/` (nothing is cleaned before it is delivered). It keeps the small files that say what was made (plan, words, gate, script, receipts, sheets) and removes the heavy intermediates (mezzanines, wavs, renders, proxies, mattes, frames). `--go --delete` removes outright when the user wants the space back now. `--all` runs every delivered project. The DNA's `cleanup.after_delivery` says whether `cutroom-edit` runs this with a question (`ask`) or on its own (`auto`); either way the receipt `CLEANUP.md` lands in the project folder.
+It refuses a project whose final is not in `Finished/<Title>/` (nothing is cleaned before it is delivered). It keeps the small files that say what was made (plan, words, gate, script, receipts, sheets) and removes the heavy intermediates (mezzanines, wavs, renders, proxies, mattes, frames). `--go --delete` removes outright when the user wants the space back now. `--all` runs every delivered project. A project counts as delivered when `Finished/<Title>/<Title>.mp4` plays (or `project.json` names the final under `final`); `--all` skips the rest and says so. Exit 1 means a file could not be moved. The kept list is fixed in the script; the DNA's `cleanup.keep` is a note. The DNA's `cleanup.after_delivery` says whether `cutroom-edit` runs this with a question (`ask`) or on its own (`auto`); either way the receipt `CLEANUP.md` lands in the project folder.
 
 ## Archiving a shoot to the SSD
 
@@ -31,11 +31,11 @@ python3 ~/cutroom/engine/storage.py archive "<Shoot folder name>" --to "/Volumes
 python3 ~/cutroom/engine/storage.py archive "<Shoot folder name>" --to "/Volumes/<SSD>/Cutroom Archive" --go   # copy, verify, trash the original
 ```
 
-Every file is copied and verified by size and content hash before the original goes to the Trash; `ARCHIVED.txt` in the copy says when and from where. Without `--to` it uses the archive folder set in the DNA (`storage.archive`) or config. The review page forgets the archived clips on its next ingest; to keep reviewing archived b-roll, add the archive as a review root in the DNA.
+Every file is copied and verified by size and content hash before the original goes to the Trash; `ARCHIVED.txt` in the copy says when and from where. The `--to` folder must exist first (make `/Volumes/<SSD>/Cutroom Archive` in Finder or with `mkdir`). Without `--to` it uses the archive folder in `~/.cutroom/config.json` (`archive`), else the DNA's `storage.archive`, else it stops. The review page forgets the archived clips on its next ingest; to keep reviewing archived b-roll, add the archive folder to `review.roots` in `~/.cutroom/config.json` (a list that also names the `Footage` folder) and run `ingest.py` again.
 
 ## The monthly routine (what to tell the user)
 
-1. Run the report. 2. `finish.py --all --go` for everything delivered. 3. Archive shoots older than about two months that they will not edit again. 4. Empty the Trash. 5. If the Mac's disk still sits under the DNA's `storage.warn_free_gb`, move the workspace itself to the SSD (`python3 ~/cutroom/engine/common.py set workspace "<new path>"` after moving the folder in Finder).
+1. Run the report. 2. `finish.py --all --go` for everything delivered. 3. Archive shoots older than about two months that they will not edit again. 4. Empty the Trash. 5. If the report's `Disk:` line shows less free space than the DNA's `storage.warn_free_gb` (no script compares the two; you do), move the workspace itself to the SSD (`python3 ~/cutroom/engine/common.py set workspace "<new path>"` after moving the folder in Finder).
 
 ## Rules
 

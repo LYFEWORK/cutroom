@@ -188,7 +188,7 @@ bash ~/cutroom/bin/doctor.sh   # safe any time</pre>
     <tr><td>Review/</td><td>The keep/cut page: small proxies of every clip, posters, your decisions, the apply log.</td></tr>
     <tr><td>Projects/&lt;title&gt;/</td><td>One video's working files: the words, the cut, the plan, the renders, the caption gate. Cleaned after delivery.</td></tr>
     <tr><td>Finished/&lt;title&gt;/</td><td>The final MP4 with <code>&lt;title&gt; - Transcript.md</code> and <code>&lt;title&gt; - Caption.txt</code> beside it, and a <code>Build/</code> folder with the gate, the QC report and the evidence sheets. Never cleaned.</td></tr>
-    <tr><td>Brand/</td><td>Your DNA: <code>dna.json</code>, <code>DNA.md</code>, <code>styles/</code>, <code>assets/</code> (fonts, logos), <code>references/</code>, <code>graphics/</code> (your components), <code>music/</code>, a ledger of what shipped.</td></tr>
+    <tr><td>Brand/</td><td>Your DNA: <code>dna.json</code>, <code>DNA.md</code>, <code>styles/</code>, <code>assets/</code> (fonts, logos), <code>references/</code>, <code>music/</code>, a ledger of what shipped.</td></tr>
     <tr><td>Archive/</td><td>Old shoots moved out, or the SSD path you set.</td></tr>
   </table>
   <h3>The life of a video</h3>
@@ -227,7 +227,7 @@ bash ~/cutroom/bin/doctor.sh   # safe any time</pre>
   <h3>Change a caption style, or add one</h3>
   <p><i>"Make my default captions bigger and move them up a little"</i> or <i>"Add a loud upper-case style for the list videos."</i> Claude edits or writes the style file, previews it on your clip, and keeps it on your yes.</p>
   <h3>Add a graphic</h3>
-  <p><i>"I want a progress bar across the top for step videos."</i> Claude writes the component in your <code>Brand/graphics/</code> folder using only your colors and fonts, renders a test, shows you a frame, and registers it. From then on edits can use it.</p>
+  <p><i>"I want a progress bar across the top for step videos."</i> Claude writes the component in <code>~/cutroom/remotion/graphics/user/</code> (a folder an update never touches) using only your colors and fonts, renders a test, shows you a frame, and registers it. From then on edits can use it.</p>
   <h3>Check the system</h3>
   <p><i>"Run the doctor."</i> Any time. It changes nothing.</p>
   <div class="panel"><p class="t">Approvals are files you can read</p><p><code>SCRIPT.md</code> (the cut) and <code>GATE.md</code> (the captions) are plain text in the project folder. Claude walks you through them, but you can open them yourself, strike a line or fix a name, set <code>approved: yes</code>, and say "run it again".</p></div>

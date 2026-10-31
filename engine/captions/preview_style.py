@@ -15,7 +15,7 @@ Writes <out> (a JPEG 480 px wide) and, beside it, the same still at full size as
 its numeral payoff on the bar, handed to the planner the way GATE.md hands it a person's lines (SOFT_SAMPLE).
 
 A still is reused, not drawn again, when its fingerprint (the plan, the composition's files, your font files, the backdrop and this file) is the one recorded in
-<out's folder>/stills.json. Exit 0 ok, 1 the still failed to draw, 2 setup (no renderer install, no ffmpeg, a style or DNA that does not load).
+<out's folder>/.stills.json. Exit 0 ok, 1 the still failed to draw, 2 setup (no renderer install, no ffmpeg, a style or DNA that does not load).
 CUTROOM_REMOTION_DIR points at another Remotion project (one that registers the Captions composition); the default is remotion/ in the repo.
 """
 import argparse
@@ -41,7 +41,7 @@ REMOTION = os.path.abspath(os.path.expanduser(os.environ.get("CUTROOM_REMOTION_D
 CAPTIONS = os.path.join(REPO, "remotion", "captions")
 COMPOSITION = os.path.join(CAPTIONS, "CaptionsDynamic.tsx")
 SOFT_DRAWING = (os.path.join(CAPTIONS, "softthought.tsx"), os.path.join(CAPTIONS, "softmotion.ts"), os.path.join(CAPTIONS, "Icons.tsx"))   # the drawing the composition takes its helpers from
-SIDECAR = "stills.json"
+SIDECAR = ".stills.json"   # dot-prefixed: a styles folder is scanned for *.json, and this record is not a style
 RENDER_VERSION = 1                     # bump when the way a still is drawn changes without any file above changing
 FPS, CUT_S, FRAMES = 30, 2.5, 75
 WIDTH = 480                            # the jpg is this wide (1080 x 1920 scaled down)

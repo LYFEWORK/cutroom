@@ -464,4 +464,7 @@ run_stage deliver check_deliver -- bash "$SK/deliver.sh" "$T" "$NAME" "$STEM" "$
 # the editor's note: reel_qc.py leaves one plain sentence in G7 only when G7 is audit-only and the mix is off the loudness target
 LOUD_CHECK="$(tk get "$T/reel-qc.json" gates.G7.check "")"
 if [ -n "$LOUD_CHECK" ]; then echo "CHECK: $LOUD_CHECK"; fi
+if grep -q "CAPTION NEEDED" "$DEST/$STEM - Caption.txt" 2>/dev/null; then
+  echo "CAPTION NEEDED -- write the post caption into $T/caption.md and run the same command again (it re-delivers the sidecar without a re-render)"
+fi
 echo "DONE -- $DEST/$STEM.mp4"

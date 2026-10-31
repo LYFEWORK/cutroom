@@ -15,6 +15,7 @@ reference is a kept clip used inside its kept parts. Exit 1 and a list of every 
     AMBIGUOUS    a bare file name that matches more than one clip: name the full path
 
 Times are read from "in" and "out" (or "source_in" and "source_out") in the same object as the file name, in seconds of the
+clip; a renderer insert ("from_s" with "start_s" and "end_s", and "rate") is read the same way without extra keys. They are in seconds of the
 clip. Put them next to the path. With --allow-outside, a file that exists but sits outside every review folder (a logo
 sting, a render) is let through. A folder is scanned for every .json inside it.
 """
@@ -64,6 +65,12 @@ def refs_in(node, where="", out=None):
             if _num(node.get(a)) is not None or _num(node.get(b)) is not None:
                 t_in, t_out = _num(node.get(a)), _num(node.get(b))
                 break
+        if t_in is None and t_out is None and _num(node.get("from_s")) is not None:
+            # the renderer's insert shape (engine/render.py): the clip plays from from_s for (end_s - start_s) seconds of the edit, at rate
+            t_in = _num(node.get("from_s"))
+            s, e, rate = _num(node.get("start_s")), _num(node.get("end_s")), _num(node.get("rate"))
+            if s is not None and e is not None and e >= s:
+                t_out = t_in + (e - s) * (rate if rate and rate > 0 else 1.0)
         for k, v in node.items():
             name = media_name(v)
             if name:

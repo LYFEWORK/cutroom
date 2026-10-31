@@ -329,6 +329,8 @@ def _style_problems(d, bd):
         out.append(f"captions.default_style: no style called '{ds}' (a file Brand/styles/{ds}.json, or a starter: {', '.join(s['id'] for s in styles_list())})")
     folder = bd / "styles"
     for p in sorted(folder.glob("*.json")) if folder.is_dir() else []:
+        if p.name.startswith("."):
+            continue   # a hidden record beside the styles (the preview's .stills.json), not a style
         out.extend(f"styles/{p.name}: {x}" for x in _style_file_problems(p, d))
     return out
 
@@ -559,6 +561,8 @@ def styles_list(brand_dir=None):
     out, seen = [], set()
     for where, folder in (("brand", Path(brand_dir) / "styles" if brand_dir else None), ("starter", TEMPLATES / "styles")):
         for p in sorted(folder.glob("*.json")) if folder and folder.is_dir() else []:
+            if p.name.startswith("."):
+                continue   # hidden records are not styles
             try:
                 st = _read(p)
             except DnaError:

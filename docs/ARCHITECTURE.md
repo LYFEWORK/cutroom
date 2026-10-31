@@ -9,7 +9,7 @@ Cutroom is three layers: skills (what Claude reads to run a job), the engine (th
   engine/   python + shell: every mechanical step                   Review/    proxies, decisions.json, the local page
   remotion/ the Edit, Montage and Captions compositions             Projects/  one video's working files, cleaned after delivery
   templates/ neutral DNA, schema, starter caption styles, a font     Finished/  the finals with transcript and caption file
-  docs/     the guide and this page                                 Brand/     the DNA: dna.json, DNA.md, styles/, assets/, references/, graphics/
+  docs/     the guide and this page                                 Brand/     the DNA: dna.json, DNA.md, styles/, assets/, references/
   tests/    pytest on synthetic media, renderer typecheck           Archive/   old shoots moved out (or an SSD path)
 ~/.cutroom/ config.json (paths), keys.env (optional services), venv/ (word timing), models/ (the transcriber's model)
 ```
@@ -44,7 +44,7 @@ Every script answers a bad call with one `STOP:` line and exit 2, writes nothing
 
 One Remotion project with three compositions. `Edit` plays one pre-cut file and layers emphasis zooms, b-roll inserts (cut, window, picture-in-picture, with transitions), the hook card, the brand mark, the user's graphics components, and the end card; its layout is derived from the output size so 9:16, 16:9 and 4:5 work. `Montage` layers clips for a story or b-roll piece. `Captions` draws the caption planner's events (clusters with a hero row, or soft-build thoughts, with the devices: count-up, strike, pins, icons) over a finished cut and loads the user's fonts or stops. Music and sound effects are mixed by python after the render; a Remotion render never mixes audio. Cutting is ffmpeg, never Remotion.
 
-The user's graphics live in `Brand/graphics/` as components registered by id in the DNA; the repo ships two neutral examples (`LowerThird`, `TitleCard`).
+The user's graphics live in `remotion/graphics/user/` (a folder an update never touches) and are registered in its `index.ts`; the DNA's `graphics.built` maps the ids an edit plan uses to those components. The repo ships two neutral examples (`LowerThird`, `TitleCard`).
 
 ## The DNA
 

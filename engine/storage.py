@@ -130,7 +130,7 @@ def report(as_json=False):
     print("Reclaimable")
     print(f"  {human(recl_proj):>9}  intermediates of delivered projects: python3 engine/finish.py --all --go")
     if "review_proxies" in out["reclaimable"]:
-        print(f"  {human(out['reclaimable']['review_proxies']):>9}  review proxies (regenerable: python3 engine/review/ingest.py --prune after archiving)")
+        print(f"  {human(out['reclaimable']['review_proxies']):>9}  review proxies (regenerated as needed; the next python3 engine/review/ingest.py run drops the ones whose clips are gone)")
     if out["reclaimable"].get("review_trash_folder"):
         print(f"  {human(out['reclaimable']['review_trash_folder']):>9}  Review/trash holding folder (empty it yourself when sure)")
     big_old = [s for s in out["shoots"] if (s["age_days"] or 0) > 60 and s["bytes"] > 5 * 1024 ** 3]

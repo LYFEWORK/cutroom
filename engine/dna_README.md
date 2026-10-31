@@ -336,28 +336,28 @@ The levels are measured on the finished video, not guessed.
 
 | Field | Type | Default | Read by | What it does |
 |---|---|---|---|---|
-| `music.on_talking_head` | boolean | `true` | sound, edit | Put music under a talking head. |
-| `music.on_montage` | boolean | `true` | sound, edit | Put music under a montage. |
-| `music.feel` | string | `""` | sound, setup | What the music should feel like, in a line. |
-| `music.alone_lufs` | number -40 to -6 | `-30` | sound | Loudness of the bed where music plays alone (an open before the first word, a long pause, the end card), in LUFS. |
-| `music.under_speech_db` | number 0 to 60 | `22` | sound | How far under the speaking voice the bed sits while someone talks, in dB. The voice always leads. |
-| `music.alone_db` | number 0 to 60 | `14` | sound | How far under the voice the bed sits where it plays alone (open, end card), in dB. |
-| `music.ease_s` | number 0 to 5 | `1.5` | sound | Seconds the bed takes to ease down before a voice. |
-| `music.library` | path under Brand/ | `"music"` | sound | The folder of tracks, relative to Brand/. |
-| `music.repeat_gap_videos` | integer 0 to 50 | `6` | sound | A track does not come back sooner than this many videos later. |
-| `music.banned_md5` | list of md5 strings | `[]` | sound | md5 of tracks that are never used. A renamed copy is refused too. |
+| `music.on_talking_head` | boolean | `true` | edit | Put music under a talking head. |
+| `music.on_montage` | boolean | `true` | edit | Put music under a montage. |
+| `music.feel` | string | `""` | edit, setup | What the music should feel like, in a line. |
+| `music.alone_lufs` | number -40 to -6 | `-30` | theme (music_level; the bed follows the voice instead) | Loudness of the bed where music plays alone (an open before the first word, a long pause, the end card), in LUFS. |
+| `music.under_speech_db` | number 0 to 60 | `22` | edit (copied into the plan's music block) | How far under the speaking voice the bed sits while someone talks, in dB. The voice always leads. |
+| `music.alone_db` | number 0 to 60 | `14` | edit (copied into the plan's music block) | How far under the voice the bed sits where it plays alone (open, end card), in dB. |
+| `music.ease_s` | number 0 to 5 | `1.5` | edit (copied into the plan's music block) | Seconds the bed takes to ease down before a voice. |
+| `music.library` | path under Brand/ | `"music"` | edit (where the plan's music file is found) | The folder of tracks, relative to Brand/. |
+| `music.repeat_gap_videos` | integer 0 to 50 | `6` | edit (against Brand/ledger.jsonl, which the edit skill keeps) | A track does not come back sooner than this many videos later. |
+| `music.banned_md5` | list of md5 strings | `[]` | edit | md5 of tracks that are never used. A renamed copy is refused too. |
 
 ### sound
 
 | Field | Type | Default | Read by | What it does |
 |---|---|---|---|---|
-| `sound.sfx` | one of clicks, off | `"clicks"` | sound | clicks: soft clicks and ticks that land with a graphic. off: no sound effects. |
-| `sound.sfx_per_min` | integer 0 to 60 | `12` | sound | Most sound effects in a minute. |
-| `sound.sfx_under_speech_db` | number 0 to 40 | `14` | sound | How far under the speaking level an effect sits, in dB. |
-| `sound.voice_isolation_pct` | integer 0 to 100 | `0` | sound | Percent of voice isolation applied to the voice, 0 (off) to 100. |
-| `sound.master_lufs` | number -30 to -6 | `-16` | sound | Loudness of the final mix, in LUFS. |
-| `sound.true_peak_dbtp` | number -9 to 0 | `-2.0` | sound | Highest true peak of the final mix, in dBTP. |
-| `sound.profanity` | one of spoken, bleep, cut | `"spoken"` | sound, captions | spoken: left as said. bleep: bleeped. cut: cut out. |
+| `sound.sfx` | one of clicks, off | `"clicks"` | edit (copied into the plan's sfx) | clicks: soft clicks and ticks that land with a graphic. off: no sound effects. |
+| `sound.sfx_per_min` | integer 0 to 60 | `12` | edit (copied into the plan's sfx) | Most sound effects in a minute. |
+| `sound.sfx_under_speech_db` | number 0 to 40 | `14` | edit (copied into the plan's sfx) | How far under the speaking level an effect sits, in dB. |
+| `sound.voice_isolation_pct` | integer 0 to 100 | `0` | notes only | Percent of voice isolation applied to the voice, 0 (off) to 100. |
+| `sound.master_lufs` | number -30 to -6 | `-16` | notes only (the master is always -16 LUFS) | Loudness of the final mix, in LUFS. |
+| `sound.true_peak_dbtp` | number -9 to 0 | `-2.0` | notes only (the master is always -2 dBTP) | Highest true peak of the final mix, in dBTP. |
+| `sound.profanity` | one of spoken, bleep, cut | `"spoken"` | edit (the cut plan's profanity flag) | spoken: left as said. bleep: bleeped. cut: cut out. |
 
 ### words
 
@@ -390,7 +390,7 @@ aspect and size are required.
 | `output.size` | 2 integers, 240 to 4320 | `required` | edit, render | Width and height in px. It must have the shape of output.aspect. |
 | `output.fps` | integer 12 to 120 | `30` | edit, render | Frames a second. |
 | `output.crf` | integer 8 to 28 | `17` | edit | Encoder quality: lower is cleaner and larger. |
-| `output.also` | list of strings | `[]` | edit | Other shapes to deliver as well. |
+| `output.also` | list of strings | `[]` | notes only (nothing renders a second shape yet) | Other shapes to deliver as well. |
 
 ### delivery
 
@@ -399,29 +399,29 @@ aspect and size are required.
 | `delivery.end_card.on` | boolean | `false` | render | Close videos with an end card. |
 | `delivery.end_card.line` | string | `""` | render | The one line on the end card. |
 | `delivery.end_card.handle` | @name or empty | `""` | render | The @name on the end card. Empty: the brand's handle. |
-| `delivery.transcript` | boolean | `true` | finish | Write a transcript beside each finished video. |
-| `delivery.caption_file` | boolean | `true` | finish | Write the post caption as a text file beside each finished video. |
+| `delivery.transcript` | boolean | `true` | notes only (always written) | Write a transcript beside each finished video. |
+| `delivery.caption_file` | boolean | `true` | notes only (always written) | Write the post caption as a text file beside each finished video. |
 
 ### review
 
 | Field | Type | Default | Read by | What it does |
 |---|---|---|---|---|
-| `review.keep_cut_on_intake` | boolean | `true` | review | Show new clips on the review page for a keep or cut when they come in. |
-| `review.approve_before_render` | boolean | `true` | review, edit | Ask for a yes on the plan before rendering. |
+| `review.keep_cut_on_intake` | boolean | `true` | notes only (intake always hands to the review) | Show new clips on the review page for a keep or cut when they come in. |
+| `review.approve_before_render` | boolean | `true` | notes only (SCRIPT.md and GATE.md always stop) | Ask for a yes on the plan before rendering. |
 
 ### cleanup
 
 | Field | Type | Default | Read by | What it does |
 |---|---|---|---|---|
-| `cleanup.after_delivery` | one of ask, auto | `"ask"` | finish | ask: ask before deleting a project's intermediates. auto: delete them. |
-| `cleanup.keep` | list of ids | `["plan", "words", "transcript"]` | finish | Names (lowercase words) of what cleanup leaves in place. |
+| `cleanup.after_delivery` | one of ask, auto | `"ask"` | edit (asks, or runs finish.py on its own) | ask: ask before deleting a project's intermediates. auto: delete them. |
+| `cleanup.keep` | list of ids | `["plan", "words", "transcript"]` | notes only (finish.py keeps its fixed list of small files) | Names (lowercase words) of what cleanup leaves in place. |
 
 ### storage
 
 | Field | Type | Default | Read by | What it does |
 |---|---|---|---|---|
-| `storage.archive` | string | `""` | finish | Where archived shoots go. Empty until set. ~ is allowed. |
-| `storage.warn_free_gb` | number 0 to 100000 | `50` | footage, finish | Warn when free space falls under this many GB. |
+| `storage.archive` | string | `""` | storage | Where archived shoots go. Empty until set. ~ is allowed. |
+| `storage.warn_free_gb` | number 0 to 100000 | `50` | notes only (compare with the storage report's Disk line) | Warn when free space falls under this many GB. |
 
 ### pacing
 

@@ -4,9 +4,9 @@ Read before organizing a shoot, naming or sorting clips, cutting takes, building
 
 ## Moving and naming
 
-- **FOO-01** Camera originals are moved, never re-encoded or deleted by the tool. Only a same-volume move is allowed, with the plan and manifest written before the first move, and every move is reversible byte for byte. A cross-volume move or an existing destination is refused.
+- **FOO-01** Camera originals are moved, never re-encoded or deleted by the tool. A same-volume move is a rename, with the plan and manifest written before the first move, and every move is reversible byte for byte. A card on another volume is copied and verified (size and hashes of the first and last MiB), and the card is left as it was; an existing destination is refused.
 - **FOO-02** Every filename says what the clip is, with the camera's clip ID as the first word. Interview: `<clip> - <Qxx> - <Topic> - Take n`. B-roll: `<clip> - <What Is On Screen>`, with `- No Audio` or `- Candid Talk` added when it applies. Strip # and %, use plain Title Case, no numbered buckets, and nothing deeper than two levels. (judgment)
-- **FOO-03** The tree is `Interview/<Question>/`, `B-Roll/<Subject>/`, `Not <Client>/`, `Unusable/` and `Camera Sidecars/`. Ad shoots add `B-Roll/Bloopers/`, `Bad Takes/` and `Raw Clips/` plus a takes manifest, never an `Assembly/` folder. Draft 8 to 13 subject folders from real contact sheets. File b-roll by what is on screen, never by hook, value or mood. (judgment)
+- **FOO-03** The tree is `Interview/<Question>/`, `B-Roll/<Subject>/`, `Off Topic/`, `Unusable/` and `Camera Sidecars/`. Ad shoots add `B-Roll/Bloopers/`, `Bad Takes/` and `Raw Clips/` plus a takes manifest, never an `Assembly/` folder. Draft 8 to 13 subject folders from real contact sheets. File b-roll by what is on screen, never by hook, value or mood. (judgment)
 
 ## Sorting
 
@@ -25,7 +25,7 @@ Read before organizing a shoot, naming or sorting clips, cutting takes, building
 
 - **FOO-11** A sidecar belongs to the clip whose ID it starts with (followed by `.`, `_`, `-` or `M` plus digits) and moves to `Camera Sidecars/`. The color step reads the camera's picture profile from it.
 - **FOO-12** Every video file gets a text file beside it: what it is, what is said with m:ss times, and what is on screen. A self-contained, phone-friendly index is the first page the user opens, with thumbnail, duration, audio badge, exact filename, question asked, summary, best quote, whole-transcript search and filters. (judgment)
-- **FOO-13** Keep and cut review comes before use. Every b-roll clip and finished video plays on a review page with Keep, Cut and trim, and only Keep is placed. Picks live on the device and copy out as a plain list. A wrong label can be corrected on the page and refiles the clip on apply. (judgment)
+- **FOO-13** Keep and cut review comes before use. Every b-roll clip and finished video plays on a review page with Keep, Cut and trim, and only Keep is placed. Picks save as they are made and can be carried between machines as one file. A wrong label is fixed in the clip's record and applied again, not on the review page. (judgment)
 
 ## Trims and transcripts
 
