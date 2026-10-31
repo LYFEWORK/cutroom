@@ -40,7 +40,10 @@ def reexec_if_missing(modules):
     if not missing:
         return []
     venv = support.venv_python(must_exist=False)
-    if venv and os.access(venv, os.X_OK) and os.path.realpath(venv) != os.path.realpath(sys.executable) and not os.environ.get("CUTROOM_SHIM_REEXEC"):
+    # "already in the venv" is judged by the interpreter's prefix, never by real paths: a venv's bin/python is a symlink to the system
+    # python3.12 on Ubuntu, so the real paths match while the site-packages do not
+    in_venv = bool(venv) and os.path.abspath(sys.prefix) == os.path.abspath(os.path.dirname(os.path.dirname(venv)))
+    if venv and os.access(venv, os.X_OK) and not in_venv and not os.environ.get("CUTROOM_SHIM_REEXEC"):
         os.environ["CUTROOM_SHIM_REEXEC"] = "1"
         os.execv(venv, [venv, os.path.abspath(sys.argv[0]), *sys.argv[1:]])
     return missing

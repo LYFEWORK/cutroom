@@ -10,6 +10,15 @@ MODEL_DIR="${CUTROOM_MODELS:-$CONF_DIR/models}"
 WHISPER_MODEL="${WHISPER_MODEL:-$MODEL_DIR/ggml-large-v3-turbo.bin}"
 WHISPER_MODEL_URL="https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large-v3-turbo.bin"
 WHISPER_MODEL_BYTES=1624555275
+# Away from a Mac the face and person helpers are the stand-ins in engine/vision/, which read these two small models from $MODEL_DIR.
+# install.sh downloads them; the doctor checks their sizes.
+YUNET_MODEL="$MODEL_DIR/face_detection_yunet_2023mar.onnx"
+YUNET_MODEL_URL="https://media.githubusercontent.com/media/opencv/opencv_zoo/main/models/face_detection_yunet/face_detection_yunet_2023mar.onnx"
+YUNET_MODEL_BYTES=232589
+RVM_MODEL="$MODEL_DIR/rvm_mobilenetv3_fp32.onnx"
+RVM_MODEL_URL="https://github.com/PeterL1n/RobustVideoMatting/releases/download/v1.0.0/rvm_mobilenetv3_fp32.onnx"
+RVM_MODEL_BYTES=14975696
+LOCAL_BIN="$CONF_DIR/bin"   # on Linux, where a fetched ffmpeg lands, and what joins PATH when /usr/local/bin cannot be written
 
 # Optional paid services. Each is off until its key is in $KEYS. Nothing in the core needs one.
 OPTIONAL_KEYS="DEEPGRAM_API_KEY ELEVENLABS_API_KEY EPIDEMIC_SOUND_MCP_API_KEY FAL_KEY"
@@ -22,6 +31,25 @@ warn() { printf '  %s!%s %s\n' "$Y" "$N" "$*"; WARN=$((WARN + 1)); }
 step() { printf '\n%s%s%s\n' "$B" "$*" "$N"; }
 tilde() { printf '%s' "${1/#$HOME/~}"; }
 have() { command -v "$1" > /dev/null 2>&1; }
+
+# What this machine is. IS_MAC is 1 on macOS; anything else that gets past install.sh's first step is Debian or Ubuntu, IS_WSL 1 inside WSL.
+OS="$(uname -s)"
+ARCH="$(uname -m)"
+if [ "$OS" = Darwin ]; then IS_MAC=1; else IS_MAC=0; fi
+if [ -r /proc/version ] && grep -qi microsoft /proc/version 2> /dev/null; then IS_WSL=1; else IS_WSL=0; fi
+# SUDO is empty for root and when sudo is not installed, so `$SUDO cmd` always runs cmd (as root when it can).
+SUDO=""
+if [ "$(id -u)" -ne 0 ] && have sudo; then SUDO=sudo; fi
+
+# filesize <path>: size in bytes, 0 when the file is missing. filemode <path>: octal permissions (700), nothing when the path is missing.
+# BSD stat (macOS) and GNU stat (Linux) take different flags, so every script goes through these two.
+filesize() { if [ "$OS" = Darwin ]; then stat -f %z "$1" 2> /dev/null || echo 0; else stat -c %s "$1" 2> /dev/null || echo 0; fi; }
+filemode() { if [ "$OS" = Darwin ]; then stat -f %Lp "$1" 2> /dev/null; else stat -c %a "$1" 2> /dev/null; fi; }
+
+# ffmpeg_major: the major version of the ffmpeg on PATH (7 for 7.0.2-static or n7.1); nothing when there is none or the build carries no release number.
+ffmpeg_major() { ffmpeg -version 2> /dev/null | sed -n '1s/^ffmpeg version [nN]*\([0-9][0-9]*\).*$/\1/p' || true; }
+# ffmpeg_has_filter <name>: the ffmpeg on PATH lists that filter (zscale, the HDR tone mapper's color-space step, needs a libzimg build).
+ffmpeg_has_filter() { ffmpeg -hide_banner -filters 2> /dev/null | awk -v f="$1" '$2 == f { found = 1 } END { exit !found }'; }
 
 # claude_cli: the Claude Code CLI on PATH, else the newest one the desktop app bundles. Empty when there is neither.
 claude_cli() {
