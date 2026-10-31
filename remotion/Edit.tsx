@@ -5,11 +5,14 @@
  * picture-in-picture box while a pip insert holds -> the graphics slots -> the hook card -> the brand mark -> caption pages -> the
  * end card. Audio is the cut's own track; music and sound effects are mixed afterwards by engine/render.py.
  *
+ * When the end card runs past the cut (render.py sets `holdFrom`), the picture holds the cut's last frame from the frame after `holdFrom`
+ * on, so the card fades up over a still of the speaker instead of black, and never has to sit over the speaker's words.
+ *
  * Everything that sits somewhere comes from layout.ts (fractions of the frame, scaled by the short side), so the same props work
  * at 1080x1920, 1920x1080 and 1080x1350. See README.md for the props.
  */
 import React from "react";
-import { AbsoluteFill, OffthreadVideo, Sequence, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Freeze, OffthreadVideo, Sequence, useCurrentFrame, useVideoConfig } from "remotion";
 import { BRAND, INOUT, OUT, SETTLE, SMOOTH_INOUT, applyTheme, clamp01, env, res, useFontsReady } from "./theme";
 import { useLayout } from "./layout";
 import type { Layout } from "./layout";
@@ -221,6 +224,7 @@ const EditBody: React.FC<EditProps> = ({
   mark = null,
   endCard = null,
   safe = null,
+  holdFrom = null,
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -285,7 +289,13 @@ const EditBody: React.FC<EditProps> = ({
               filter: monoOn ? "grayscale(1) contrast(1.3) brightness(0.92)" : undefined,
             }}
           >
-            <OffthreadVideo src={res(src)} style={{ width: L.w, height: L.h, objectFit: "cover" }} />
+            {holdFrom != null ? (
+              <Freeze frame={holdFrom} active={(f) => f > holdFrom}>
+                <OffthreadVideo src={res(src)} style={{ width: L.w, height: L.h, objectFit: "cover" }} />
+              </Freeze>
+            ) : (
+              <OffthreadVideo src={res(src)} style={{ width: L.w, height: L.h, objectFit: "cover" }} />
+            )}
           </div>
         </div>
         {monoOn ? (

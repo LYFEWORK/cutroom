@@ -21,7 +21,9 @@ The edit plan (JSON; relative paths are read from the plan's own folder):
   graphics    [{component, start_s, end_s, props, captions?: "hide"}]   components registered in remotion/graphics/index.ts or your own in remotion/graphics/user/index.ts
   mark        true | false   the brand mark (default: the theme's lockup_on)
   safe        {top, bottom, rail, railTop}   platform UI to stay out of, as fractions of the frame (remotion/README.md)
-  end_card    {at_s, line?, handle?} | false   line and handle default to the theme's end_card
+  end_card    {at_s?, hold_s?, line?, handle?} | {} | false   the card that closes the video: it starts at at_s (default: the cut's end) and
+              shows for hold_s (default 2.5, 1.5 to 3) at least, and the video runs on past the cut as far as the card needs, the cut's last
+              frame held under it, so the card never sits over the speaker's words. line and handle default to the theme's end_card
   music       {file, under_speech_db?: 22, alone_db?: 14, ease_s?: 1.5}   one bed under the voice (engine/sound.py bed)
   sfx         omitted or "auto": clicks and pops placed on graphics, inserts and the end card, in pauses between words, within a budget
               false | "off" | [] | null: none
@@ -35,7 +37,7 @@ What it does: conforms every insert (or montage clip) to the output size and rat
 public/brand-<id>/, writes the props, renders the Edit (or Montage) composition video-only through Remotion, then mixes the voice, the
 music bed and the effects, normalizes the mix to -16 LUFS / -2 dBTP (a straight gain, with the peaks limited on a 4x oversampled signal
 where they would pass the true-peak target), muxes it with the picture (BT.709 tags) and checks the result: size, duration within 0.1 s
-of the cut, loudness within 1 LU of the target, true peak at -1.5 dBTP or lower.
+of the plan's length (the cut, plus what the end card holds past it), loudness within 1 LU of the target, true peak at -1.5 dBTP or lower.
 
 The music bed comes from engine/sound.py: 22 dB under the speaker's level through the talk and 14 dB under it where the voice is absent,
 eased over 1.5 s on a raised cosine in dB. The theme's music_level is not read: the bed follows the voice, not an absolute level.
@@ -72,6 +74,9 @@ FADE_IN_S = 0.25
 FADE_OUT_S = 1.6
 SFX_UNDER_DB = 14.0
 SFX_PER_MIN = 12.0
+END_CARD_HOLD_S = 2.5      # how long the end card shows past the cut unless the plan says
+END_CARD_HOLD_MIN_S = 1.5
+END_CARD_HOLD_MAX_S = 3.0  # the card settles about 0.9 s after it starts and then sits still: a longer hold reads as a stalled picture, not a close
 BT709_TAGS = "h264_metadata=colour_primaries=1:transfer_characteristics=1:matrix_coefficients=1"
 MODES = ("full", "window", "pip")
 TRANSITIONS = ("cut", "whip-l", "whip-r", "zoom", "soft", "band")
@@ -634,7 +639,6 @@ def build(plan, base, theme, public):
         dur = float(montage.get("duration_s") or max(ends))
     else:
         dur = cut_info["dur"]
-    n_frames = max(1, round(dur * fps))
 
     words = []
     raw_words = plan.get("words") or []
@@ -705,17 +709,30 @@ def build(plan, base, theme, public):
         s, e = _times(g, what, dur)
         graphics.append({**{k: v for k, v in g.items() if k != "id"}, "component": cid, "start_s": s, "end_s": e, "props": link_prop_files(g.get("props") or {}, public)})
 
+    # the end card closes the video: it starts at at_s (the cut's end unless the plan says earlier) and shows for hold_s at least, so the video
+    # runs on past the picture as far as the card needs. Under that stretch the Edit holds the cut's last frame (holdFrom); a montage shows the
+    # card over black once its clips end. So the card never has to sit over the speaker's words.
     end_card = plan.get("end_card")
     theme_ec = theme.get("end_card") or {}
+    total = dur
+    if end_card is True:
+        end_card = {}
     if isinstance(end_card, dict) and end_card.get("on") is not False:
-        at = _num(end_card.get("at_s"), "end_card.at_s", 0)
-        if at >= dur:
-            stop(f"end_card.at_s {at:g} is past the end of the video ({dur:.2f} s)")
-        end_card = {"at_s": at, "line": end_card.get("line", theme_ec.get("line", "")), "handle": end_card.get("handle", theme_ec.get("handle", ""))}
+        at = _num(end_card.get("at_s", dur), "end_card.at_s", 0)
+        if at > dur + 0.05:
+            stop(f"end_card.at_s {at:g} is past the end of the video ({dur:.2f} s): the card starts at the cut's end at the latest, and the video runs on under it")
+        hold = _num(end_card.get("hold_s", END_CARD_HOLD_S), "end_card.hold_s", END_CARD_HOLD_MIN_S, END_CARD_HOLD_MAX_S)
+        at = min(at, dur)
+        total = max(dur, at + hold)
+        end_card = {"at_s": at, "hold_s": hold, "line": end_card.get("line", theme_ec.get("line", "")), "handle": end_card.get("handle", theme_ec.get("handle", ""))}
     else:
         if end_card is None and theme_ec.get("on"):
-            say("note: the theme turns the end card on but the plan has no end_card.at_s, so none is drawn")
+            say("note: the theme turns the end card on but the plan has no end_card, so none is drawn")
         end_card = None
+    n_frames = max(1, round(total * fps))
+    hold_from = None
+    if cut_info and total > dur + 1e-6:  # the last frame of the cut that is surely there: a frame and a half before its end, at the cut's own rate
+        hold_from = max(0, math.floor((dur - 1.5 / (cut_info["fps"] or fps)) * fps))
 
     face, track = plan.get("face"), plan.get("track")
     if isinstance(face, dict) and face.get("fallback"):  # engine/face.py anchor found no face: its box is a guess, not a head
@@ -791,10 +808,10 @@ def build(plan, base, theme, public):
     else:
         link_or_copy(cut, public / "cut.mp4")
         comp = "Edit"
-        props = {"src": "cut.mp4", "zooms": zooms, "inserts": inserts, "graphics": graphics, "face": face, "track": track, **common_props}
+        props = {"src": "cut.mp4", "zooms": zooms, "inserts": inserts, "graphics": graphics, "face": face, "track": track, "holdFrom": hold_from, **common_props}
         n_clips = len(inserts)
     return {
-        "comp": comp, "props": props, "dur": dur, "W": W, "H": H, "fps": fps, "crf": crf, "max_mbps": o.get("max_mbps"),
+        "comp": comp, "props": props, "dur": total, "cut_dur": dur, "W": W, "H": H, "fps": fps, "crf": crf, "max_mbps": o.get("max_mbps"),
         "cut": cut, "has_voice": bool(vo) if montage else cut_info["audio"], "vo": vo, "words": words, "music": music or {},
         "music_file": music_file, "sfx": sfx, "inserts": inserts, "graphics": graphics, "clips": clips, "end_card": end_card,
         "theme": theme, "n_clips": n_clips, "frames": n_frames,
@@ -814,7 +831,15 @@ def voice_track(job, work):
             Y[a : a + len(part)] += part
         write_wav(work / "voice.wav", Y)
         return work / "voice.wav"
-    return job["cut"] if job["has_voice"] else None
+    if not job["has_voice"]:
+        return None
+    if job["dur"] > job["cut_dur"] + 0.01:  # the end card runs past the cut: the cut's sound padded with silence to the whole length, so the bed plays through the card
+        out = work / "voice.wav"
+        r = sh(["ffmpeg", "-v", "error", "-y", "-i", str(job["cut"]), "-vn", "-af", "apad", "-t", f"{job['dur']:.3f}", "-ar", str(SR), "-ac", "2", "-c:a", "pcm_s24le", str(out)])
+        if r.returncode != 0 or not out.exists():
+            stop(f"could not read the cut's sound: {last_error_line(r.stderr)}")
+        return out
+    return job["cut"]
 
 
 def music_only(job, work, sound):
@@ -916,13 +941,14 @@ def cap_bitrate(part, crf, max_mbps):
 
 
 def check(part, job, has_audio):
-    """the final is the size asked for, runs as long as the cut (within 0.1 s) and, with sound, sits at -16 LUFS (within 1) at -1.5 dBTP or lower"""
+    """the final is the size asked for, runs as long as the plan (the cut, plus what the end card holds past it; within 0.1 s) and, with sound, sits
+    at -16 LUFS (within 1) at -1.5 dBTP or lower"""
     pr = ffprobe_video(part)
     if (pr["w"], pr["h"]) != (job["W"], job["H"]):
         stop(f"the final is {pr['w']}x{pr['h']}, not {job['W']}x{job['H']}")
     d = float(sh(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(part)]).stdout.strip() or 0)
     if abs(d - job["dur"]) > 0.1:
-        stop(f"the final runs {d:.2f} s but the cut is {job['dur']:.2f} s (more than 0.1 s apart)")
+        stop(f"the final runs {d:.2f} s but the plan is {job['dur']:.2f} s (more than 0.1 s apart)")
     lufs = tp = None
     if has_audio:
         lufs, tp = loudness_of(part)
@@ -973,6 +999,10 @@ def main(argv=None):
     props_path.write_text(json.dumps(job["props"], indent=1))
     n = job["n_clips"]
     say(f"{job['comp']} {W}x{H} {fps} fps, {dur:.2f} s ({job['frames']} frames), {n} {'clip' if job['comp'] == 'Montage' else 'insert'}{'' if n == 1 else 's'}")
+    if job["end_card"] and dur > job["cut_dur"] + 0.01:
+        ec = job["end_card"]
+        under = "the cut's last frame held under it" if job["comp"] == "Edit" else "black under it once the clips end"
+        say(f"end card: from {ec['at_s']:.2f} s for {ec['hold_s']:g} s, {under}, so the video runs to {dur:.2f} s ({dur - job['cut_dur']:.2f} s past the picture)")
     if args.prep_only:
         say(f"props written: {props_path}")
         return 0

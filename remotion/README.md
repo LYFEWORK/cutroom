@@ -35,7 +35,8 @@ Times are seconds on the cut's clock. Positions are pixels in the output frame (
 | `track` | `{"0": {cx, cy, h}, ...}` | `null` | the face box each second. Better than one `face`. |
 | `graphics` | `{component, start_s, end_s, props?, captions?}[]` | `[]` | your graphics, by id from `graphics/index.ts`. `captions: "hide"` leaves the caption pages out while it is up. |
 | `mark` | boolean or null | `null` | draw the brand mark under the platform's top band. `null`: the theme's `lockup_on`. |
-| `endCard` | `{at_s, line?, handle?}` | `null` | a full-frame card in the theme's colors from `at_s` to the end: the mark, the line in big type, the handle in the accent. `line` and `handle` default to the theme's `end_card`. |
+| `endCard` | `{at_s, hold_s?, line?, handle?}` | `null` | a full-frame card in the theme's colors from `at_s` to the end: the mark, the line in big type, the handle in the accent. `line` and `handle` default to the theme's `end_card`. `render.py` runs the video on past the cut as far as the card needs (`hold_s`, 2.5 s by default, 1.5 to 3) and sets `holdFrom`, so the card never sits over the speaker's words. |
+| `holdFrom` | number or null | `null` | from the frame after this one the picture holds this frame: the cut's last frame while the end card runs past the cut. `render.py` sets it. A montage has none: its card sits over black once the clips end, which the card covers before it shows. |
 | `safe` | `{top, bottom, rail, railTop}` | `null` | platform UI to stay out of, as fractions of the frame (a partial object overrides the defaults below). |
 | `durationInFrames`, `fps`, `width`, `height` | number | 300, 30, 1080, 1920 | the render's length, rate and size. |
 

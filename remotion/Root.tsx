@@ -23,6 +23,7 @@ const editDefaults: EditProps = {
   graphics: [],
   hook: null,
   endCard: null,
+  holdFrom: null,
   durationInFrames: 300,
   fps: 30,
   width: 1080,

@@ -126,7 +126,7 @@ def probe(path):
         "w": int(v["width"]), "h": int(v["height"]), "fps": float(num) / float(den), "codec": v["codec_name"], "tag": v.get("codec_tag_string"),
         "pix": v["pix_fmt"], "range": v.get("color_range"), "space": v.get("color_space"), "primaries": v.get("color_primaries"),
         "transfer": v.get("color_transfer"), "dur": float(info["format"]["duration"]), "audio": a is not None,
-        "a_rate": int(a["sample_rate"]) if a else None,
+        "a_rate": int(a["sample_rate"]) if a else None, "a_dur": float(a["duration"]) if a and a.get("duration") else None,
     }  # fmt: skip
 
 

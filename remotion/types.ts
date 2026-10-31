@@ -124,7 +124,7 @@ export type GraphicSpec = {
   captions?: "show" | "hide";
 };
 
-export type EndCardSpec = { at_s: number; line?: string; handle?: string };
+export type EndCardSpec = { at_s: number; hold_s?: number; line?: string; handle?: string };
 
 /** what a graphic component receives */
 export type GraphicProps<P = Record<string, any>> = {
@@ -164,6 +164,8 @@ export type EditProps = {
   /** draw the brand mark (default: the theme's lockup_on) */
   mark?: boolean | null;
   endCard?: EndCardSpec | null;
+  /** while the end card runs past the cut: from the frame after this one the picture holds this frame (render.py names the cut's last frame) */
+  holdFrom?: number | null;
   safe?: Partial<Safe> | null;
   durationInFrames?: number;
   fps?: number;

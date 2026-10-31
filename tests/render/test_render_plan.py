@@ -55,6 +55,7 @@ CASES = [
     ("insert clip missing", dict(inserts=[{"src": "/nowhere/b.mp4", "start_s": 0.1, "end_s": 0.9}]), "inserts[0].src not found"),
     ("zoom with no scale", dict(zooms=[{"start_s": 0.1, "end_s": 0.9}]), "zooms[0].z must be a number"),
     ("end card past the end", dict(end_card={"at_s": 50}), "past the end of the video"),
+    ("end card held too long", dict(end_card={"hold_s": 9}), "end_card.hold_s must be at most 3"),
     ("captions mode nobody has", dict(captions_mode="burned"), "captions_mode must be one of"),
     ("words with no text", dict(words=[{"start_s": 0, "end_s": 1}]), "words[0] needs text"),
     ("music file missing", dict(music={"file": "/nowhere/m.wav"}), "music file not found"),
@@ -127,14 +128,15 @@ def test_props_carry_the_plan_and_the_theme_files_are_linked(tmp_path, small_cut
     proc, work = prep(tmp_path, plan)
     assert proc.returncode == 0, proc.stdout + proc.stderr
     p = props_of(work)
-    assert (p["width"], p["height"], p["fps"], p["durationInFrames"]) == (540, 960, 30, 180)
+    assert (p["width"], p["height"], p["fps"], p["durationInFrames"]) == (540, 960, 30, 219)  # a 6 s cut, and the end card at 4.8 s holds 2.5 s: 7.3 s
     assert p["src"] == "cut.mp4" and (work / "public" / "cut.mp4").stat().st_size == small_cut.stat().st_size
     assert p["captions_mode"] == "feed" and len(p["words"]) == 6
     assert p["hook"]["end_s"] == 2.0 and p["hook"]["lines"][1] == "nobody *tells* you"
     assert p["graphics"][0]["component"] == "LowerThird" and p["graphics"][0]["props"]["name"] == "Alex Rivera"
     assert p["zooms"][0]["z"] == 1.12
     # the theme's end card line and handle fill in what the plan's end card leaves out
-    assert p["endCard"] == {"at_s": 4.8, "line": "Follow for *more*", "handle": "@testco"}
+    assert p["endCard"] == {"at_s": 4.8, "hold_s": 2.5, "line": "Follow for *more*", "handle": "@testco"}
+    assert p["holdFrom"] == 178  # the cut's last frame that is surely there: a frame and a half before its 6 s end, held under the card
     # the font is a file in the public folder and the theme points at it
     src = p["theme"]["font_faces"][0]["src"]
     assert src == "brand-testbrand/Inter-Variable.ttf" and (work / "public" / src).stat().st_size == H.FONT.stat().st_size
@@ -247,10 +249,10 @@ def test_the_theme_can_be_a_file(tmp_path, small_cut, clip):
     assert props_of(work)["theme"]["id"] == "testbrand"
 
 
-def test_the_theme_can_turn_the_hook_off_and_the_end_card_needs_a_place(tmp_path, small_cut, clip):
+def test_the_theme_can_turn_the_hook_off_and_the_end_card_needs_asking_for(tmp_path, small_cut, clip):
     theme = {**H.THEME, "hook_on": False}
     proc, work = prep(tmp_path, broken(small_cut, clip, theme=theme, end_card=None))
-    assert "text hooks off" in proc.stdout and "no end_card.at_s" in proc.stdout
+    assert "text hooks off" in proc.stdout and "the plan has no end_card" in proc.stdout
     p = props_of(work)
     assert p["hook"] is None and p["endCard"] is None
 
@@ -258,6 +260,25 @@ def test_the_theme_can_turn_the_hook_off_and_the_end_card_needs_a_place(tmp_path
 def test_a_plan_can_switch_its_own_end_card_off(tmp_path, small_cut, clip):
     proc, work = prep(tmp_path, broken(small_cut, clip, end_card={"on": False}))
     assert props_of(work)["endCard"] is None
+
+
+def test_the_end_card_runs_past_the_cut_by_default_and_the_picture_holds_its_last_frame(tmp_path, small_cut, clip):
+    """an end card with nothing but its switch: it starts at the cut's end, shows for 2.5 s, and the Edit holds the cut's last frame under it, so
+    the card never sits over the speaker's words"""
+    proc, work = prep(tmp_path, broken(small_cut, clip, end_card={}))
+    assert proc.returncode == 0, proc.stdout + proc.stderr
+    p = props_of(work)
+    assert p["endCard"] == {"at_s": 6.0, "hold_s": 2.5, "line": "Follow for *more*", "handle": "@testco"}
+    assert p["durationInFrames"] == 255 and p["holdFrom"] == 178
+    assert "end card: from 6.00 s for 2.5 s, the cut's last frame held under it, so the video runs to 8.50 s (2.50 s past the picture)" in proc.stdout
+
+
+def test_a_card_that_starts_early_and_ends_inside_the_cut_extends_nothing(tmp_path, small_cut, clip):
+    proc, work = prep(tmp_path, broken(small_cut, clip, end_card={"at_s": 2.0, "hold_s": 2.0}))
+    assert proc.returncode == 0, proc.stdout + proc.stderr
+    p = props_of(work)
+    assert p["durationInFrames"] == 180 and p["holdFrom"] is None and "end card:" not in proc.stdout
+    assert p["endCard"]["at_s"] == 2.0 and p["endCard"]["hold_s"] == 2.0
 
 
 def test_the_word_engines_file_is_a_plan_too(tmp_path, small_cut, clip):

@@ -31,7 +31,8 @@ def test_every_layer_renders_at_every_size(tmp_path, request, clip, name):
 
     info = H.probe(out)
     assert (info["w"], info["h"]) == (W, Hh) and info["fps"] == 30.0
-    assert abs(info["dur"] - H.probe(cut)["dur"]) <= 0.1
+    # the end card at 4.8 s holds 2.5 s past the 6 s cut, so the final runs 7.3 s, its sound as long as its picture
+    assert abs(info["dur"] - max(H.probe(cut)["dur"], 4.8 + 2.5)) <= 0.1 and abs(info["a_dur"] - info["dur"]) <= 0.1, info
     assert (info["codec"], info["tag"], info["pix"], info["range"]) == ("h264", "avc1", "yuv420p", "tv")
     assert (info["space"], info["primaries"], info["transfer"]) == ("bt709", "bt709", "bt709")
     assert info["audio"] and info["a_rate"] == 48000
@@ -61,6 +62,8 @@ def test_every_layer_renders_at_every_size(tmp_path, request, clip, name):
     # the end card covers the picture from 4.8 s: dark, nothing like the cut
     f_end, c_end = frame_pair(out, cut, 5.7, (W, Hh), gw, gh)
     assert H.mean(f_end) < 60 < H.mean(c_end) and H.mean_abs_diff(f_end, c_end) > 40
+    # and past the cut's end (6 s) the card is still up, over the held picture: dark
+    assert H.mean(H.gray(out, 7.0, gw, gh)) < 60
 
 
 def test_every_look_and_move_renders(tmp_path, cut_portrait, clip, media):
@@ -89,7 +92,7 @@ def test_every_look_and_move_renders(tmp_path, cut_portrait, clip, media):
     proc = H.run_render(H.write_plan(tmp_path / "edit.json", plan), out)
     assert proc.returncode == 0, proc.stdout + proc.stderr
     info = H.probe(out)
-    assert (info["w"], info["h"], info["fps"]) == (1080, 1920, 30.0) and abs(info["dur"] - 6.0) <= 0.1
+    assert (info["w"], info["h"], info["fps"]) == (1080, 1920, 30.0) and abs(info["dur"] - 7.7) <= 0.1  # the end card at 5.2 s holds 2.5 s
     # the mono hook drops the picture to black and white from the turn: a patch of the picture that nothing is drawn over is in color at
     # 0.5 s and without color at 1.6 s
     def color(t):
@@ -118,7 +121,7 @@ def test_a_montage_renders_with_voice_music_and_effects(tmp_path, clip, music, c
     proc = H.run_render(H.write_plan(tmp_path / "montage.json", plan), out)
     assert proc.returncode == 0, proc.stdout + proc.stderr
     info = H.probe(out)
-    assert (info["w"], info["h"], info["fps"]) == (1080, 1920, 30.0) and abs(info["dur"] - 12.0) <= 0.1
+    assert (info["w"], info["h"], info["fps"]) == (1080, 1920, 30.0) and abs(info["dur"] - 12.7) <= 0.1  # the end card at 10.2 s holds 2.5 s past the last clip
     lufs, tp = H.loudness(out)
     assert lufs == pytest.approx(-16, abs=1.0) and tp <= -1.5
     assert re.search(r"music: music.wav, [\d.]+ dB under the talk", proc.stdout) and "sfx: 1 effect placed" in proc.stdout
@@ -179,6 +182,53 @@ def test_the_dnas_own_theme_renders(tmp_path, small_cut, clip):
     proc = H.run_render(H.write_plan(tmp_path / "edit.json", plan), out, "--brand", brand)
     assert proc.returncode == 0, proc.stdout + proc.stderr
     assert (H.probe(out)["w"], H.probe(out)["h"]) == (360, 640)
+
+
+def test_the_picture_holds_the_cuts_last_frame_under_the_end_card(tmp_path, small_cut, clip):
+    """the mechanics behind the card: with holdFrom set, every frame past it is the frame named, which is the cut's own picture there. The card
+    is taken out of the props so the held picture can be seen; before the hold the picture plays as it is."""
+    plan = H.full_plan(small_cut, clip, size=(360, 640), hook=None, graphics=[], zooms=[], inserts=[], end_card={})
+    work = tmp_path / "work-hold"
+    prep = H.run_render(H.write_plan(tmp_path / "hold.json", plan), tmp_path / "hold.mp4", "--work", work, "--prep-only")
+    assert prep.returncode == 0, prep.stdout + prep.stderr
+    props = json.loads((work / "props.json").read_text())
+    assert props["holdFrom"] == 178 and props["durationInFrames"] == 255
+    props["endCard"] = None
+    (work / "props.json").write_text(json.dumps(props))
+
+    def still(frame):
+        png = tmp_path / f"hold-{frame}.png"
+        r = subprocess.run(["npx", "--no-install", "remotion", "still", "index.ts", "Edit", str(png), f"--props={work / 'props.json'}", f"--public-dir={work / 'public'}", f"--frame={frame}", "--log=error"],
+                           cwd=H.REMOTION, capture_output=True, text=True)
+        assert r.returncode == 0, r.stdout + r.stderr
+        return H.gray(png, 0, 90, 160)
+
+    held, later, live = still(200), still(240), still(150)
+    cut = {f: H.gray(small_cut, f / 30, 90, 160) for f in (150, 177, 178, 179)}
+    d = H.mean_abs_diff
+    assert d(held, later) < 1.0, d(held, later)  # past the cut every frame is the same picture
+    # and it is the cut's own frame 178, to the frame: a still sits within 2 levels of its source frame at this scale, and about 4 from the frames beside it
+    assert d(held, cut[178]) < 2.5 < min(d(held, cut[177]), d(held, cut[179])), [round(d(held, cut[f]), 2) for f in (177, 178, 179)]
+    assert d(live, cut[150]) < 2.5 < d(live, cut[178]), (d(live, cut[150]), d(live, cut[178]))  # before the hold the picture plays as it is
+
+
+def test_the_bed_plays_through_the_end_card_and_fades_out_with_it(tmp_path, small_cut, clip, music):
+    """an Edit with music and an end card: the final runs the card's 2.5 s past the cut, the bed is heard under the card, and it is on its way
+    out over the last stretch (the bed fades over its last 1.5 s)"""
+    import sound
+
+    plan = H.full_plan(small_cut, clip, size=(360, 640), hook=None, graphics=[], zooms=[], inserts=[], end_card={}, music={"file": str(music)})
+    out = tmp_path / "card.mp4"
+    proc = H.run_render(H.write_plan(tmp_path / "card.json", plan), out)
+    assert proc.returncode == 0, proc.stdout + proc.stderr
+    assert "end card: from 6.00 s for 2.5 s, the cut's last frame held under it, so the video runs to 8.50 s" in proc.stdout
+    info = H.probe(out)
+    assert abs(info["dur"] - 8.5) <= 0.1 and abs(info["a_dur"] - 8.5) <= 0.15, info
+    log = H.ebur_log(out)
+    under_card = sound.loudness(log, [(6.6, 7.6)])
+    tail = sound.loudness(log, [(7.9, 8.5)])  # the meter reads 0.4 s blocks every 0.1 s: the last three readings
+    assert under_card is not None and under_card > -45, under_card                # the bed is there under the card
+    assert tail is not None and tail < under_card - 8, (under_card, tail)         # and on its way out at the very end
 
 
 def test_remotion_refuses_a_theme_with_no_accent(tmp_path):
